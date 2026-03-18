@@ -91,3 +91,7 @@ target/
 
 # .venv
 .venv
+
+# Frontend dependencies and caches
+node_modules/
+*.tsbuildinfo
