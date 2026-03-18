@@ -6,6 +6,7 @@ GET  /api/synthetic-patient — generate a synthetic patient profile
 """
 import random
 import numpy as np
+import pandas as pd
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
@@ -71,7 +72,14 @@ class PatientFeatures(BaseModel):
     region: str = Field("West Midlands")
 
     # Which model to use
-    model_name: str = Field("random_forest_tuned")
+    model_name: str = Field("ebm_model")
+
+
+class FeatureContribution(BaseModel):
+    feature: str
+    value: str
+    contribution: float
+    direction: str
 
 
 class PredictionResponse(BaseModel):
@@ -82,6 +90,71 @@ class PredictionResponse(BaseModel):
     confidence: str
     clinical_note: str
     model_used: str
+    explanation_method: str | None = None
+    feature_contributions: list[FeatureContribution] = Field(default_factory=list)
+
+
+def _format_feature_value(value, feature_name: str = '') -> str:
+    """Format feature values intelligently to remove unnecessary decimals."""
+    # Age band mapping for one-hot encoded features (e.g., age_band_2, age_band_3, age_band_4, age_band_5)
+    age_band_map = {
+        '2': "40-59 years",
+        '3': "60-69 years",
+        '4': "70-79 years",
+        '5': "80+ years",
+    }
+    
+    # Handle one-hot encoded age_band features (e.g., age_band_2, age_band_3)
+    if feature_name.startswith('age_band_'):
+        # Extract the age band number (e.g., '4' from 'age_band_4')
+        age_num = feature_name.split('_')[-1]
+        if age_num in age_band_map:
+            return age_band_map[age_num]
+    
+    # For numeric values, check if it's a whole number
+    if isinstance(value, (int, float, np.integer, np.floating)):
+        num_val = float(value)
+        # If it's a whole number, return without decimals
+        if num_val == int(num_val):
+            return str(int(num_val))
+        # Otherwise, round to 3 decimals and strip trailing zeros
+        formatted = f"{num_val:.3f}".rstrip('0').rstrip('.')
+        return formatted
+    return str(value)
+
+
+def _extract_local_explanation(model, X: pd.DataFrame) -> tuple[str | None, list[FeatureContribution]]:
+    """Extract local feature contributions for a single prediction when supported by model."""
+    if not hasattr(model, "explain_local"):
+        return None, []
+
+    try:
+        local_exp = model.explain_local(X)
+        # interpret's local explanation object returns dictionaries keyed by field names.
+        data = local_exp.data(0)
+        names = data.get("names", [])
+        scores = data.get("scores", [])
+        values = data.get("values", [])
+
+        items: list[FeatureContribution] = []
+        for name, score, value in zip(names, scores, values):
+            if score is None:
+                continue
+            contribution = float(score)
+            items.append(
+                FeatureContribution(
+                    feature=str(name),
+                    value=_format_feature_value(value, str(name)),
+                    contribution=round(contribution, 4),
+                    direction="Pushes towards Good Outcome" if contribution >= 0 else "Pushes towards At Risk",
+                )
+            )
+
+        items.sort(key=lambda x: abs(x.contribution), reverse=True)
+        return "interpret.explain_local", items[:12]
+    except Exception as e:
+        print(f"[predict] Could not build local explanation: {e}")
+        return None, []
 
 
 # ---------------------------------------------------------------------------
@@ -161,7 +234,8 @@ def predict(patient: PatientFeatures):
     if not available:
         raise HTTPException(status_code=503, detail="No models loaded. Check server logs.")
 
-    model_name = patient.model_name if patient.model_name in available else available[0]
+    requested_model = patient.model_name or "ebm_model"
+    model_name = requested_model if requested_model in available else ("ebm_model" if "ebm_model" in available else available[0])
 
     try:
         model = get_model(model_name)
@@ -210,6 +284,8 @@ def predict(patient: PatientFeatures):
             "Continue to monitor and support recovery."
         )
 
+    explanation_method, feature_contributions = _extract_local_explanation(model, X)
+
     return PredictionResponse(
         prediction=prediction,
         probability_good_outcome=round(prob_good, 4),
@@ -218,6 +294,8 @@ def predict(patient: PatientFeatures):
         confidence=confidence,
         clinical_note=clinical_note,
         model_used=model_name,
+        explanation_method=explanation_method,
+        feature_contributions=feature_contributions,
     )
 
 

@@ -5,13 +5,15 @@ import {
 } from 'recharts';
 import {
   fetchMetrics, fetchFeatureImportance, fetchConfusionMatrix, fetchPRCurves,
-  fetchDatasetSummary,
+  fetchDatasetSummary, fetchThresholdAnalysis,
   type ModelMeta, type FeatureImportance, type ConfusionMatrixData, type PRCurves, type DatasetSummary,
+  type ThresholdAnalysis,
 } from '../utils/api';
 import { MetricCard } from '../components/MetricCard';
 import { ConfusionMatrix } from '../components/ConfusionMatrix';
 
 const MODEL_COLORS: Record<string, string> = {
+  ebm_model:           '#007F3B',
   random_forest_tuned: '#003087',
   lr_no_weights:       '#005EB8',
   lr_lasso_l1:         '#0072CE',
@@ -26,7 +28,9 @@ export function Dashboard() {
   const [cm, setCm] = useState<ConfusionMatrixData | null>(null);
   const [prCurves, setPrCurves] = useState<PRCurves | null>(null);
   const [summary, setSummary] = useState<DatasetSummary | null>(null);
-  const [selectedModel, setSelectedModel] = useState('random_forest_tuned');
+  const [thresholdAnalysis, setThresholdAnalysis] = useState<ThresholdAnalysis | null>(null);
+  const [selectedThreshold, setSelectedThreshold] = useState(0.8);
+  const [selectedModel, setSelectedModel] = useState('ebm_model');
   const [sortField, setSortField] = useState<keyof ModelMeta>('roc_auc');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [loading, setLoading] = useState(true);
@@ -53,8 +57,14 @@ export function Dashboard() {
   }, []);
 
   useEffect(() => {
-    fetchConfusionMatrix(selectedModel).then(setCm).catch(() => {});
-  }, [selectedModel]);
+    fetchConfusionMatrix(selectedModel, selectedThreshold).then(setCm).catch(() => {});
+  }, [selectedModel, selectedThreshold]);
+
+  useEffect(() => {
+    fetchThresholdAnalysis(selectedThreshold)
+      .then(setThresholdAnalysis)
+      .catch(() => {});
+  }, [selectedThreshold]);
 
   const handleSort = (field: keyof ModelMeta) => {
     if (sortField === field) {
@@ -71,7 +81,9 @@ export function Dashboard() {
     return sortDir === 'asc' ? av - bv : bv - av;
   });
 
-  const bestModel = models.find(m => m.name === 'random_forest_tuned');
+  const bestModel = models.length
+    ? [...models].sort((a, b) => b.pr_auc - a.pr_auc)[0]
+    : undefined;
 
   const pieData = summary
     ? [
@@ -80,12 +92,37 @@ export function Dashboard() {
       ]
     : [];
 
-  const prData = prCurves
-    ? prCurves['random_forest_tuned']?.recall.map((r: number, i: number) => ({
-        recall: r,
-        rf: prCurves['random_forest_tuned']?.precision[i],
-        lr: prCurves['lr_no_weights']?.precision[i],
-      }))
+  const prModelNames = models
+    .map(m => m.name)
+    .filter(name => !!prCurves?.[name]);
+
+  const prData = prCurves && prModelNames.length > 0
+    ? prCurves[prModelNames[0]].recall.map((_: number, i: number) => {
+        const point: Record<string, number> = {
+          recall: prCurves[prModelNames[0]].recall[i],
+        };
+        prModelNames.forEach(name => {
+          point[name] = prCurves[name].precision[i];
+        });
+        return point;
+      })
+    : [];
+
+  const thresholdModelNames = models
+    .map(m => m.name)
+    .filter(name => !!thresholdAnalysis?.models?.[name]);
+
+  const thresholdPrecisionData = thresholdAnalysis && thresholdModelNames.length > 0
+    ? thresholdAnalysis.thresholds.map((threshold, i) => {
+        const point: Record<string, number | string> = {
+          threshold,
+          thresholdLabel: threshold.toFixed(2),
+        };
+        thresholdModelNames.forEach(name => {
+          point[name] = thresholdAnalysis.models[name].precision[i];
+        });
+        return point;
+      })
     : [];
 
   if (loading) {
@@ -105,7 +142,7 @@ export function Dashboard() {
         <div className="nhs-page-header__inner">
           <h1 className="nhs-page-header__title">Model Performance Dashboard</h1>
           <p className="nhs-page-header__lead">
-            Test set performance metrics for all four trained models. Data from
+            Test set performance metrics for all trained models including EBM. Data from
             {summary ? ` ${summary.train_samples.toLocaleString()} training` : ''} and
             {summary ? ` ${summary.test_samples.toLocaleString()} test` : ''} patients.
           </p>
@@ -126,16 +163,16 @@ export function Dashboard() {
         <div className="nhs-section__inner">
           <div className="nhs-grid nhs-grid--4">
             <MetricCard
-              label="Best ROC-AUC (RF Tuned)"
+              label="Best ROC-AUC"
               value={bestModel ? bestModel.roc_auc.toFixed(3) : '–'}
-              subtitle="Random Forest with GridSearchCV"
+              subtitle={bestModel ? bestModel.display_name : 'Highest discrimination'}
               variant="green"
               icon="🏆"
             />
             <MetricCard
-              label="Best PR-AUC (RF Tuned)"
+              label="Best PR-AUC"
               value={bestModel ? bestModel.pr_auc.toFixed(3) : '–'}
-              subtitle="Precision-Recall Area Under Curve"
+              subtitle={bestModel ? bestModel.display_name : 'Precision-Recall Area Under Curve'}
               variant="default"
               icon="📈"
             />
@@ -181,7 +218,7 @@ export function Dashboard() {
                     <td>
                       <div style={{ fontWeight: 600 }}>{m.display_name}</div>
                       <div style={{ fontSize: '0.8125rem', color: 'var(--nhs-mid-grey)' }}>{m.description}</div>
-                      {m.name === 'random_forest_tuned' && (
+                      {bestModel && m.name === bestModel.name && (
                         <span className="nhs-tag nhs-tag--green" style={{ marginTop: '0.25rem' }}>Best model</span>
                       )}
                     </td>
@@ -196,13 +233,97 @@ export function Dashboard() {
             </table>
           </div>
 
+          {/* Threshold analysis */}
+          <div className="nhs-chart-card mb-4">
+            <div className="nhs-chart-card__title">Threshold Explorer</div>
+            <p style={{ fontSize: '0.875rem', color: 'var(--nhs-mid-grey)', marginBottom: '0.75rem' }}>
+              Compare models at threshold 0.8 or choose another threshold to see precision movement.
+            </p>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+              <label style={{ fontWeight: 600, minWidth: '180px' }}>
+                Selected threshold: {selectedThreshold.toFixed(2)}
+              </label>
+              <input
+                type="range"
+                min={0.1}
+                max={0.9}
+                step={0.05}
+                value={selectedThreshold}
+                onChange={e => setSelectedThreshold(Number(e.target.value))}
+                style={{ width: '280px' }}
+              />
+              <button className="nhs-btn nhs-btn--secondary" onClick={() => setSelectedThreshold(0.8)}>
+                Reset to 0.80
+              </button>
+            </div>
+
+            <ResponsiveContainer width="100%" height={260}>
+              <LineChart data={thresholdPrecisionData} margin={{ left: 0, right: 16, top: 4, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="thresholdLabel" label={{ value: 'Threshold', position: 'insideBottom', offset: -2, fontSize: 12 }} tick={{ fontSize: 11 }} />
+                <YAxis label={{ value: 'Precision', angle: -90, position: 'insideLeft', offset: 10, fontSize: 12 }} tick={{ fontSize: 11 }} domain={[0, 1]} />
+                <Tooltip formatter={(v: number) => `${(v * 100).toFixed(1)}%`} contentStyle={{ fontSize: '0.875rem' }} />
+                <Legend wrapperStyle={{ fontSize: '0.875rem', paddingTop: '0.5rem' }} />
+                {models
+                  .filter(m => thresholdModelNames.includes(m.name))
+                  .map(m => (
+                    <Line
+                      key={`precision-${m.name}`}
+                      type="monotone"
+                      dataKey={m.name}
+                      name={`${m.display_name} Precision`}
+                      stroke={MODEL_COLORS[m.name] || '#005EB8'}
+                      strokeWidth={m.name === (bestModel?.name ?? '') ? 2.75 : 2}
+                      dot={false}
+                    />
+                  ))}
+              </LineChart>
+            </ResponsiveContainer>
+
+            <div className="nhs-table__wrapper" style={{ marginTop: '1rem' }}>
+              <table className="nhs-table">
+                <thead>
+                  <tr>
+                    <th>Model</th>
+                    <th>Precision</th>
+                    <th>Recall</th>
+                    <th>F1</th>
+                    <th>Specificity</th>
+                    <th>Predicted Positives</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {models
+                    .filter(m => thresholdAnalysis?.at_threshold?.[m.name])
+                    .map(m => {
+                      const at = thresholdAnalysis?.at_threshold?.[m.name];
+                      if (!at) {
+                        return null;
+                      }
+                      return (
+                        <tr key={`at-threshold-${m.name}`}>
+                          <td>{m.display_name}</td>
+                          <td>{(at.precision * 100).toFixed(1)}%</td>
+                          <td>{(at.recall * 100).toFixed(1)}%</td>
+                          <td>{at.f1.toFixed(3)}</td>
+                          <td>{(at.specificity * 100).toFixed(1)}%</td>
+                          <td>{at.predicted_positive.toLocaleString()}</td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           {/* Charts row */}
           <div className="nhs-grid nhs-grid--2" style={{ marginBottom: '2rem' }}>
 
             {/* Feature importance */}
             <div className="nhs-chart-card">
               <div className="nhs-chart-card__title">
-                Feature Importance — Random Forest (Top 15)
+                Feature Importance — EBM Global Importance (Top 15)
               </div>
               <ResponsiveContainer width="100%" height={320}>
                 <BarChart
@@ -268,7 +389,7 @@ export function Dashboard() {
           <div className="nhs-chart-card mb-4">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div className="nhs-chart-card__title" style={{ marginBottom: 0 }}>
-                Confusion Matrix — Test Set (26,477 patients)
+                Confusion Matrix — Threshold {selectedThreshold.toFixed(2)} (26,477 patients)
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <label style={{ fontSize: '0.875rem', fontWeight: 600 }}>Model:</label>
@@ -293,9 +414,9 @@ export function Dashboard() {
 
           {/* PR curves */}
           <div className="nhs-chart-card">
-            <div className="nhs-chart-card__title">Precision-Recall Curves</div>
+            <div className="nhs-chart-card__title">Precision-Recall Curves — Operating Point at Threshold {selectedThreshold.toFixed(2)}</div>
             <p style={{ fontSize: '0.875rem', color: 'var(--nhs-mid-grey)', marginBottom: '1rem' }}>
-              RF Tuned vs LR No Weights. Higher area under curve = better model performance for the at-risk class.
+              Comparison across all models. The curves show performance across all thresholds. Current operating point (threshold {selectedThreshold.toFixed(2)}) metrics are shown in the Threshold Explorer table above. Each point on the curves represents a different classification threshold.
             </p>
             <ResponsiveContainer width="100%" height={260}>
               <LineChart data={prData} margin={{ left: 0, right: 16, top: 4, bottom: 4 }}>
@@ -307,23 +428,20 @@ export function Dashboard() {
                   contentStyle={{ fontSize: '0.875rem' }}
                 />
                 <Legend wrapperStyle={{ fontSize: '0.875rem', paddingTop: '0.5rem' }} />
-                <Line
-                  type="monotone"
-                  dataKey="rf"
-                  name="RF Tuned (PR-AUC 0.396)"
-                  stroke="#003087"
-                  strokeWidth={2.5}
-                  dot={false}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="lr"
-                  name="LR No Weights (PR-AUC 0.383)"
-                  stroke="#41B6E6"
-                  strokeWidth={2}
-                  strokeDasharray="5 4"
-                  dot={false}
-                />
+                {models
+                  .filter(m => prModelNames.includes(m.name))
+                  .map(m => (
+                    <Line
+                      key={m.name}
+                      type="monotone"
+                      dataKey={m.name}
+                      name={`${m.display_name} (PR-AUC ${m.pr_auc.toFixed(3)})`}
+                      stroke={MODEL_COLORS[m.name] || '#005EB8'}
+                      strokeWidth={m.name === (bestModel?.name ?? '') ? 2.75 : 2}
+                      strokeDasharray={m.name === (bestModel?.name ?? '') ? undefined : '5 4'}
+                      dot={false}
+                    />
+                  ))}
               </LineChart>
             </ResponsiveContainer>
             <div className="nhs-inset" style={{ marginTop: '1rem' }}>

@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { predict, fetchSyntheticPatient, type PatientPayload, type PredictionResult } from '../utils/api';
 import { generateSyntheticPatient, REGIONS } from '../utils/patientGenerator';
 
@@ -66,13 +67,6 @@ const COMORBIDITIES = [
   { key: 'arthritis',      label: 'Arthritis' },
 ] as const;
 
-const MODELS = [
-  { value: 'random_forest_tuned', label: 'Random Forest (Tuned) — Best performing' },
-  { value: 'lr_no_weights',       label: 'Logistic Regression (No Weights)' },
-  { value: 'lr_lasso_l1',         label: 'Logistic Regression (LASSO L1)' },
-  { value: 'lr_smote',            label: 'Logistic Regression (SMOTE)' },
-];
-
 type FormState = Omit<PatientPayload, 'oks_t0_score'>;
 
 function defaultForm(): FormState {
@@ -116,7 +110,7 @@ function defaultForm(): FormState {
     university_hospital: 1,
     independent_hospital: 0,
     region: 'West Midlands',
-    model_name: 'random_forest_tuned',
+    model_name: 'ebm_model',
   };
 }
 
@@ -156,10 +150,38 @@ function ResultPanel({ result, loading }: { result: PredictionResult | null; loa
   const goodPct = Math.round(result.probability_good_outcome * 100);
   const riskPct = Math.round(result.probability_at_risk * 100);
 
+  // Helper to format feature values intelligently
+  const formatFeatureValue = (feature: string, value: string): string => {
+    const val = parseFloat(value);
+    // Age band mapping for one-hot encoded features
+    const ageBandMap: Record<string, string> = {
+      '2': '40-59 years',
+      '3': '60-69 years',
+      '4': '70-79 years',
+      '5': '80+ years',
+    };
+    // Handle one-hot encoded age_band features (e.g., age_band_2, age_band_3, age_band_4)
+    if (feature.startsWith('age_band_')) {
+      const ageNum = feature.split('_')[1];
+      if (ageBandMap[ageNum]) {
+        return ageBandMap[ageNum];
+      }
+    }
+    // For whole numbers, don't show decimals
+    if (!isNaN(val) && val === Math.floor(val)) {
+      return Math.floor(val).toString();
+    }
+    // For decimals, show up to 3 places, strip trailing zeros
+    if (!isNaN(val)) {
+      return parseFloat(val.toFixed(3)).toString();
+    }
+    return value;
+  };
+
   return (
-    <div className="nhs-result-panel">
+    <div className="nhs-result-panel" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div className="nhs-result-panel__header">Prediction Result</div>
-      <div className="nhs-result-panel__body">
+      <div className="nhs-result-panel__body" style={{ flex: 1, overflowY: 'auto' }}>
         <div className={`nhs-outcome-badge ${isGood ? 'nhs-outcome-badge--good' : 'nhs-outcome-badge--risk'}`}>
           <div className="nhs-outcome-badge__icon">{isGood ? '✅' : '⚠️'}</div>
           <div>
@@ -222,6 +244,119 @@ function ResultPanel({ result, loading }: { result: PredictionResult | null; loa
           Model: {result.model_used.replace(/_/g, ' ')}
         </div>
 
+        {!!result.feature_contributions?.length && (
+          <div style={{ marginTop: '1rem' }}>
+            <h3 style={{ fontSize: '1rem', color: 'var(--nhs-blue)', marginBottom: '0.5rem' }}>
+              Why this prediction was made
+            </h3>
+            <p style={{ fontSize: '0.8125rem', color: 'var(--nhs-mid-grey)', marginBottom: '0.75rem', lineHeight: 1.6 }}>
+              <strong>How to read this chart:</strong> Each bar represents one patient feature and its impact on the prediction. 
+              <strong style={{ color: '#009639' }}> Green bars</strong> push toward <strong>Good Outcome</strong>, while <strong style={{ color: '#DA291C' }}> red bars</strong> push toward <strong>At Risk</strong>. 
+              The <strong>y-axis shows the feature name and its value</strong> for this patient (e.g., "pain = 2"), and the <strong>bar length shows the magnitude of influence</strong> on the model's decision.
+              The gray <strong>Baseline</strong> represents the model's default starting point before any patient features.
+            </p>
+            <ResponsiveContainer width="100%" height={480}>
+              <BarChart
+                layout="vertical"
+                data={[
+                  { 
+                    id: 'baseline',
+                    featureLabel: 'Baseline', 
+                    contribution: 0, 
+                    value: '',
+                    sortKey: 'aaa-baseline'
+                  },
+                  ...result.feature_contributions
+                    .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution))
+                    .map(fc => {
+                      const cleanFeature = fc.feature
+                        .replace(/oks_t0_/g, '')
+                        .replace(/t0_/g, '')
+                        .replace(/_/g, ' ');
+                      const formattedValue = formatFeatureValue(fc.feature, fc.value);
+                      return {
+                        id: fc.feature,
+                        featureLabel: `${cleanFeature} = ${formattedValue}`,
+                        contribution: fc.contribution,
+                        value: fc.value,
+                        sortKey: fc.feature,
+                      };
+                    }),
+                ]}
+                margin={{ left: 180, right: 60, top: 8, bottom: 8 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#e0e0e0" />
+                <XAxis 
+                  type="number" 
+                  tick={{ fontSize: 11 }} 
+                  label={{ value: 'Contribution to prediction', position: 'bottom', offset: 8, fontSize: 11 }}
+                />
+                <YAxis 
+                  dataKey="featureLabel" 
+                  type="category" 
+                  width={175}
+                  tick={{ fontSize: 10 }}
+                  interval={0}
+                />
+                <Tooltip 
+                  contentStyle={{ fontSize: '0.875rem', borderRadius: '4px', background: '#fff', border: '1px solid #ccc' }}
+                  formatter={(v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(4)}`}
+                  cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }}
+                />
+                <Bar dataKey="contribution" radius={[0, 4, 4, 0]} isAnimationActive={true}>
+                  {[
+                    { id: 'baseline', contribution: 0 },
+                    ...result.feature_contributions.map(fc => ({
+                      id: fc.feature,
+                      contribution: fc.contribution,
+                    })),
+                  ].map((entry, idx) => (
+                    <Cell 
+                      key={`cell-${idx}`}
+                      fill={entry.id === 'baseline' ? '#999' : entry.contribution >= 0 ? '#009639' : '#DA291C'}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+            
+            {/* Feature details table below chart */}
+            <div style={{ marginTop: '1.5rem', fontSize: '0.8125rem' }}>
+              <details style={{ cursor: 'pointer' }}>
+                <summary style={{ fontWeight: 600, color: 'var(--nhs-blue)', padding: '0.5rem', borderRadius: '4px', background: '#F0F5FF' }}>
+                  📋 View full precision values
+                </summary>
+                <div style={{ overflow: 'auto', border: '1px solid var(--nhs-light-grey)', borderRadius: '4px', marginTop: '0.5rem', maxHeight: '300px' }}>
+                  <table className="nhs-table" style={{ marginBottom: 0, fontSize: '0.75rem' }}>
+                    <thead>
+                      <tr>
+                        <th>Feature</th>
+                        <th>Value</th>
+                        <th>Exact Contribution</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {result.feature_contributions.map(fc => (
+                        <tr key={`${fc.feature}-${fc.value}`}>
+                          <td style={{ fontSize: '0.75rem' }}>{fc.feature}</td>
+                          <td style={{ fontSize: '0.75rem' }}>{formatFeatureValue(fc.feature, fc.value)}</td>
+                          <td style={{ 
+                            color: fc.contribution >= 0 ? 'var(--nhs-green)' : 'var(--nhs-red)', 
+                            fontWeight: 700,
+                            fontSize: '0.75rem'
+                          }}>
+                            {fc.contribution >= 0 ? '+' : ''}{fc.contribution.toFixed(4)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+            </div>
+          </div>
+        )}
+
         {/* Disclaimer */}
         <div className="nhs-warning-callout" style={{ marginTop: '1rem', marginBottom: 0 }}>
           <div className="nhs-warning-callout__title"><span>⚠️</span> Research tool only</div>
@@ -252,13 +387,13 @@ export function PatientPredictor() {
     setGenerating(true);
     try {
       const synthetic = await fetchSyntheticPatient();
-      setForm(prev => ({ ...prev, ...synthetic }));
+      setForm(prev => ({ ...prev, ...synthetic, model_name: 'ebm_model' }));
       setResult(null);
       setApiError('');
     } catch {
       // Fall back to local generation if API is unavailable
       const local = generateSyntheticPatient();
-      setForm(prev => ({ ...prev, ...local }));
+      setForm(prev => ({ ...prev, ...local, model_name: 'ebm_model' }));
       setResult(null);
     } finally {
       setGenerating(false);
@@ -296,7 +431,7 @@ export function PatientPredictor() {
 
       <section className="nhs-section">
         <div className="nhs-section__inner">
-          <div style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: '2rem', alignItems: 'start' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: '2rem', alignItems: 'start' }}>
 
             {/* LEFT: Patient form */}
             <div>
@@ -321,18 +456,13 @@ export function PatientPredictor() {
               {/* Model selection */}
               <div className="nhs-form-section">
                 <div className="nhs-form-section__title">⚙️ Model Selection</div>
-                <div className="nhs-form-group">
-                  <label className="nhs-label" htmlFor="model_name">Prediction model</label>
-                  <select
-                    id="model_name"
-                    className="nhs-select"
-                    value={form.model_name}
-                    onChange={e => set('model_name', e.target.value)}
-                  >
-                    {MODELS.map(m => (
-                      <option key={m.value} value={m.value}>{m.label}</option>
-                    ))}
-                  </select>
+                <div className="nhs-inset nhs-inset--blue" style={{ marginBottom: 0 }}>
+                  <strong>Selected model: Explainable Boosting Machine (EBM)</strong>
+                  <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.875rem' }}>
+                    EBM was selected for deployment because it balances predictive performance with strong explainability.
+                    It models each feature with learned shape functions and optionally pairwise interactions, so each
+                    prediction can be decomposed into clear feature contributions for clinical review.
+                  </p>
                 </div>
               </div>
 

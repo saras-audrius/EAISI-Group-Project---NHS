@@ -43,12 +43,36 @@ export interface DatasetSummary {
 
 export interface ConfusionMatrixData {
   model: string;
+  threshold: number;
   matrix: [[number, number], [number, number]];
   labels: [string, string];
 }
 
 export interface PRCurves {
   [modelName: string]: { precision: number[]; recall: number[] };
+}
+
+export interface ThresholdModelCurves {
+  precision: number[];
+  recall: number[];
+  f1: number[];
+  specificity: number[];
+  predicted_positive: number[];
+}
+
+export interface ThresholdPointMetrics {
+  precision: number;
+  recall: number;
+  f1: number;
+  specificity: number;
+  predicted_positive: number;
+}
+
+export interface ThresholdAnalysis {
+  selected_threshold: number;
+  thresholds: number[];
+  models: Record<string, ThresholdModelCurves>;
+  at_threshold: Record<string, ThresholdPointMetrics>;
 }
 
 export interface PatientPayload {
@@ -103,6 +127,15 @@ export interface PredictionResult {
   confidence: string;
   clinical_note: string;
   model_used: string;
+  explanation_method?: string | null;
+  feature_contributions?: FeatureContribution[];
+}
+
+export interface FeatureContribution {
+  feature: string;
+  value: string;
+  contribution: number;
+  direction: string;
 }
 
 // ── API Calls ─────────────────────────────────────────────
@@ -122,13 +155,32 @@ export const fetchDatasetSummary = async (): Promise<DatasetSummary> => {
   return res.data;
 };
 
-export const fetchConfusionMatrix = async (modelName: string): Promise<ConfusionMatrixData> => {
-  const res = await api.get(`/api/confusion-matrix/${modelName}`);
+export const fetchConfusionMatrix = async (modelName: string, threshold: number = 0.8): Promise<ConfusionMatrixData> => {
+  const res = await api.get(`/api/confusion-matrix/${modelName}`, {
+    params: { threshold },
+  });
   return res.data;
 };
 
 export const fetchPRCurves = async (): Promise<PRCurves> => {
   const res = await api.get('/api/pr-curves');
+  return res.data;
+};
+
+export const fetchThresholdAnalysis = async (
+  selectedThreshold: number,
+  minThreshold = 0.1,
+  maxThreshold = 0.9,
+  step = 0.05,
+): Promise<ThresholdAnalysis> => {
+  const res = await api.get('/api/threshold-analysis', {
+    params: {
+      selected_threshold: selectedThreshold,
+      min_threshold: minThreshold,
+      max_threshold: maxThreshold,
+      step,
+    },
+  });
   return res.data;
 };
 
