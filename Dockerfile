@@ -1,19 +1,15 @@
 FROM python:3.11-slim
 
-# Install git-lfs to pull actual model files during build
 RUN apt-get update && apt-get install -y git git-lfs && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
+# Clone the full repo including LFS model files (public repo, no credentials needed)
+RUN git lfs install && \
+    git clone https://github.com/saras-audrius/EAISI-Group-Project---NHS.git .
+
 # Install only backend dependencies
-COPY webapp/backend/requirements.txt ./requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the full repo (includes .git so lfs pull can resolve pointers)
-COPY . .
-
-# Replace LFS pointer files with actual model files
-RUN git lfs install && git lfs pull
+RUN pip install --no-cache-dir -r webapp/backend/requirements.txt
 
 WORKDIR /app/webapp/backend
 
