@@ -183,8 +183,9 @@ img { max-width: 100%; }
 
 /* ── Hero Banner ────────────────────────────────────────── */
 .nhs-hero {
+  background-color: var(--nhs-blue);
   background: linear-gradient(135deg, var(--nhs-blue) 0%, var(--nhs-light-blue) 100%);
-  color: var(--nhs-white);
+  color: #ffffff;
   padding: 3.5rem 1.5rem;
 }
 
@@ -208,11 +209,12 @@ img { max-width: 100%; }
   font-weight: 700;
   line-height: 1.2;
   margin-bottom: 0.75rem;
+  color: #ffffff;
 }
 
 .nhs-hero__subtitle {
   font-size: 1.125rem;
-  opacity: 0.9;
+  color: rgba(255,255,255,0.9);
   max-width: 640px;
   margin-bottom: 1.5rem;
 }
@@ -845,4 +847,623 @@ img { max-width: 100%; }
   .nhs-result-panel { position: static; }
   .nhs-nav__inner { padding: 0 0.5rem; }
   .nhs-nav__link { padding: 0.75rem 0.875rem; font-size: 0.875rem; }
+}
+
+/* ── Story / Narrative Design ────────────────────────────── */
+.nhs-hero--tall { padding: 5rem 1.5rem 4.5rem; }
+
+.nhs-hero__scroll-hint {
+  margin-top: 3rem;
+  font-size: 0.8125rem;
+  opacity: 0.5;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.nhs-chapter-marker {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--nhs-mid-grey);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nhs-chapter-marker::after {
+  content: '';
+  width: 2.5rem;
+  height: 2px;
+  background: var(--nhs-light-blue);
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+.nhs-chapter-marker--white {
+  color: rgba(255,255,255,0.45);
+}
+
+.nhs-chapter-marker--white::after {
+  background: rgba(255,255,255,0.3);
+}
+
+.nhs-story-section { padding: 5rem 1.5rem; }
+
+.nhs-story-section--dark {
+  background: var(--nhs-blue);
+}
+
+.nhs-story-split {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 4rem;
+  align-items: center;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.nhs-story-split--reversed {
+  grid-template-columns: 1.5fr 1fr;
+}
+
+@media (max-width: 820px) {
+  .nhs-story-section { padding: 3rem 1rem; }
+  .nhs-story-split,
+  .nhs-story-split--reversed { grid-template-columns: 1fr; gap: 2rem; }
+  .nhs-results-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
+}
+
+.nhs-giant-stat {
+  font-size: clamp(3.5rem, 9vw, 6rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--nhs-blue);
+}
+
+.nhs-giant-stat--green { color: var(--nhs-green); }
+.nhs-giant-stat--white { color: var(--nhs-white); }
+
+.nhs-giant-stat__label {
+  margin-top: 0.875rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--nhs-dark-grey);
+  line-height: 1.45;
+}
+
+.nhs-giant-stat__label--white {
+  color: rgba(255,255,255,0.8);
+}
+
+.nhs-story-heading {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--nhs-blue);
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.nhs-story-heading--white { color: var(--nhs-white); }
+
+.nhs-story-body {
+  font-size: 1.0625rem;
+  color: var(--nhs-dark-grey);
+  line-height: 1.75;
+}
+
+.nhs-story-body + .nhs-story-body { margin-top: 1rem; }
+
+/* ── Model Comparison Cards ─────────────────────────────── */
+.nhs-model-comparison {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 820px) {
+  .nhs-model-comparison { grid-template-columns: 1fr; }
+}
+
+.nhs-model-card {
+  border: 2px solid var(--nhs-light-grey);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  background: var(--nhs-white);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.nhs-model-card--featured {
+  border-color: var(--nhs-green);
+  box-shadow: 0 0 0 4px rgba(0,150,57,0.07);
+}
+
+.nhs-model-card__label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--nhs-mid-grey);
+  margin-bottom: 0.375rem;
+}
+
+.nhs-model-card__name {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--nhs-blue);
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.nhs-model-card__metric {
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: var(--nhs-blue);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.nhs-model-card__metric--green { color: var(--nhs-green); }
+
+.nhs-model-card__metric-label {
+  font-size: 0.75rem;
+  color: var(--nhs-mid-grey);
+  margin-top: 0.125rem;
+  margin-bottom: 0.625rem;
+}
+
+.nhs-model-card__desc {
+  font-size: 0.875rem;
+  color: var(--nhs-dark-grey);
+  line-height: 1.6;
+  margin-top: 0.75rem;
+}
+
+/* ── Decision Zones ──────────────────────────────────────── */
+.nhs-decision-zones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 540px) {
+  .nhs-decision-zones { grid-template-columns: 1fr; }
+}
+
+.nhs-zone {
+  border-radius: var(--border-radius);
+  padding: 1.25rem 1.5rem;
+}
+
+.nhs-zone--green {
+  background: #DFFBE8;
+  border: 2px solid var(--nhs-green);
+}
+
+.nhs-zone--red {
+  background: #FBE3E4;
+  border: 2px solid var(--nhs-red);
+}
+
+.nhs-zone__title {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.nhs-zone__title--green { color: #005B21; }
+.nhs-zone__title--red   { color: #8B0000; }
+
+.nhs-zone__dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nhs-zone__dot--green { background: var(--nhs-green); }
+.nhs-zone__dot--red   { background: var(--nhs-red); }
+
+.nhs-zone__body {
+  font-size: 0.875rem;
+  color: var(--nhs-dark-grey);
+  line-height: 1.55;
+}
+
+/* ── Team Cards ──────────────────────────────────────────── */
+.nhs-team-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  max-width: 700px;
+}
+
+@media (max-width: 640px) {
+  .nhs-team-cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+.nhs-team-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nhs-team-card__photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--nhs-pale-grey);
+  border: 3px solid var(--nhs-light-grey);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nhs-team-card__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nhs-team-card__placeholder {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.nhs-team-card__name {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--nhs-blue);
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* ── Team Members (pill variant, kept for footer) ────────── */
+.nhs-team-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-top: 1.25rem;
+}
+
+/* ── Threshold Slider ────────────────────────────────────── */
+.nhs-threshold-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  margin: 0.5rem 0;
+}
+.nhs-threshold-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  transition: transform 0.15s ease;
+}
+.nhs-threshold-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.nhs-threshold-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* ── Feature Engineering Cards ───────────────────────────── */
+.nhs-fe-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+@media (max-width: 820px) {
+  .nhs-fe-grid { grid-template-columns: 1fr; }
+}
+
+.nhs-fe-card {
+  border: 1px solid var(--nhs-light-grey);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  background: var(--nhs-white);
+}
+.nhs-fe-card__header {
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+.nhs-fe-card__body { padding: 1rem; }
+.nhs-fe-card__from {
+  font-size: 0.8125rem;
+  color: var(--nhs-mid-grey);
+  background: var(--nhs-pale-grey);
+  border-radius: 3px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.625rem;
+}
+.nhs-fe-card__arrow {
+  text-align: center;
+  font-size: 1.25rem;
+  color: var(--nhs-light-grey);
+  margin: 0.375rem 0;
+  line-height: 1;
+}
+.nhs-fe-card__to-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  font-size: 0.875rem;
+  color: var(--nhs-dark-grey);
+  border-bottom: 1px solid var(--nhs-pale-grey);
+}
+.nhs-fe-card__to-item:last-child { border-bottom: none; }
+.nhs-fe-card__to-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.nhs-fe-card__note {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--nhs-mid-grey);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ── Scroll-Reveal Animations ────────────────────────────── */
+.nhs-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.is-visible .nhs-reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Chapter Expand Sections ─────────────────────────────── */
+.nhs-chapter-expanded {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 1s ease-out, opacity 0.5s ease 0.25s;
+}
+
+.nhs-chapter-expanded.is-open {
+  max-height: 4000px;
+  opacity: 1;
+}
+
+.nhs-chapter-expanded__inner {
+  border-top: 2px solid var(--nhs-light-grey);
+  margin-top: 2.5rem;
+  padding-top: 2.5rem;
+}
+
+.nhs-chapter-expanded__inner--dark {
+  border-top-color: rgba(255,255,255,0.15);
+  margin-top: 2.5rem;
+  padding-top: 2.5rem;
+}
+
+.nhs-deep-dive-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nhs-mid-grey);
+  margin-bottom: 2rem;
+}
+
+.nhs-deep-dive-label--white {
+  color: rgba(255,255,255,0.45);
+}
+
+.nhs-deep-dive-label::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 2px;
+  background: var(--nhs-light-blue);
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+.nhs-deep-dive-label--white::before {
+  background: rgba(255,255,255,0.3);
+}
+
+/* ── Detail Content Layout ───────────────────────────────── */
+.nhs-detail-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem 2.5rem;
+  align-items: start;
+}
+
+.nhs-detail-split--3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media (max-width: 820px) {
+  .nhs-detail-split,
+  .nhs-detail-split--3 { grid-template-columns: 1fr; gap: 2rem; }
+}
+
+.nhs-detail-block { }
+
+.nhs-detail-heading {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--nhs-dark-grey);
+  margin-bottom: 0.625rem;
+  padding-left: 0.875rem;
+  border-left: 3px solid var(--nhs-light-blue);
+  line-height: 1.3;
+}
+
+.nhs-detail-heading--white {
+  color: rgba(255,255,255,0.9);
+  border-left-color: rgba(255,255,255,0.35);
+}
+
+.nhs-detail-body {
+  font-size: 0.9375rem;
+  color: var(--nhs-dark-grey);
+  line-height: 1.72;
+}
+
+.nhs-detail-body--white {
+  color: rgba(255,255,255,0.78);
+}
+
+.nhs-detail-body + .nhs-detail-body { margin-top: 0.75rem; }
+
+/* ── Exclusions / Data Table ─────────────────────────────── */
+.nhs-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  margin-top: 0.75rem;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.nhs-data-table th {
+  background: var(--nhs-pale-grey);
+  padding: 0.625rem 1rem;
+  text-align: left;
+  font-weight: 700;
+  color: var(--nhs-dark-grey);
+  border-bottom: 2px solid var(--nhs-light-grey);
+}
+
+.nhs-data-table td {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--nhs-light-grey);
+  color: var(--nhs-black);
+}
+
+.nhs-data-table tr:last-child td {
+  font-weight: 700;
+  background: #f7f9fa;
+  color: var(--nhs-blue);
+}
+
+/* ── Interface Component Cards ───────────────────────────── */
+.nhs-interface-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .nhs-interface-grid { grid-template-columns: 1fr; }
+}
+
+.nhs-interface-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: var(--border-radius);
+  padding: 1.25rem 1.5rem;
+}
+
+.nhs-interface-card__num {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 0.375rem;
+}
+
+.nhs-interface-card__title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.95);
+  margin-bottom: 0.5rem;
+}
+
+.nhs-interface-card__body {
+  font-size: 0.8125rem;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.6;
+}
+
+/* ── Next Steps List ─────────────────────────────────────── */
+.nhs-next-steps {
+  list-style: none;
+  margin-top: 1rem;
+}
+
+.nhs-next-steps li {
+  display: flex;
+  gap: 0.875rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--nhs-light-grey);
+  font-size: 0.9375rem;
+  color: var(--nhs-dark-grey);
+  line-height: 1.5;
+  align-items: flex-start;
+}
+
+.nhs-next-steps li:last-child { border-bottom: none; }
+
+.nhs-next-steps__num {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--nhs-light-blue);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.1rem;
+}
+
+/* ── Team Members ─────────────────────────────────────────── */
+.nhs-team-member {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 1rem;
+  background: var(--nhs-pale-grey);
+  border: 1px solid var(--nhs-light-grey);
+  border-radius: 100px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--nhs-blue);
 }
