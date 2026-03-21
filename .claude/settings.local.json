@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(jq -r '.cells[0:35] | .[] | \"\"\\\\\\(.cell_type\\)||||\\\\\\(.source | join\\(\"\"\"\"\\)\\)\"\"' \"df_knee_exploration.ipynb\")",
+      "Bash(jq -r '.cells[35:62] | .[] | \"\"\\\\\\(.cell_type\\)||||\\\\\\(.source | join\\(\"\"\"\"\\)\\)\"\"' \"df_knee_exploration.ipynb\")",
+      "Bash(jq -r '.cells[0:15] | .[] | \"\"\\\\\\(.cell_type\\)||||\\\\\\(.source | join\\(\"\"\"\"\\)\\)\"\"' \"modelling_experiment.ipynb\")",
+      "Bash(python3:*)"
     ],
     "deny": [],
     "ask": []
