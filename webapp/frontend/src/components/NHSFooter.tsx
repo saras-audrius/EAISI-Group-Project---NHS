@@ -20,6 +20,10 @@ export function NHSFooter() {
           <span>|</span>
           <span>Knee Replacement</span>
         </div>
+        <div style={{ marginTop: '0.75rem', fontSize: '0.8125rem', color: 'rgba(255,255,255,0.65)' }}>
+          <strong style={{ color: 'rgba(255,255,255,0.85)' }}>Team The Commodores:</strong>{' '}
+          Bart Appels &middot; Yvonne Kuijt &middot; Audrius Saras &middot; Jos Schaffers
+        </div>
         <p className="nhs-footer__copy">
           &copy; {new Date().getFullYear()} EAISI Academy. Research use only.
           Model accuracy may vary across patient populations.

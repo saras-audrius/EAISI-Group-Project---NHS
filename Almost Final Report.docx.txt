@@ -1,0 +1,724 @@
+﻿Report / The Commodores                March 2026
+Predicting[a] Poor[b] Outcomes in Joint Replacement Surgery: A Personalized Risk Assessment Approach
+
+
+Executive Summary        2
+1. The Challenge: When Surgery Doesn't Solve the Pain        3
+Problem Statement        3
+Project Goals        4
+Scope        4
+Users        5
+2.  Data Insights: The Anatomy of a Unique Dataset        8
+Data Source Overview        8
+Outcome variable        10
+Benchmark Predicted outcome (to be updated later in the project)        13
+Scope selection        13
+3. Methodology: The Engine Behind the Prediction        15
+Feature Engineering        15
+Data Quality        15
+Missing Value Analysis & Imputation        16
+Expansion of feature space        18
+Models and Model Evaluation        19
+Model selection        20
+Hyperparameter tuning        21
+Decision threshold        22
+Performance metrics        22
+Class Imbalance Tackling Techniques        23
+4. Results        24
+Experimental Configuration        24
+Machine Learning Model Performance        24
+Logistic Regression        24
+Random Forest        25
+Explainable Boosting Machine        25
+5. Conclusion & Recommendations        28
+Conclusion        28
+Project Limitations        28
+Recommendations and Next Steps        28
+6. Appendices (Optional)        30
+
+
+Report by The Commodores:
+Bart Appels, Yvonne Kuijt, Audrius Saras, Jos Schaffers
+
+
+Executive Summary 
+Problem
+Hip and knee replacements are effective treatments for end-stage osteoarthritis, yet up to 25% of patients still experience pain and limited mobility one year after surgery. As these procedures represent a large share of healthcare costs, better pre-operative risk assessment is crucial to guide both clinical decisions and patient expectations.
+Approach
+This study applies supervised machine learning to build a prognostic classification model that predicts, based on pre-operative data, whether a patient is likely to have a poor, uncertain, or high functional outcome after joint replacement. Machine learning algorithms are trained on large PROM[c] datasets, with performance evaluated through the precision–recall curve to address the inherent class imbalance between good and poor outcomes.
+Main Challenges
+Key challenges include limited pre-operative variables, the imbalanced nature of outcome data, and ensuring that the model remains interpretable and clinically transparent for shared[d] decision-making—especially important for older adults facing complex surgical choices.
+Conclusion / Recommended Solution
+The outcome is using a dashboard the “Knee Replacement Outcome Predictor”, which is a visual, easy-to-use decision-support tool that translates model predictions into clear two decision zones:
+* Green: high predicted improvement – surgery recommended
+* Red: high risk of poor outcome – no surgery recommended
+This transparent, risk-calibrated tool enables clinicians and patients to make informed, shared decisions about surgery and supports provider-level benchmarking to drive continuous, fair quality improvement across hospitals.[e] 
+
+
+
+  
+
+Graph 8 :Visual presentation of the outcome of the Knee Replacement Outcome Predictor
+1. The Challenge: When Surgery Doesn't Solve the Pain
+Problem Statement
+Knee and hip replacements are among the most successful and cost-effective surgical interventions, enabling millions to regain mobility and live pain-free. Nevertheless, substantial variation in outcomes persists. Clinical literature and data from the National Health Service (NHS) indicate that 15-25% of patients still struggle with persistent pain or functional limitations one year after knee[f] surgery. In a high-volume healthcare system like the NHS, this translates to tens of thousands of patients annually who undergo major surgery without achieving the desired result. This unpredictability creates a significant problem for both patients and providers. For clinicians,[g] it is difficult to provide accurate pre-operative counseling, which can lead to unrealistic patient expectations. For the healthcare system, it results in considerable financial pressure, as the costs of surgery have already been incurred while the benefits for the patient and society fail to materialize. The core of the challenge lies in identifying patients at high risk of a poor outcome before the decision to operate is made. To quantify this problem, we define a "poor outcome" using the Minimal Clinically Important Difference (MCID). This is the smallest improvement in a score that a patient perceives as meaningful. For the Oxford Knee Score (OKS), this threshold is an improvement of about 7 points. Our analysis of the NHS dataset, containing over 130,000 knee surgeries, confirms the findings from the literature: approximately 17.5% of patients do not meet this minimum threshold for a clinically important improvement.
+Project Goals
+The project seeks to build a supervised machine learning model capable of predicting a patient’s expected recovery outcome before surgery, using only pre-operative data. The model will predict which patients most likely will score poorly. Patients will be classified into two risk categories—green (surgery recommended) and red (surgery not recommended)—offering doctors a structured, transparent basis for discussion. If possible[h], we will develop a visual decision support tool that acts as an interface between the model and the audience. 
+Scope
+At the start of the project, data from both hip and knee replacements were explored. Because we want to improve the decision-making by doctors and patients, we chose to focus on the data in which patients show the least improvement, which is the knee provider dataset. The model uses patient-reported outcome measures (PROMs) such as pre-operative pain, function, and mobility, complemented by demographic and clinical variables, to predict post-operative improvement defined by minimal clinically important difference[i] thresholds.
+Users
+The study’s outcomes and visual decision-support tool are designed for orthopedic surgeons and clinical specialists, providing an interpretable, evidence-based framework to support treatment recommendations. At the same time, the tool is built for use with patients, especially older adults, allowing them to understand their personal risk and expected benefit in simple visual terms. This dual focus strengthens shared decision-making, ensuring that surgical choices are guided by both medical expertise and individualized, data-driven insight. This project will also serve as an example of a data driven approach for the NHS itself.
+
+
+
+
+
+
+ A diagram of a patient's surgery
+
+AI-generated content may be incorrect. 
+[j][k]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Graph 2: The project’s core objective is to create a predictive model that identifies high-risk patients, leading to better clinical guidance and improved overall outcomes.
+2.  [l]Data Insights: The Anatomy of a Unique Dataset
+Data Source Overview 
+The client[m] provided three years of NHS data on hip and knee replacements, split into two dataset types per procedure:
+* Provider-level datasets report surgical performance metrics for hospitals (e.g., procedure volume, complication rates, PROMs, length of stay).
+* CCG-level datasets reflect population-based outcomes and access metrics across Clinical Commissioning Groups (CCGs), which are geographically defined administrative units aligned with GP [n]registrations.
+The dataset contains 81 columns, largely consistent across all files, with minor differences depending on whether the procedure was a hip or knee replacement and whether the data was reported at the hospital (provider) or geographic (CCG) level. These columns fall into six main categories (see Table 1 and 2 in Appendix): 
+1. Administrative variables include the provider code, procedure type, year, and whether the surgery was a primary or revision (revisions are typically more complex; extracted from the NHS PROMs methodology). 
+2. Questionnaire administration captures whether patients completed the pre- and post-op forms independently or with help, and who assisted. 
+3. Patient background includes demographics (age band, gender), living arrangements, symptom duration, prior surgeries, and comorbidities such as diabetes, cancer, and arthritis. 
+4. The first surgery outcome scoring methodology is EQ-5D. This variable measures general health across five domains (mobility, self-care, activity, discomfort, anxiety), along with index and VAS (Visual Analogue Score), both pre- and post-op, plus predicted scores for benchmarking. 
+5. Another outcome scoring methodology, Oxford scores (OKS or OHS), evaluates joint-specific pain and function, also recorded at both time points and with predicted values for case-mix adjustment. 
+6. Lastly, postoperative experience includes patient-reported complications, satisfaction, and readmission indicators (see Appendix for Column Grouping by Category).
+Besides these 2 x 2 (knee and hip, provider and ccg) larger datasets, we also received 5 smaller (hundreds or thousands of rows) datasets each year:
+* Equality: this dataset focuses on data to assess whether access and variation in outcomes for hip and knee replacement surgeries are fairly distributed across different patient groups and demographics, such as gender, age group and ethnicity.
+* KeyFacts: this dataset is based on another datasource, the National Joint Registry. It reports data on the total number of primary and revision procedures, surgeon-level and hospital-level performance and national averages for procedure counts. This dataset is designed to enhance transparency for patients considering joint replacement. 
+* Partlink: also based on the National Joint Registry, intended to give insight into different components of a joint replacement procedure, such as prosthetic parts implanted during surgery. 
+* ProvComm: based on the provisional patient reported outcome measures (provisional PROMs) and aggregated by provider and commissioner levels. This set includes data on national, provider (hospital) and commissioner (clinical commissioning group, CCG) outcomes, meant to support quality monitoring and helping to benchmark providers. 
+* TimeSeries: this dataset contains data on hip and knee replacements over an extended period of time, serving as a tool to track changes over time in these outcomes. This tracks the success rate of replacements during the years and gives insight into trends in how long patients are in the hospital, how long they have to wait before the operation and how the group of patients served changes over time.
+Outcome variable
+The main CCG/provider datasets contain two outcome measures:
+1. EQ-5D is a generic health measure: patients answer on 5 scales (mobility, self care, usual activities, pain/discomfort, anxiety/depression) whether they have no/some/severe problems (corresponding respectively to 1, 2 or 3), resulting in a profile consisting of scores on 5 positions: 11111 being no problems on all 5 scales and 33333 being severe problems on all 5 scales. The index is then calculated by giving (nationally differing) weights to the scores, resulting in a sum that may differ between -0.594 and 1 in the UK. The weights and method are found on the NHS page: https://digital.nhs.uk/data-and-information/data-tools-and-services/data-services/patient-reported-outcome-measures-proms/a-guide-to-proms-methodology/scoring-methodology. 
+   1. An extension of this EQ-5D score is the EQ-5D VAS, where VAS stands for visual analogue scale[o]. This is a self reported measure of a patient’s overall health status, where 100 is the best health imaginable and 0 is the worst. The VAS gives insight into the patient’s subjective overall sense of health and doesn’t go into specific symptoms. We ignore the VAS for our analysis, as it is a less specific measure compared to the Oxford Score[p], as it focuses on general health perception rather than knee or hip functionality.
+2. Oxford Knee/Hip Scores: the Oxford hip and knee scores are joint-specific outcome measure tools designed to assess symptoms and function in patients undergoing joint replacement surgery, as the NHS explains[q]. The Oxford score consists of 12 questions that patients answer with 5 possible options (0-4), where 4 is ‘no pain/least difficulty’ and 0 is ‘most pain/difficulty’. The score is calculated by adding all scores, so the total score is between 0 and 48. 0-19 is seen as ‘severe’: may require surgery, 20[r] is seen as ‘moderate to severe’, 30-39 as ‘mild to moderate’  and 40-48 as ‘satisfactory joint function’.
+ A graph of a number of indicators
+
+AI-generated content may be incorrect. 
+   Graph 3: The distribution of improvement scores (t1-t0) for both knee and hip procedures approximates a normal distribution, with knee procedures showing a slightly lower average improvement.
+
+The normal distribution, also called the Gaussian distribution, is a probability distribution commonly used to model phenomena such as physical characteristics (e.g. height, weight, etc.) and test scores. Due to its shape, it is often referred to as the bell curve:
+     
+Owing largely to the central limit theorem, the normal distributions is an appropriate approximation even when the underlying distribution is known to be not normal. This is convenient because the normal distribution is easy to obtain estimates with; the empirical rule states that 68% of the data modeled by a normal distribution falls within 1 standard deviation of the mean, 95% within 2 standard deviations, and 99.7% within 3 standard deviations. For obvious reasons, the empirical rule is also occasionally known as the 68-95-99.7 rule.
+In addition, the normal distribution exhibits a number of nice simplifying characteristics, many of which may be observed from the above plot. It is symmetric and single-peaked, implying that its mean, median, and mode are all equal. It additionally has "skinny tails", intuitively meaning it "tapers off" quickly and formally means it has a kurtosis of 0.
+   2. The Oxford score consists of two subscales: items 1, 8, 9, 10, 11 and 12 are linked to the ‘pain domain’, the others to functionality. 
+   3. Interesting about the Oxford score is how it handles missing values. If only one or two questions have been left unanswered, the mean value representing all of their (the individual patient) other responses is imputed to fill in the gaps. If more than two questions are unanswered, the score is not calculated.[s] 
+We selected the Oxford score (OKS for knees, OHS for hips) instead of the EQ-5D score as the primary outcome variable for this study based on both clinical relevance and data integrity due to two reasons. 
+Firstly, the Oxford score is a clinically validated, joint-specific patient-reported outcome measure (PROM) designed to assess pain and functional ability in individuals undergoing joint replacement surgery. It consists of 12 targeted questions that directly reflect the patient's experience with their affected joint - unlike generic health measures -  it captures nuances in mobility, pain during specific activities, and quality of life directly attributable to the joint condition. This specificity makes it highly sensitive to surgical outcomes and recovery trajectories. It is widely used in orthopedic research and clinical audits, including by [t]the NHS PROMs program, and is endorsed by bodies such as Oxford University Innovation and Arthritis Research UK.
+Secondly, across all four datasets, the Oxford score consistently shows higher completeness than the EQ5D index and EQ VAS. For example, in the hip provider dataset, 97.75% of patients have both pre-op (t0) and post-op (t1) Oxford scores, compared to only 90.49% for EQ5D index and 86.95% for EQ VAS. This pattern holds across knee and CCG datasets as well. Higher completeness reduces bias, improves model robustness, and minimizes the need for imputation or exclusion. Given that our goal is to build predictive models for poor surgical response, using a variable with minimal missingness ensures stronger statistical power and generalizability.
+Across all datasets, completeness is high, with an average coverage of 97.37% for the Oxford Score, 90.51% for the EQ-5D Index, and 86.89% for the EQ VAS. This indicates consistently strong data availability across all outcome measures.
+Benchmark Predicted outcome (to be updated later in the project)
+Part of both datasets is a predicted post-operative score, each time in the very last column. These predictions are made by the NHS, using a statistical model which accounts “for the fact that each provider organization deals with patients of differing complexity or case mix”. Some hospitals may treat older, sicker patients and others may be specialist centers that can take patients with more complex conditions” as the NHS explains in the guide to the PROMS methodology. The predicted score is used to make a fair comparison between providers and England as a whole, by adjusting for the case-mix of the patient group of the specific hospital. In The Netherlands, we also see that academic hospitals treat more complex patients in general. So comparing hospitals just on patient reported outcomes alone, would probably lead to the conclusion that academic hospitals score poorly. The case mix adjustments serve to rectify this unfair scoring.
+Part of this case mix adjustment is the difference between primary and revision surgery: revision surgeries are generally more complex. We will therefore leave out revision surgeries in our model. Revision surgeries are a whole different ball game.
+All in all, the prediction of the outcome that is in the dataset can serve as a benchmark for our model. We shouldn’t include these predicted outcomes in our own analysis, but we can see how our model compares to these scores. 
+The prediction is calculated using regression models. We will explain this in more detail, if we decide to indeed use these predictions as a benchmark. [u][v]
+Scope selection
+We selected the df_knee_provider dataset for this analysis for several compelling reasons. First, df_[w]knee_provider contains more complete data overall, with a greater number of rows than df_[x]hip_provider, providing a more robust foundation for machine learning model development (see Table 2 in Appendix). Second, the average OKS score improvement for knee procedures (16.89) is notably lower than the average OHS score improvement for hip procedures (21.94), indicating that knee replacements have greater potential for poor results (see Graph 2[y]). This makes knee surgery outcomes particularly relevant for predictive intervention with an ML model, as identifying at-risk patients could have significant clinical impact. Finally, research from the National Joint Registry demonstrates that knee replacement is more prevalent than hip replacement in England, with 834,[z]146 primary knee replacements performed compared to 675,[aa]342 primary hip replacements between 2007 and 2017 PubMed Central. More recently, in 2018 alone, 100,547 total knee replacements were performed in the UK compared to 94,936 total hip replacements RCSEngPubMed Central. Additionally, osteoarthritis is almost exclusively the diagnosis for primary knee replacement in the NHS[ab] NHS England. Given the higher volume and prevalence of knee procedures in the NHS, developing effective predictive models for knee replacement outcomes has broader public health implications and the potential to benefit more patients across England, Wales, and Northern Ireland.
+ A graph of a number of indicators
+
+AI-generated content may be incorrect. 
+[ac]
+Graph 4: OHS and OKS Score Delta Cumulative Score (T1-T0)
+In this graph the improvement in score on OHS (hip) and OKS (knee) is shown as a percentage of the total dataset, making it possible to compare the two datasets that have a different number of rows. 
+ A graph of a number of numbers
+
+AI-generated content may be incorrect. 
+
+Graph 5: Percentage of patients scoring improvement on OHS/OKS
+This graph shows a detail of the previous graph. For knee surgery this shows that at an improvement of 0 (no improvement and no depreciation) in 9,12% of all patients experience an outcome of 0 or less. We are aiming to match the literature, which states that 15-20% face knee pain after surgery. This means that we will focus on an improvement score up to and including 7 points, which translates to 17.1%: nicely in between 15 and 20.
+3. Methodology: The Engine Behind the Prediction
+Feature Engineering
+Data Quality
+The original dataset contained 81 variables, approximately half[ad] of which were T1 variables—measurements collected after surgery. These post-operative variables were removed to prevent data leakage: at the time of prediction (before surgery), these values would not be available. Including them would artificially inflate model performance during training but render the model useless in practice.
+Additional variables were removed for the following reasons:
+* Procedure identifiers: not relevant for prediction
+* Revision flag: all revision cases were excluded from the analysis (see below), making this variable redundant[ae]
+* EQ-5D scores (index + VAS): these scores were outside the scope of our OKS-focused prediction task
+Missing Value Analysis & Imputation
+Participants were excluded from the dataset if they met any of the following criteria:
+Removal Reason
+	Count
+	Percentage
+	Incomplete OKS scores (missing T0)
+	1,669
+	1.2%
+	Revision surgery (revision_flag = 1)
+	5,185
+	3.64%
+	Total removed
+	6,854
+	4.84%
+	Remaining (clean)
+	132,382
+	95.16%
+	Firstly, incomplete OKS scores at the pre-surgery timepoint (t0) were removed. This was done since the score at t0 is a part of the target variable (t1-t0), which means that we would miss a component of the target variable, resulting in no ground truth to train against. NaN[af] t1 scores, on the other hand, were not removed, since at the time of the prediction we would not know whether the patients would answer the questionnaire or not.
+Revision surgeries were excluded because they represent a fundamentally different clinical scenario: patients undergoing a second procedure have different baseline characteristics, expectations, and outcome trajectories compared to primary surgery patients. Including them would introduce heterogeneity that could obscure the patterns we aim to detect.
+After row exclusions, the remaining dataset still contained missing values across several pre-operative variables, including age_band, gender, t0_disability, t0_discomfort, t0_anxiety, t0_activity, t0_self_care, t0_mobility, t0_living_arrangements, t0_assisted, t0_symptom_period, t0_previous_surgery (see Appendix, Table 3[ag]). Notably, the missing values for age_band and gender were perfectly coincident: every record missing gender was also missing age_band, and vice versa. This pattern suggests these fields were missing together due to a systematic data collection issue (such as a skipped form section) rather than randomly. This is an example of data Missing Not At Random (MNAR), which has implications for imputation strategy.
+Rather than using naive imputation methods such as mode or mean substitution—which ignore relationships between variables and can distort distributions—we employed Multiple Imputation by Chained Equations (MICE) using the miceforest library, which leverages LightGBM as its underlying model. MICE works by iteratively predicting each variable with missing values using all other variables as predictors. This approach is more robust than single-value imputation because it captures the multivariate relationships in the data: a patient's age band, for instance, is predicted not just from the overall age distribution but from their specific combination of mobility limitations, living arrangements, and other characteristics.
+There are multiple important details with regards to the MICE application. Firstly, MICE was applied after splitting the data into training and test sets. The imputation model was fitted only on the training data, and the same learned relationships were then applied to impute missing values in the test set. This ensures the test set remains truly unseen—if we had imputed before splitting, information from test set records would have leaked into the imputation model. Secondly, before running MICE, certain low-frequency categories required merging. The age_band variable originally contained categories with very few observations at the extremes: categories 1 and 2 (ages 40-60[ah]) were combined, as were categories 5 and 6 (ages 80-120[ai]). Similarly, t0_living_arrangements[aj] category 3 (living in a care home, n=92) was merged with category 4 (other)[ak]. This merging was necessary because MICE relies on having sufficient observations in each category to learn stable prediction patterns. When a category contains very few cases, the algorithm encounters numerical instability—in our case, division-by-zero errors occurred during the iterative fitting process. With only 92 care home residents spread across the training folds, some iterations had too few examples to estimate reliable predictions. Merging these sparse categories with conceptually similar ones provides the algorithm with enough data to learn from, while preserving meaningful clinical distinctions.
+A key advantage of MICE is that it preserves the original distributions of imputed variables. Unlike mean imputation (which artificially reduces variance) or mode imputation (which creates spikes at the most common value), MICE generates imputed values that reflect the natural variability in the data. Graph 1[al] in Appendix demonstrates this: the distributions of each variable before and after imputation remain closely aligned, indicating that the imputation process introduced realistic values rather than distorting the underlying data structure.
+  
+
+Graph 6: The MICE imputation process effectively filled missing values while preserving the original distributions of the variables, as shown in the comparison of observed vs. imputed data for gender (see Appendix, Graph 1 for other examples)
+Expansion of feature space
+While the NHS PROMs dataset is fixed in scope, we identified an opportunity to extract additional predictive value from an existing variable. The dataset includes provider_code, which identifies the hospital or clinic where the surgery was performed. In its raw form, this variable presented a challenge: with 294 unique values, one-hot encoding would introduce substantial dimensionality and sparsity, risking overfitting and reducing model interpretability. We therefore dropped the original provider_code column. However, rather than discarding this information entirely, we used external NHS reference data to map each provider code to higher-level attributes (https://www.odsdatasearchandexport.nhs.uk/). Specifically, we extracted three new features: whether the provider is a university teaching hospital, its geographic region (based on postal codes: https://www.doogal.co.uk/), and whether the hospital is private or public. These derived variables capture potentially meaningful variation—teaching hospitals may differ in surgical techniques, patient selection, or post-operative care protocols, while regional differences could reflect variation in patient demographics, healthcare resources, or referral patterns—without the cardinality problems of the original variable.This approach allows us to retain the signal embedded in provider code while keeping the feature space manageable and the model interpretable.
+Moreover, four more variables were added that were derived from initial features. Firstly, comorbidity count was added as a variable, which is a sum from all available comorbidities in our dataset, such as cancer, circulation and kidney disease. This variable can have high predictive power, since multiple studies have shown that having multiple conditions at the same time can greatly reduce your recovery (add references)[am]. Lastly, we summed up the total score of individual Oxford questionnaire items into three clinically intuitive subscales: a) pain subscale (pain and night pain), b) activity of daily life (work, confidence, shopping, transport), c) function (washing, stairs, walking, standing, limping, kneeling). These features were introduced for two reasons. Firstly, they are much more explainable to surgeons and patients. Secondly, these subscales can give more reliability since they are excluding the noise that potentially can arise from individual ordinal items. Nevertheless, individual items were still left as predictors in the analysis due to the potential of non-linear models to find non-linear effects which can increase the predictive power of the model.
+Models and Model Evaluation
+The approach chosen to tackle this case is to develop supervised machine learning classification models. The fundamental rationale for this approach is that we are predicting a discrete outcome rather than a continuous value. This distinction is critical for clinical applicability: classification provides categorical predictions (e.g., "likely to benefit" vs. "unlikely to benefit") that are inherently more interpretable and actionable for both clinicians and patients than precise numerical forecasts.
+While regression would theoretically allow us to predict exact improvement scores on the Oxford scale, such granular predictions would offer limited clinical value. The nature of surgical outcomes is inherently categorical from a decision-making perspective—clinicians need to determine whether to recommend surgery or pursue alternative treatments, not whether a patient will improve by 12.[an]7 versus 13.[ao]2 points. Classification directly addresses this clinical decision framework by estimating the probability of a successful outcome, which aligns with how healthcare decisions are actually made in practice.
+Additionally, discrete classifications demonstrate greater robustness to temporal variability and measurement uncertainty. In many cases, several months elapse between the pre-operative assessment (T0) and the actual surgery. During this period, a patient's baseline condition may deteriorate or improve due to factors such as disease progression, physiotherapy, medication changes, or natural fluctuations in symptom severity—none of which are captured in the baseline data.
+A regression model predicting a specific point value (e.g., "this patient will improve by 14.[ap]3 points") would be highly sensitive to these temporal changes. If the patient's baseline state shifts even modestly between assessment and surgery, the precise prediction becomes obsolete or misleading. In contrast, categorical classifications (e.g., "high probability of success") accommodate a range of outcomes within each category. Minor fluctuations in a patient's condition are unlikely to move them across categorical boundaries, meaning the prediction remains clinically valid and useful even as time passes. This inherent tolerance to variability makes classification more reliable for real-world clinical workflows where timing cannot be perfectly controlled.
+The model is not intended to replace clinical judgment but rather to augment decision-making with probabilistic insights. By framing outcomes as discrete categories, we provide clinicians with an additional evidence-based tool that integrates naturally into existing clinical workflows while maintaining transparency and explainability for patients.
+Model selection
+We aim to test three classification methods: logistic regression, random forest and Explainable Boosting Machine (EBM). Each offers a different balance between predictive performance and interpretability.
+1. Logistic regression models the probability of a binary outcome as a linear combination of input features, transformed through a sigmoid function. Its primary strength is transparency: each coefficient directly indicates how much a one-unit change in a variable affects the log-odds of a poor outcome, holding other variables constant. Clinicians can easily interpret statements like "patients with higher pre-operative anxiety scores are more likely to have poor outcomes." However, logistic regression assumes linear relationships between predictors and the outcome, which may not capture more complex patterns in the data.
+2. Random forests address the overfitting problem by training many decision trees on bootstrapped samples and averaging their predictions. This ensemble approach typically yields better predictive performance than a single tree. The trade-off is reduced interpretability: with hundreds of trees, there is no single decision path to examine. 
+3. Explainable Boosting Machine (EBM) is a tree-based algorithm that makes use of elements from black box algorithms such as gradient boosting[1]. In short: it starts with a rather simple explanation, but then tries to get a better prediction in rounds of learning. But by doing it per feature, explainability is retained. That is why this model is called a glass box model. It is possible to ask the model for both global and local explanations, so we can tell the doctor what factors contribute to each outcome, but we can also explain to the patient how in his or her case the model came to its conclusion.
+Explainability is the primary constraint guiding our method selection. For the model to be adopted in clinical practice, the clinician must be able to understand—and explain to the patient—why a particular prediction was made. A model that performs well but operates as a black box will not be trusted or used. This consideration shapes not only which algorithms we test but also how we configure them: decision trees must remain shallow enough to interpret, and random forests require post-hoc explanation methods like SHAP to be clinically viable.
+Hyperparameter tuning
+Table 4. Hyperparameter search spaces for Random Forest and EBM models.
+Model
+	Hyperparameter
+	Values Tested
+	Rationale
+	Random Forest
+	n_estimators
+	100, 200, 300
+	Number of trees in the ensemble; more trees improve stability but increase computation
+	max_depth
+	10, 15, 20, 25, None
+	Maximum tree depth; constrains complexity to prevent overfitting on imbalanced data
+	min_samples_split
+	2, 5, 10, 20
+	Minimum samples required to split a node; higher values reduce variance
+	min_samples_leaf
+	1, 2, 4, 8
+	Minimum samples per leaf; prevents learning from rare patterns in minority class
+	class_weight
+	balanced, balanced_subsample
+	Adjusts weights inversely proportional to class frequency to address 5:1 imbalance
+	EBM
+	max_rounds
+	100, 200, 300
+	Number of boosting rounds; how many times the algorithm cycles through all features to add or refine shape functions. Higher values (300) enable capturing finer patterns in each feature
+	learning_rate
+	0.001, 0.01, 0.05
+	Controls step size contribution per round; smaller values prevent overfitting through gradual learning
+	max_leaves
+	3, 5, 7
+	Number of segments in each feature's shape function; lower values improve interpretability and reduce flexibility
+	Note: Random Forest used RandomizedSearch with 5-fold cross-validation (50 of 960 possible configurations). EBM used GridSearch with 5-fold cross-validation (135 configurations). 
+For Random Forest, the key hyperparameters address the challenge of predicting surgical outcomes with imbalanced data (5:1 class ratio). n_estimators (100-300 trees) controls ensemble stability—more trees reduce variance in predictions but increase computational cost. max_depth limits tree complexity to prevent overfitting on minority class patterns, critical when one outcome class is rare. min_samples_split and min_samples_leaf act as regularization controls: higher values prevent the model from creating splits based on noise or learning unreliable patterns from the smaller outcome class. class_weight='balanced' is essential for handling class imbalance by adjusting loss function penalties inversely proportional to class frequency, ensuring the model doesn't simply predict the majority class.
+For EBM, hyperparameters balance interpretability with predictive power. max_rounds (100-300) determines how many times the algorithm refines each feature's shape function—higher values capture more nuanced relationships between predictors (like baseline t0 scores) and outcomes, which is crucial for understanding non-linear recovery patterns. learning_rate (0.001-0.05) controls how aggressively the model learns; smaller values (0.01 chosen) prevent overfitting through gradual, stable learning. max_leaves (3-7) is critical for clinical interpretability: lower values (3 chosen) create simpler, more explainable shape functions that clinicians can understand and validate, trading some flexibility for transparency—essential when stakeholders need to trust and explain predictions to patients.
+Decision threshold
+According to several studies, including one that explores NHS data of 2012-2015, 15-20% of knee surgery patients experience persistent pain and dissatisfaction following their procedure. To operationalise this clinically, we defined "poor outcome" as an OKS improvement of 7 points or fewer, a threshold consistent with the Minimal Clinically Important Difference (MCID) reported in the literature. In our dataset of approximately 130,000 patients, roughly 17.5% fall below this threshold, which aligns with the prior studies.
+Our classification model therefore aims to predict which patients are likely to experience poor outcomes (≤7 point improvement). Given the resulting class imbalance—with poor outcomes representing the minority class—we looked for performance metrics appropriate for imbalanced datasets.
+Performance metrics
+When looking at the performance of a classification model, it is important to consider which is worse: false positives or false negatives? In our case, we favor precision over recall: we prioritize the ability of our model to avoid false positives over the ability to find all true positives, although we still want to make an impact on many patients. But the cost of incorrectly identifying a negative as positive is high, because then the model might cause a patient with a good outlook, not to forgo the surgery. 
+In other words, our target variable is whether a patient is likely to score poorly (yes or no). Because the share of patients with a poor score is relatively low and because it is bad to advise patients not to operate without good cause, precision is our most important metric. We want to be certain that when our model flags a patient as ‘likely to score poorly’ this is indeed the case. Missing some patients with an actual poor score is less critical for the individual patient. They will then have surgery, score less than ideal, but are usually still likely to gain some points. It is somewhat of a big deal, from the viewpoint of allocating financial resources optimally. That is why we will draw a precision-recall curve and optimize for precision, but also take recall into account.
+Class Imbalance Tackling Techniques
+With approximately 17.5% of patients classified as having poor outcomes, our dataset exhibits moderate class imbalance. If left unaddressed, models tend to favour the majority class—predicting "good outcome" for most patients simply because that is the most common result. This would yield high overall accuracy but poor performance on the minority class we actually care about identifying. We are testing two techniques to address this: class weighting and SMOTE.
+Class weighting adjusts the loss function during model training to penalise misclassification of minority class samples more heavily. Rather than treating all errors equally, the algorithm assigns higher costs to missing a poor outcome than to incorrectly flagging a good outcome. This encourages the model to pay closer attention to the underrepresented class without altering the underlying data. The approach is computationally simple, introduces no synthetic data, and is directly supported by most classification algorithms including logistic regression, decision trees, and random forests.
+SMOTE (Synthetic Minority Over-sampling Technique) takes a different approach by generating synthetic examples of the minority class. For each minority sample, SMOTE identifies its nearest neighbors within the same class and creates new samples by interpolating between them—essentially filling in the feature space where poor-outcome patients exist. This increases the representation of the minority class in the training data, giving the model more examples to learn from. However, SMOTE carries some risk: if the minority class is not well-separated from the majority class, synthetic samples may be generated in ambiguous regions, potentially introducing noise. 
+4. Results
+Experimental Configuration
+The dataset was split into 80% training and 20% test sets, with stratification to preserve the original class distribution (approximately 17.5% poor outcomes) in both partitions. Model evaluation employed stratified 5-fold cross-validation on the training set, again maintaining class balance across folds. Multiple variations of different models were tested, including different versions of logistic regression, such as using balanced class weights, SMOTE oversampling, LASSO, as well as EBMs and Random Forest’s with different hyperparameter configurations. Across all training and cross-validation runs, it was found that precision generally increases as the probability threshold increases. Therefore, 0.8 was set as the primary threshold used for evaluation of all models, which in other words means that a patient is only classified as "at risk of poor outcome" if the model assigns them a probability ≥ 80%. 
+Machine Learning Model Performance
+  
+
+Graph 7: Model Performance on hold-out-test set
+Logistic Regression
+All three logistic regression variants (baseline (no-weights), L1-regularised, and SMOTE-augmented) demonstrated nearly identical performance during cross-validation, but the baseline model demonstrated the best performance, with 0.911 at a threshold of 0.8 (see Appendix, Table 4). This model was used on the held out test set, and it achieved precision of 1, but extremely low recall (0.003–0.004), correctly identifying only 18 at-risk patients out of approximately 4,775 (see Graph 1). This pattern is consistent with the validation results shown in Table X, where precision increases monotonically with threshold while recall diminishes. At τ = 0.8, these models produce zero false positives — when they flag a patient as unlikely to improve, they are invariably correct. However, this conservatism comes at a substantial cost: the models fail to detect over 99% of non-responders, rendering them impractical for population-level screening.
+Random Forest
+The tuned Random Forest (n_estimators = 300, max_depth = 10, min_samples_split = 20, min_samples_lead = 4, max_features = 0.3, class_weight = balanced)  demonstrates meaningfully different behaviour. It identifies 158 at-risk patients compared to 18 for the baseline logistic regression model — roughly an ninefold improvement in absolute terms. This comes with a modest trade-off of 5 false positives, reducing precision slightly to 0.969 (see Appendix, Table 5). The F1 score of 0.064 is nearly an order of magnitude higher than the logistic regression models (0.007–0.008), and this relative advantage persists across all thresholds examined in Table 5 of the Appendix. While 3% recall remains low in absolute terms, the Random Forest offers the best balance between confident prediction and practical utility for identifying patients who may benefit from enhanced pre-operative counselling or alternative treatment pathways.
+Explainable Boosting Machine
+The tuned EBM (max_rounds=300, learning_rate=0.01, max_leaves=3) achieves performance nearly identical to Random Forest. On the test set, it identifies 169 at-risk patients with 94.1% precision—11 more patients than Random Forest with only a 3 percentage point reduction in precision (see Graph 7). This translates to 10 false positives compared to Random Forest's 5, yet the model's F1 score of 0.064 matches Random Forest exactly, and recall (0.033) is identical. The absolute improvement over logistic regression is even more pronounced: EBM identifies more than nine times as many at-risk patients (169 vs 18) while maintaining precision above 94%.
+What distinguishes EBM from Random Forest is consistency across splits. While Random Forest shows substantial variance between training (100% precision, 1,728 predicted positives) and validation (92% precision, 551 predicted positives), EBM maintains stable performance: 96.2% precision on training, 95.7% on validation, and 94.1% on test sets, with predicted positive counts remaining within a narrow 578–583 range across training and validation before settling at 169 on the held-out test set. This stability suggests EBM's regularization through controlled learning rate (0.01) and constrained complexity (max_leaves=3) prevents the overfitting evident in Random Forest's training performance.
+NHS Knee Replacement Outcome Predictor
+What it is 
+A predictive machine learning model is only valuable if it can be translated into a usable tool in clinical practice. The NHS Knee Replacement Outcome Predictor is exactly that: an intuitive, visual dashboard designed specifically for use in the consultation room.
+What it does 
+The primary goal of the predictor is to translate the model's complex, probabilistic outputs (generated by an Explainable Boosting Machine) into a clear, shared decision-making framework. Instead of presenting an abstract number, it transforms predictions into concrete, personalized, and explainable recommendations, empowering the clinician to make the best possible decision together with the patient.
+How it can be used (Interface Layout) 
+The interface is designed to communicate the most important information at a glance, built around four core components that provide a complete picture of the patient's risk profile:
+1. The Decision Indicator (Traffic Light): At the top of the interface is a clear color bar—Red or Green—that displays the overall recommendation. This color is determined by the predicted probability of a poor outcome:
+   * Green: Low probability of a poor outcome. Surgery is recommended.
+   * Red: High probability (>80%) of a poor outcome. Surgery is not recommended; alternative treatments such as physical therapy or pain management should be considered.
+2. The Patient Risk Profile: In the center of the dashboard, the patient's specific symptoms are visualized using clinically relevant subscales (Pain, Function, and Activity). This gives direct insight into the specific domains contributing most to the patient's current condition.
+3. The "Why?" Explanation: On the right side, the tool explains its reasoning by displaying the top 3 most important factors that influenced the prediction. These can be both risk-increasing (e.g., "High pre-operative anxiety score") and risk-decreasing factors (e.g., "Low comorbidity score"). This transparency is essential for building trust and personalizing the medical conversation.
+4. Shared Decision Support: At the bottom of the dashboard, a concrete, actionable text summarizes the prediction and suggests a next clinical step (e.g., discussing intensive physical therapy as an alternative).
+This dashboard below, transforms the prediction from an abstract probability into a concrete, personalized, and explainable recommendation, thereby empowering the clinician to make the best possible decision together with the patient.
+  
+
+                 Graph 8 :Visual presentation for informed shared decision making between patient and surgeon 
+                
+5. Conclusion & Recommendations (first draft, to be updated later)
+Conclusion 
+This project has successfully demonstrated that it is possible to develop a reliable and interpretable machine learning model to identify patients at high risk of a poor outcome following knee replacement surgery. By using an Explainable Boosting Machine (EBM), we have created a "glass-box" solution that not only achieves high precision (>80%) but is also fully transparent. The resulting Ortho-Predictor tool allows clinicians to understand the underlying reasons for a prediction and discuss them clearly with the patient. 
+The main contribution of this work lies in the methodological choices tailored to clinical reality: the focus on precision to minimize ethically incorrect recommendations, the innovative feature engineering to maximize the signal from the data, and the choice of an interpretable model to promote trust and adoption. The concept of the Red/Grey/Green decision zones, particularly the "Shared Decision Zone" (Grey), acknowledges that not every decision is purely data-driven and emphasizes the irreplaceable role of the conversation between clinician and patient.
+Project Limitations 
+While the results are promising, it is important to acknowledge the limitations of this research:
+
+* Definition of "Poor Outcome": The threshold of an MCID ≤ 7 is a clinically accepted but nevertheless generalized measure. The perception of a "good" outcome can vary from person to person. 
+
+* Limited Feature Space: The model is limited to the variables available in the NHS PROMs dataset. Other potentially influential factors, such as psychological resilience, social support, or specific surgical techniques, were not included. 
+Recommendations and Next Steps 
+Based on our findings, we recommend the following steps to take the Ortho-Predictor from a proof-of-concept to a validated clinical instrument: 
+   1. Clinical Validation Pilot: The most crucial next step is to set up a pilot study in a clinical setting. As proposed in the dashboard concept, a pilot in several (academic) hospitals would allow us to measure the model's performance in practice and evaluate the tool's usability. 
+
+   2. Calibration of the "Grey Zone": The pilot should specifically focus on collecting data on patients who fall into the "Grey Zone." The goal is to better understand the characteristics of these patients, what decisions are made in practice, and how the tool can be refined to provide better guidance for this ambiguous group. 
+   3. Integration with EHR Systems: Investigate the technical feasibility of integrating the Ortho-Predictor dashboard into existing Electronic Health Record (EHR) systems. Seamless integration is a prerequisite for successful adoption into the daily clinical workflow. 
+   4. Expansion to Other Procedures: The developed methodology can potentially be applied to other orthopedic procedures. A logical next step would be to train and validate the model for hip replacement surgeries, using the Oxford Hip Score (OHS) data that is already available.
+
+
+Deployment 
+The final model informs doctors and patients, which patients will probably not benefit enough, to justify the operation. We know that during the years this data was collected (2016-2019) on average 46.412 patients were treated yearly. That means 892 patients per week. Our model was looking for the group of approximately 16,98% that would score less than 7 points increase on the Oxford knee index. So of our 892 patients, about 151 will score poorly, 741 should score more than 7 points increase. Our very conservative model has a recall of 2.92% at threshold 0.8, so our model will only flag 4 of the patients scoring poorly per week, the other 147 will proceed to the operation (and probably also score below 7 points increase). We can’t track the 4 patients that will not be operated on (since there will be no result for them), so how to measure the results of our deployed model? As was stated in the data-analytic problem structure above, deploying our model should result in the number of patients scoring poorly to go down. So after 25 weeks, 100 patients shouldn’t have taken surgery, 18.525 have had successful surgery and 3.675 will have had surgery but still be in pain. This means that after 25 weeks, in total 22.200 patients have had surgery, but 3.675 of them will still be in pain: that is 16.55%. The number of patients doing well has gone up, the number of patients scoring poorly has gone down, if only by slightly less than 0.5%. All in all, with such a conservative model, it is clear that results will take quite a while to manifest themselves. 
+The regular NHS collection of data is only uploaded once a year, in april. Given the conservative nature of our model, it might be best not to try to get results in faster, but just to use the model for a full year and then see in april, whether there is indeed a slight increase in the number of patients scoring above 7 points OKS. If so, at that moment in time, the model should be retrained on the last 3 years of data. It will be slow going, getting better results, but the trend should be upward. 
+
+
+***
+Rewritten by Perplexity:
+We intend to deploy the model as a decision‑support tool to inform shared decision making between clinicians and patients about the expected benefit of knee replacement surgery. The model estimates the risk that a patient will experience a poor improvement in Oxford Knee Score (OKS), defined here as an increase of less than 7 points between pre‑ and post‑operative assessment. 
+Between 2016 and 2019, an average of 46,412 knee replacement procedures per year were recorded in the dataset, corresponding to approximately 893 surgeries per week. Based on historical data, 16.98% of patients fall below the 7‑point OKS improvement threshold, i.e. around 152 of 893 patients per week would be expected to have a poor outcome and 741 a good outcome in the absence of any model‑based intervention. At a high decision threshold of 0.8, the model achieves a recall of 2.92% for identifying poor‑outcome patients, reflecting a deliberately conservative operating point prioritising high precision for “do not operate” recommendations. Under this setting, the model would flag approximately 4–5 of the 152 poor‑outcome patients per week, who can then be counselled more extensively and, in some cases, decide against surgery.  
+To illustrate the expected population‑level impact, consider a 25‑week period. Without the model, we would anticipate 25 × 893 = 22,325 surgeries, of which 16.98% (≈3,790 patients) would experience a poor outcome and 18,535 a good outcome. With the model deployed at the conservative threshold, if we assume that 4 of the 152 poor‑outcome patients per week choose not to proceed with surgery, then over 25 weeks 25 × 4 = 100 surgeries would be avoided among such high‑risk patients. In that scenario, 22,225 surgeries are performed, of which ≈3,690 result in poor outcome and ≈18,535 in good outcome, reducing the poor‑outcome proportion from 16.98% to approximately 16.6% (a reduction of about 0.4 percentage points). This example demonstrates that, at this strict threshold, measurable gains in population‑level outcome rates will emerge slowly.  
+In routine NHS practice, PROMs for hip and knee replacements are collected systematically before and around six months after surgery and are reported in national datasets with regular provisional and annual publications. Given this reporting period and the conservative operating point of our model, we propose to evaluate its impact primarily on an annual basis, using the finalised PROMs data. Each year, we will compare the proportion of patients achieving an OKS improvement of at least 7 points with previous years, adjusting for changes in case‑mix using standard PROMs case‑mix adjustment methods where possible.
+For model maintenance, we plan to retrain annually using a rolling 3‑year window of PROMs data to balance recency and sample size, and to monitor calibration and performance across clinically relevant subgroups (e.g. age, sex, comorbidity, deprivation). Throughout deployment, the model output will not be used as an automatic gatekeeper, but rather as an additional risk signal to structure patient–clinician discussions about likely benefit, expectations, and alternative management options. This design acknowledges that individual counterfactual outcomes for patients who decline surgery cannot be observed, and therefore focuses evaluation on changes in population‑level PROMs distributions over time, supported where feasible by before–after and stratified analyses across providers.
+
+
+
+
+6. Appendices (Optional)[aq]
+
+
+Table 1: Column Grouping by Category
+Category
+	Columns
+	Administrative
+	provider_code, procedure, revision_flag, year
+	Questionnaire Administration
+	T0_assisted, t0_assisted_by, t1_assisted, t1_assisted_by
+	Patient Background
+	age_band, gender, t0_symptom_period, t0_previous_surgery, t0_living_arrangements, t0_disability, heart_disease, high_bp, stroke, circulation, lung_disease, diabetes, kidney_disease, nervous_system, liver_disease, cancer, depression, arthritis
+	EQ-5D Measures
+	mobility, self_care, activity, discomfort, anxiety, eq5d_index_profile, eq5d_index, eq_vas, eq5d_index_t1_predicted, eq_vas_t1_predicted
+	Oxford [ar]Score (OKS/OHS)
+	pain, night_pain, washing, transport, walking, standing, limping, kneeling, work, confidence, shopping, stairs, score, score_t1_predicted
+	Postoperative Experience
+	t1_living_arrangements, t1_disability, t1_satisfaction, t1_sucess, t1_allergy, t1_bleeding, t1_wound, t1_urine, t1_further_surgery, t1_readmitted
+	Table 2: Dataset Overview Table
+Dataset Name
+	Rows
+	Columns
+	Description
+	df_hip_provider
+	124,844
+	81
+	Hospital-level surgical metrics and outcomes
+	df_knee_provider
+	139,236
+	81
+	Hospital-level surgical metrics and outcomes
+	df_hip_ccg
+	122,294
+	81
+	Population-level access and outcome data by geographic health boundaries
+	df_knee_ccg
+	136,390
+	81
+	Population-level access and outcome data by geographic health boundaries
+	
+
+Table 3: Missing Value Analysis (Train set)
+Variable
+	Missing Count
+	Missing %
+	age_band
+	7188
+	6.79%
+	gender
+	7188
+	6.79%
+	t0_disability
+	4481
+	4.23%
+	t0_discomfort
+	4223
+	3.99%
+	t0_anxiety
+	3930
+	3.71%
+	t0_activity
+	3446
+	3.25%
+	t0_self_care
+	3365
+	3.18%
+	t0_mobility
+	3279
+	3.10%
+	t0_living_arrangements
+	1525
+	1.44%
+	t0_assisted
+	1130
+	1.07%
+	t0_symptom_period
+	834
+	0.79%
+	t0_previous_surgery
+	730
+	0.69%
+	Graph 1: (MICE Impact)
+  
+
+  
+
+
+
+Table 4. Model performance across decision thresholds on validation set. τ = classification threshold; Pred. Pos. = predicted positives.
+Model
+	τ
+	Precision
+	Recall
+	F1
+	Specificity
+	Pred. Pos. (ABS)
+	LR (baseline)
+ 
+ 
+ 
+	0.5
+	0.660
+	0.080
+	0.143
+	0.991
+	2326
+	0.6
+	0.761
+	0.033
+	0.064
+	0.998
+	835
+	0.7
+	0.880
+	0.012
+	0.023
+	1.000
+	249
+	0.8
+	0.911
+	0.002
+	0.004
+	1.000
+	45
+	RF (parameters)
+ 
+ 
+ 
+	0.5
+	0.591
+	0.129
+	0.212
+	0.980
+	1045
+	0.6
+	0.715
+	0.080
+	0.145
+	0.993
+	537
+	0.7
+	0.855
+	0.052
+	0.098
+	0.998
+	290
+	0.8
+	0.969
+	0.033
+	0.064
+	1.000
+	163
+	EBM
+	0.5
+	
+
+0.667
+	0.094
+	0.165
+	0.990
+	2696
+	0.6
+	0.782
+	0.060
+	0.111
+	0.996
+	1459
+	0.7
+	0.881
+	0.040
+	0.076
+	0.999
+	864
+	0.8
+	0.957
+	0.030
+	0.057
+	1.000
+	583
+	
+
+Table 5. Train, validation, and test performance at τ = 0.8. PR-AUC = area under precision-recall curve.
+Model
+	Split
+	Precision
+	Recall
+	F1
+	Specificity
+	Pred. Pos % of dataset
+	Pred. Pos
+(ABS)
+	LR (baseline)
+ 
+ 
+	Train
+	0.884
+	0.002
+	0.004
+	1.000
+	0.04
+	43
+	Validation
+	0.911
+	0.002
+	0.004
+	1.000
+	0.04
+	45
+	Test
+	1.000
+	0.004
+	0.008
+	1.000
+	0.07
+	18
+	RF (tuned)
+ 
+ 
+	Train
+	1.000
+	0.090
+	0.166
+	1.000
+	1.6
+	1728
+	Validation
+	0.920
+	0.029
+	0.056
+	0.999
+	0.6
+	599
+	Test
+	0.969
+	0.033
+	0.064
+	1.000
+	0.6
+	163
+	EBM (tuned)
+	Train
+	0.962
+	0.029
+	0.057
+	0.999
+	0.55
+	578
+	Validation
+	0.957
+	0.029
+	0.057
+	0.999
+	0.55
+	583
+	Test
+	0.941
+	0.033
+	0.064
+	0.999
+	0.64
+	169
+	 Notes: LR = logistic regression; RF = random forest; L1 = LASSO regularisation; SMOTE = Synthetic Minority Over-sampling Technique. Validation metrics computed via 5-fold cross-validation.
+Graph 2a: Confusion Matrix Logistic Regression
+  
+
+
+
+
+
+Graph 2b: Confusion Matrix Random Forest 
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Graph 2c: Confusion Matrix EBM
+  
+
+
+
+The key advantage of EBM lies not in raw performance metrics—where it essentially ties with Random Forest—but in its transparent decision-making process. Unlike Random Forest's ensemble of hundreds of trees, EBM's additive structure with limited leaf nodes per feature enables clinicians to inspect exactly how baseline PROM scores, age, comorbidities, and other predictors contribute to risk assessments. EBM is in the basis a regression model, but allows for more complex patterns to be fitted. A regular regression model assumes linear relationships between the outcome and its explaining features: 5 years older means the same in each situation, whether the patient goes from 30 to 35, or from 85 to 90. An EBM model allows for more smooth functions, catching different effects of variables at different levels of the value. 5 years age difference might not have a strong predictive effect for patients in their 30s, but this might be different for patients in their 80s. All the while, EBM remains explainable, being a glass box model. For a model that will inform pre-operative counselling and shared decision-making, this interpretability is crucial: clinicians can explain to patients why they've been flagged as high-risk, not simply that an algorithm has classified them as such.
+Explainability
+Individual explanations for the first 3 patients that scored poorly (below 7 point improvement) and the first 3 patients that scored well (above 7 point improvement). These are those 6 patients:
+  
+
+These 6 patients were all treated in the same hospital and are administrated in the dataset 2016/2017. A more diverse set of patients could be found, but for the purpose of showcasing individual explanations, this set works fine. 
+EBM explanation global
+Top 10 most important features explaining outcome (together for 53,6%)
+--------------------------------------------------------------------------------
+Rank   Feature                                Importance     
+--------------------------------------------------------------------------------
+1      oks_t0_limping                                0.239510       
+2      t0_disability                                0.166177       
+3      age_band_4                                0.136689       
+4      t0_self_care                                0.120272       
+5      oks_t0_pain                                0.097921       
+6      t0_anxiety                                0.092105       
+7      oks_t0_score                                0.074602       
+8      age_band_3                                0.067726       
+9      oks_t0_standing                        0.065913       
+10     oks_t0_work                                0.058143       
+
+
+The next visualisation shows which variables contribute the most to the prediction that the operation outcomes will be poor. People limping, being disabled or in the age band 65-79 are expected to do poorly.  
+  
+
+Local explanations
+The EBM model predicted all these 6 patients to score poorly by the way. So for the first three patients, its predictions were false. It explains its predictions for these patients as follows: 
+  
+
+Each cell shows how much that feature contributed to that patient's prediction (which were all predictions the patient would score poorly in this case). Darker green = strong push toward 'Good outcome'. Darker red = strong push toward 'Poor outcome'. White/light = little to no contribution from that feature.
+This visualisation shows in a slightly different way which features contributed how much to each explanation. In this way, we see that for different patients, different features play the most important role in individual explanations, instead of using a standard set of features like in the graph above. 
+  
+
+All the features adding to the prediction, are written in ‘Log-Odds’. A log-odd is another way of expressing probability, but in such a way, that one can simply add/substract different factors. The ‘baseline’ of -1.64 that is represented by each gray bar in this visualisation represents the ‘no-information’ prediction that was calculated when training the EBM model. It stands for the negative probability of good outcomes and reflects the class imbalance in our training data. Without any patient information, 83.7% have a ‘poor outcome’. Remember we are trying to predict which patients will score poorly, so ‘poor outcome’ in this sense actually means that these patients will have a good result. After this intercept is set at -1.64, the other factors pull the outcome up, or down. 
+For the very first patient in the database, we have also looked up how the local and global explanation might differ, resulting in this graph:
+
+
+  
+
+
+
+
+
+
+
+________________
+[1] https://interpret.ml/docs/ebm.html
+[a]Final report and march or april
+[b]What notation for numbers do we use: european (10.000.000,00) or american (10,000,000.00)
+[c]This is the first time this abbreviation is used; so here it should be mentioned what it stands for, not on page 5
+[d]shared by who? doctor and patient
+[e]is this true? Providers are in the dataset, but does that support provider level benchmarking etc?
+[f]it sounds like the decision for knee is already made here, but no arguments why or referring to explanation later for the decision.
+[g]remove ","
+[h]We do or we don't
+[i]different
+[j]Are the 4 blue squares at the bottom ment tobe side by side?
+[k]Average OKS improvement goes up from 16.98: why the addition of from 16.98? What does it add? from 16.98 to what?
+[l]too much space
+[m]I think this is the first time "the client" is mentioned. Should we elaborate a bit more on who or what that is?
+[n]explain abbreviation
+[o]Visual Analogue Scale (Capital letters)
+[p]how about EQ-5D, I should skip "compared to the Oxford Score"
+[q]Can we make a link in a footnote where this to be found?
+[r]20-29
+[s]Move a and b to above graph 3
+[t]delete "by"
+[u]Do we want to keep this? If no -> here is mentioned the revision surgery. Why we leave it out. That has to have a place in the report
+[v]On p 15 revision is explained
+[w]same
+[x]same
+[y]3
+[z]. instead of , -> european notation
+[aa]same
+[ab]dubble?
+[ac]Wrong graph; this is the same as graph 3 not cumulated
+[ad]more like a third?
+[ae]Maybe leave out here? In the next text part we explain why we leave out all patients with revison flag = 1
+[af]NaN replace by missing?
+[ag]Table 3 contains 12 variables with missing %. How does that compare to more variables mentioned here? And what does this mean for all other variables: are there nothing missing therefore 0% missing?
+[ah]40-50 and 50-60
+[ai]80-90 and 90-120
+[aj]Selfcare and age band are in the Graph 1 in the Appendix. Different?
+[ak]why is this merging not a problem? What contains the term "other"?
+[al]Be clear on what you write about: what variables where and why. Also if it is a selection or an example. Now it can be confusing.
+[am]add references
+[an], instead of . (european notation)
+[ao]same
+[ap]same
+[aq]Why add "Optional"? Appendices are always optional?
+[ar]large space?
