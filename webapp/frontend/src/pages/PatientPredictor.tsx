@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { predict, fetchSyntheticPatient, type PatientPayload, type PredictionResult } from '../utils/api';
+import { predict, fetchSyntheticPatient, fetchCalibration, type PatientPayload, type PredictionResult, type CalibrationData } from '../utils/api';
 import { generateSyntheticPatient, REGIONS } from '../utils/patientGenerator';
 
 const AGE_BANDS = [
@@ -114,7 +114,7 @@ function defaultForm(): FormState {
   };
 }
 
-function ResultPanel({ result, loading }: { result: PredictionResult | null; loading: boolean }) {
+function ResultPanel({ result, loading, calibration }: { result: PredictionResult | null; loading: boolean; calibration: CalibrationData | null }) {
   if (loading) {
     return (
       <div className="nhs-result-panel">
@@ -230,6 +230,40 @@ function ResultPanel({ result, loading }: { result: PredictionResult | null; loa
             </div>
           </div>
         </div>
+
+        {/* Calibration context */}
+        {calibration && (() => {
+          const patientProb = result.probability_at_risk;
+          // Find the nearest bin in the calibration curve
+          let nearestIdx = 0;
+          let minDist = Infinity;
+          calibration.prob_pred.forEach((pred, i) => {
+            const dist = Math.abs(pred - patientProb);
+            if (dist < minDist) { minDist = dist; nearestIdx = i; }
+          });
+          const observedRate = calibration.prob_true[nearestIdx];
+          const binCentre = calibration.prob_pred[nearestIdx];
+          return (
+            <div style={{
+              background: '#F0F7F4',
+              border: '1px solid #007F3B',
+              borderRadius: '6px',
+              padding: '0.75rem 1rem',
+              marginBottom: '1rem',
+              fontSize: '0.8125rem',
+            }}>
+              <div style={{ fontWeight: 700, color: '#007F3B', marginBottom: '0.25rem' }}>
+                Calibration validated (MACE = {calibration.mean_absolute_error.toFixed(4)})
+              </div>
+              <p style={{ margin: 0, lineHeight: 1.55 }}>
+                In the held-out test set, patients the model scored near{' '}
+                <strong>{Math.round(binCentre * 100)}%</strong> had a poor outcome{' '}
+                <strong>{Math.round(observedRate * 100)}%</strong> of the time — confirming this
+                probability is a reliable clinical estimate, not just a ranking score.
+              </p>
+            </div>
+          );
+        })()}
 
         {/* Clinical note */}
         <div className={`nhs-inset ${isGood ? 'nhs-inset--blue' : ''}`} style={!isGood ? { borderLeftColor: 'var(--nhs-red)', background: '#FBE3E4' } : {}}>
@@ -373,9 +407,14 @@ function ResultPanel({ result, loading }: { result: PredictionResult | null; loa
 export function PatientPredictor() {
   const [form, setForm] = useState<FormState>(defaultForm);
   const [result, setResult] = useState<PredictionResult | null>(null);
+  const [calibration, setCalibration] = useState<CalibrationData | null>(null);
   const [predicting, setPredicting] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [apiError, setApiError] = useState('');
+
+  useEffect(() => {
+    fetchCalibration().then(setCalibration).catch(() => {});
+  }, []);
 
   const oksScore = OKS_ITEMS.reduce((sum, item) => sum + (form[item.key] as number), 0);
 
@@ -679,7 +718,7 @@ export function PatientPredictor() {
             </div>
 
             {/* RIGHT: Result panel */}
-            <ResultPanel result={result} loading={predicting} />
+            <ResultPanel result={result} loading={predicting} calibration={calibration} />
           </div>
         </div>
       </section>

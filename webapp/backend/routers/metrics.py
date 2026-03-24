@@ -14,6 +14,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from fastapi import APIRouter, HTTPException, Query
+from sklearn.calibration import calibration_curve
 from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
 
 from services.model_loader import get_available_models, get_model
@@ -251,6 +252,34 @@ def get_dataset_summary():
 @router.get("/pr-curves")
 def get_pr_curves():
     return _PR_CURVES
+
+
+@router.get("/calibration")
+def get_calibration(
+    model_name: str = Query("ebm_model"),
+    n_bins: int = Query(10, ge=5, le=20),
+):
+    try:
+        model = get_model(model_name)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+    if not hasattr(model, "predict_proba"):
+        raise HTTPException(status_code=400, detail=f"Model '{model_name}' does not support predict_proba")
+
+    X_test, y_test = _load_test_data()
+    y_prob = model.predict_proba(X_test)[:, 1]
+
+    prob_true, prob_pred = calibration_curve(y_test, y_prob, n_bins=n_bins, strategy="quantile")
+    mace = float(np.abs(prob_true - prob_pred).mean())
+
+    return {
+        "model": model_name,
+        "n_bins": n_bins,
+        "prob_pred": [round(float(v), 6) for v in prob_pred],
+        "prob_true": [round(float(v), 6) for v in prob_true],
+        "mean_absolute_error": round(mace, 6),
+    }
 
 
 @router.get("/threshold-analysis")

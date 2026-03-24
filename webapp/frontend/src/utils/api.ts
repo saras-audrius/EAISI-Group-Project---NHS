@@ -52,6 +52,14 @@ export interface PRCurves {
   [modelName: string]: { precision: number[]; recall: number[] };
 }
 
+export interface CalibrationData {
+  model: string;
+  n_bins: number;
+  prob_pred: number[];
+  prob_true: number[];
+  mean_absolute_error: number;
+}
+
 export interface ThresholdModelCurves {
   precision: number[];
   recall: number[];
@@ -164,6 +172,11 @@ export const fetchConfusionMatrix = async (modelName: string, threshold: number 
 
 export const fetchPRCurves = async (): Promise<PRCurves> => {
   const res = await api.get('/api/pr-curves');
+  return res.data;
+};
+
+export const fetchCalibration = async (modelName = 'ebm_model', nBins = 10): Promise<CalibrationData> => {
+  const res = await api.get('/api/calibration', { params: { model_name: modelName, n_bins: nBins } });
   return res.data;
 };
 

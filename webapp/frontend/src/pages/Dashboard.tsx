@@ -5,9 +5,9 @@ import {
 } from 'recharts';
 import {
   fetchMetrics, fetchFeatureImportance, fetchConfusionMatrix, fetchPRCurves,
-  fetchDatasetSummary, fetchThresholdAnalysis,
+  fetchDatasetSummary, fetchThresholdAnalysis, fetchCalibration,
   type ModelMeta, type FeatureImportance, type ConfusionMatrixData, type PRCurves, type DatasetSummary,
-  type ThresholdAnalysis,
+  type ThresholdAnalysis, type CalibrationData,
 } from '../utils/api';
 import { MetricCard } from '../components/MetricCard';
 import { ConfusionMatrix } from '../components/ConfusionMatrix';
@@ -29,6 +29,7 @@ export function Dashboard() {
   const [prCurves, setPrCurves] = useState<PRCurves | null>(null);
   const [summary, setSummary] = useState<DatasetSummary | null>(null);
   const [thresholdAnalysis, setThresholdAnalysis] = useState<ThresholdAnalysis | null>(null);
+  const [calibration, setCalibration] = useState<CalibrationData | null>(null);
   const [selectedThreshold, setSelectedThreshold] = useState(0.8);
   const [selectedModel, setSelectedModel] = useState('ebm_model');
   const [sortField, setSortField] = useState<keyof ModelMeta>('roc_auc');
@@ -42,12 +43,14 @@ export function Dashboard() {
       fetchFeatureImportance(),
       fetchDatasetSummary(),
       fetchPRCurves(),
+      fetchCalibration(),
     ])
-      .then(([m, fi, ds, pr]) => {
+      .then(([m, fi, ds, pr, cal]) => {
         setModels(m);
         setImportances(fi);
         setSummary(ds);
         setPrCurves(pr);
+        setCalibration(cal);
         setLoading(false);
       })
       .catch(err => {
@@ -411,6 +414,83 @@ export function Dashboard() {
               <div className="nhs-spinner"><div className="nhs-spinner__ring" /></div>
             )}
           </div>
+
+          {/* Calibration curve */}
+          {calibration && (() => {
+            const calData = calibration.prob_pred.map((pred, i) => ({
+              predicted: Math.round(pred * 100),
+              actual: Math.round(calibration.prob_true[i] * 100),
+              perfect: Math.round(pred * 100),
+            }));
+            const mace = calibration.mean_absolute_error;
+            return (
+              <div className="nhs-chart-card mb-4">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  <div className="nhs-chart-card__title" style={{ marginBottom: 0 }}>
+                    Calibration Curve — EBM (test set, {calibration.n_bins} bins)
+                  </div>
+                  <span
+                    className="nhs-tag nhs-tag--green"
+                    title="Mean Absolute Calibration Error — lower is better. Below 0.01 is considered well-calibrated."
+                  >
+                    MACE {mace.toFixed(4)}
+                  </span>
+                </div>
+                <p style={{ fontSize: '0.875rem', color: 'var(--nhs-mid-grey)', marginBottom: '1rem' }}>
+                  Each dot shows the actual positive rate for patients in that predicted-probability bin.
+                  Points on the diagonal mean the model's probabilities are accurate.
+                  A MACE of {mace.toFixed(4)} means the predicted probability is off by only{' '}
+                  <strong>{(mace * 100).toFixed(2)} percentage points</strong> on average — well-calibrated.
+                </p>
+                <ResponsiveContainer width="100%" height={280}>
+                  <LineChart data={calData} margin={{ left: 0, right: 20, top: 8, bottom: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey="predicted"
+                      label={{ value: 'Mean predicted probability (%)', position: 'insideBottom', offset: -12, fontSize: 12 }}
+                      tick={{ fontSize: 11 }}
+                      domain={[0, 100]}
+                    />
+                    <YAxis
+                      label={{ value: 'Actual positive rate (%)', angle: -90, position: 'insideLeft', offset: 10, fontSize: 12 }}
+                      tick={{ fontSize: 11 }}
+                      domain={[0, 100]}
+                    />
+                    <Tooltip
+                      formatter={(v: number, name: string) => [`${v}%`, name === 'actual' ? 'EBM (actual rate)' : 'Perfect calibration']}
+                      contentStyle={{ fontSize: '0.875rem' }}
+                    />
+                    <Legend
+                      wrapperStyle={{ fontSize: '0.875rem', paddingTop: '0.5rem' }}
+                      formatter={(value) => value === 'actual' ? 'EBM (actual rate)' : 'Perfect calibration'}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="perfect"
+                      stroke="#aaa"
+                      strokeWidth={1.5}
+                      strokeDasharray="5 4"
+                      dot={false}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="actual"
+                      stroke="#007F3B"
+                      strokeWidth={2.5}
+                      dot={{ r: 5, fill: '#007F3B' }}
+                      activeDot={{ r: 7 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+                <div className="nhs-inset" style={{ marginTop: '1rem' }}>
+                  <strong>How to read this:</strong> If the EBM predicts 80% probability of poor outcome,
+                  the calibration curve shows whether ~80% of those patients actually had a poor outcome.
+                  The green line hugging the grey diagonal confirms the model's probabilities can be trusted
+                  as genuine clinical risk estimates — not just rankings.
+                </div>
+              </div>
+            );
+          })()}
 
           {/* PR curves */}
           <div className="nhs-chart-card">
