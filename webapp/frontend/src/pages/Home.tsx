@@ -200,37 +200,57 @@ function FeatureCard({ t, active, delay }: { t: typeof FE_TRANSFORMS[0]; active:
   );
 }
 
+const HYPERPARAMETER_SEARCH_SPACE: Record<string, { param: string; values: string }[]> = {
+  random_forest_tuned: [
+    { param: 'n_estimators',      values: '100, 200, 300' },
+    { param: 'max_depth',         values: '10, 15, 20, 25, None' },
+    { param: 'min_samples_split', values: '2, 5, 10, 20' },
+    { param: 'min_samples_leaf',  values: '1, 2, 4, 8' },
+    { param: 'class_weight',      values: 'balanced, balanced_subsample' },
+  ],
+  ebm_model: [
+    { param: 'max_rounds',    values: '100, 200, 300' },
+    { param: 'learning_rate', values: '0.001, 0.01, 0.05' },
+    { param: 'max_leaves',    values: '3, 5, 7' },
+  ],
+};
+
 function ModelTable({ models }: { models: ModelMeta[] }) {
-  const displayed = KEY_MODELS.map(k => models.find(m => m.name === k)).filter(Boolean) as ModelMeta[];
-  if (!displayed.length) {
-    return <p style={{ fontSize: '0.875rem', color: 'var(--nhs-mid-grey)', fontStyle: 'italic' }}>Connect the backend to load live model parameters.</p>;
-  }
+  const displayed = KEY_MODELS
+    .filter(k => HYPERPARAMETER_SEARCH_SPACE[k])
+    .map(k => models.find(m => m.name === k))
+    .filter(Boolean) as ModelMeta[];
+
+  const rows: { modelName: string; displayName: string; param: string; values: string; rowSpan?: number }[] = [];
+  displayed.forEach(m => {
+    const space = HYPERPARAMETER_SEARCH_SPACE[m.name] ?? [];
+    space.forEach((entry, i) => {
+      rows.push({ modelName: m.name, displayName: m.display_name, ...entry, rowSpan: i === 0 ? space.length : undefined });
+    });
+  });
+
   return (
     <table className="nhs-data-table">
       <thead>
         <tr>
           <th>Model</th>
-          <th>Key hyperparameters</th>
-          <th style={{ textAlign: 'right' }}>PR-AUC</th>
+          <th>Hyperparameter</th>
+          <th>Values Tested</th>
         </tr>
       </thead>
       <tbody>
-        {displayed.map(m => {
-          const params = Object.entries(m.best_params ?? {})
-            .filter(([k]) => !['class_weight', 'random_state', 'n_jobs'].includes(k))
-            .map(([k, v]) => `${k} = ${v}`)
-            .join('  ·  ') || 'Default parameters';
-          return (
-            <tr key={m.name}>
-              <td>
-                <span style={{ display: 'inline-block', width: 9, height: 9, borderRadius: '50%', background: MODEL_COLORS[m.name] ?? '#768692', marginRight: 8, verticalAlign: 'middle' }} />
-                <strong>{m.display_name}</strong>
+        {rows.map((row, i) => (
+          <tr key={`${row.modelName}-${row.param}`}>
+            {row.rowSpan !== undefined && (
+              <td rowSpan={row.rowSpan} style={{ verticalAlign: 'middle' }}>
+                <span style={{ display: 'inline-block', width: 9, height: 9, borderRadius: '50%', background: MODEL_COLORS[row.modelName] ?? '#768692', marginRight: 8, verticalAlign: 'middle' }} />
+                <strong>{row.displayName}</strong>
               </td>
-              <td style={{ fontSize: '0.8125rem', color: 'var(--nhs-dark-grey)' }}>{params}</td>
-              <td style={{ textAlign: 'right', fontWeight: 700 }}>{(m.pr_auc * 100).toFixed(1)}%</td>
-            </tr>
-          );
-        })}
+            )}
+            <td style={{ fontSize: '0.8125rem', color: 'var(--nhs-dark-grey)' }}>{row.param}</td>
+            <td style={{ fontSize: '0.8125rem' }}>{row.values}</td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );
