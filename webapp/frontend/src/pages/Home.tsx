@@ -816,10 +816,10 @@ export function Home() {
             </p>
             <div className="nhs-team-cards">
               {[
-                { name: 'Bart Appels',   img: null },
-                { name: 'Yvonne Kuijt',  img: null },
-                { name: 'Audrius Saras', img: null },
-                { name: 'Jos Schaffers', img: null },
+                { name: 'Bart Appels',   img: '/bart.jpeg' },
+                { name: 'Yvonne Kuijt',  img: '/yvonne.jpeg' },
+                { name: 'Audrius Saras', img: '/audrius.jpeg' },
+                { name: 'Jos Schaffers', img: '/jos.jpeg' },
               ].map(({ name, img }) => (
                 <div key={name} className="nhs-team-card">
                   <div className="nhs-team-card__photo">
