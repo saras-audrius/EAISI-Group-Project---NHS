@@ -410,8 +410,8 @@ function ResultPanel({ result, loading, calibration }: { result: PredictionResul
               Why this prediction was made
             </h3>
             <p style={{ fontSize: '0.8125rem', color: 'var(--nhs-mid-grey)', marginBottom: '0.75rem', lineHeight: 1.6 }}>
-              <strong>How to read this chart:</strong> Each bar represents one patient feature and its impact on the prediction. 
-              <strong style={{ color: '#009639' }}> Green bars</strong> push toward <strong>Good Outcome</strong>, while <strong style={{ color: '#DA291C' }}> red bars</strong> push toward <strong>At Risk</strong>. 
+              <strong>How to read this chart:</strong> Each bar represents one patient feature and its impact on the prediction.
+              <strong style={{ color: '#009639' }}> Green bars</strong> push toward <strong>Good Outcome</strong>, while <strong style={{ color: '#DA291C' }}> red bars</strong> push toward <strong>At Risk</strong>.
               The <strong>y-axis shows the feature name and its value</strong> for this patient (e.g., "pain = 2"), and the <strong>bar length shows the magnitude of influence</strong> on the model's decision.
               The gray <strong>Baseline</strong> represents the model's default starting point before any patient features.
             </p>
@@ -419,14 +419,30 @@ function ResultPanel({ result, loading, calibration }: { result: PredictionResul
               <BarChart
                 layout="vertical"
                 data={[
-                  { 
+                  {
                     id: 'baseline',
-                    featureLabel: 'Baseline', 
-                    contribution: 0, 
+                    featureLabel: `Baseline (intercept)`,
+                    contribution: result.baseline_score ?? 0,
                     value: '',
                     sortKey: 'aaa-baseline'
                   },
                   ...result.feature_contributions
+                    .filter(fc => {
+                      // Age bands: keep only the dominant one (highest absolute contribution)
+                      if (fc.feature.startsWith('age_band_')) {
+                        const dominant = result.feature_contributions!
+                          .filter(f => f.feature.startsWith('age_band_'))
+                          .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution))[0];
+                        return fc.feature === dominant.feature;
+                      }
+                      // Binary flags: remove if the patient doesn't have it (value = '0')
+                      const binaryFlags = ['heart_disease','high_bp','stroke','circulation','lung_disease',
+                        'diabetes','kidney_disease','nervous_system','liver_disease','cancer','depression',
+                        'arthritis','t0_previous_surgery','t0_assisted','t0_disability',
+                        'university_hospital','independent_hospital'];
+                      if (binaryFlags.includes(fc.feature)) return fc.value !== '0';
+                      return true;
+                    })
                     .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution))
                     .map(fc => {
                       const cleanFeature = fc.feature
@@ -465,13 +481,26 @@ function ResultPanel({ result, loading, calibration }: { result: PredictionResul
                 />
                 <Bar dataKey="contribution" radius={[0, 4, 4, 0]} isAnimationActive={true}>
                   {[
-                    { id: 'baseline', contribution: 0 },
-                    ...result.feature_contributions.map(fc => ({
+                    { id: 'baseline', contribution: result.baseline_score ?? 0 },
+                    ...result.feature_contributions.filter(fc => {
+                      if (fc.feature.startsWith('age_band_')) {
+                        const dominant = result.feature_contributions!
+                          .filter(f => f.feature.startsWith('age_band_'))
+                          .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution))[0];
+                        return fc.feature === dominant.feature;
+                      }
+                      const binaryFlags = ['heart_disease','high_bp','stroke','circulation','lung_disease',
+                        'diabetes','kidney_disease','nervous_system','liver_disease','cancer','depression',
+                        'arthritis','t0_previous_surgery','t0_assisted','t0_disability',
+                        'university_hospital','independent_hospital'];
+                      if (binaryFlags.includes(fc.feature)) return fc.value !== '0';
+                      return true;
+                    }).map(fc => ({
                       id: fc.feature,
                       contribution: fc.contribution,
                     })),
                   ].map((entry, idx) => (
-                    <Cell 
+                    <Cell
                       key={`cell-${idx}`}
                       fill={entry.id === 'baseline' ? '#999' : entry.contribution >= 0 ? '#009639' : '#DA291C'}
                     />
@@ -496,7 +525,20 @@ function ResultPanel({ result, loading, calibration }: { result: PredictionResul
                       </tr>
                     </thead>
                     <tbody>
-                      {result.feature_contributions.map(fc => (
+                      {result.feature_contributions.filter(fc => {
+                        if (fc.feature.startsWith('age_band_')) {
+                          const dominant = result.feature_contributions!
+                            .filter(f => f.feature.startsWith('age_band_'))
+                            .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution))[0];
+                          return fc.feature === dominant.feature;
+                        }
+                        const binaryFlags = ['heart_disease','high_bp','stroke','circulation','lung_disease',
+                          'diabetes','kidney_disease','nervous_system','liver_disease','cancer','depression',
+                          'arthritis','t0_previous_surgery','t0_assisted','t0_disability',
+                          'university_hospital','independent_hospital'];
+                        if (binaryFlags.includes(fc.feature)) return fc.value !== '0';
+                        return true;
+                      }).map(fc => (
                         <tr key={`${fc.feature}-${fc.value}`}>
                           <td style={{ fontSize: '0.75rem' }}>{fc.feature}</td>
                           <td style={{ fontSize: '0.75rem' }}>{formatFeatureValue(fc.feature, fc.value)}</td>

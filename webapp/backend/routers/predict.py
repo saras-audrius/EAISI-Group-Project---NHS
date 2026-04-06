@@ -93,6 +93,7 @@ class PredictionResponse(BaseModel):
     model_used: str
     explanation_method: str | None = None
     feature_contributions: list[FeatureContribution] = Field(default_factory=list)
+    baseline_score: float = 0.0
 
 
 def _format_feature_value(value, feature_name: str = '') -> str:
@@ -124,18 +125,22 @@ def _format_feature_value(value, feature_name: str = '') -> str:
     return str(value)
 
 
-def _extract_local_explanation(model, X: pd.DataFrame) -> tuple[str | None, list[FeatureContribution]]:
+def _extract_local_explanation(model, X: pd.DataFrame) -> tuple[str | None, list[FeatureContribution], float]:
     """Extract local feature contributions for a single prediction when supported by model."""
     if not hasattr(model, "explain_local"):
-        return None, []
+        return None, [], 0.0
 
     try:
         local_exp = model.explain_local(X)
-        # interpret's local explanation object returns dictionaries keyed by field names.
         data = local_exp.data(0)
         names = data.get("names", [])
         scores = data.get("scores", [])
         values = data.get("values", [])
+
+        # Extract intercept from 'extra' dict (EBM stores it there)
+        extra = data.get("extra", {})
+        extra_scores = extra.get("scores", []) if isinstance(extra, dict) else []
+        baseline_score = float(extra_scores[0]) if extra_scores else 0.0
 
         items: list[FeatureContribution] = []
         for name, score, value in zip(names, scores, values):
@@ -152,10 +157,10 @@ def _extract_local_explanation(model, X: pd.DataFrame) -> tuple[str | None, list
             )
 
         items.sort(key=lambda x: abs(x.contribution), reverse=True)
-        return "interpret.explain_local", items[:12]
+        return "interpret.explain_local", items[:12], round(baseline_score, 4)
     except Exception as e:
         print(f"[predict] Could not build local explanation: {e}")
-        return None, []
+        return None, [], 0.0
 
 
 # ---------------------------------------------------------------------------
@@ -285,7 +290,7 @@ def predict(patient: PatientFeatures):
             "Continue to monitor and support recovery."
         )
 
-    explanation_method, feature_contributions = _extract_local_explanation(model, X)
+    explanation_method, feature_contributions, baseline_score = _extract_local_explanation(model, X)
 
     return PredictionResponse(
         prediction=prediction,
@@ -297,6 +302,7 @@ def predict(patient: PatientFeatures):
         model_used=model_name,
         explanation_method=explanation_method,
         feature_contributions=feature_contributions,
+        baseline_score=baseline_score,
     )
 
 

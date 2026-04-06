@@ -109,12 +109,12 @@ async def explain_prediction(request: ExplainRequest):
     protective    = [f for f in sorted_features if f.contribution >= 0][:3]
 
     risk_lines = "\n".join(
-        f"  - {_humanize(f.feature, f.value)}"
+        f"  - {_humanize(f.feature, f.value)} [patient's actual value: {f.value}, this INCREASES risk]"
         for f in risk_factors
     ) or "  - None identified"
 
     protective_lines = "\n".join(
-        f"  - {_humanize(f.feature, f.value)}"
+        f"  - {_humanize(f.feature, f.value)} [patient's actual value: {f.value}, this REDUCES risk]"
         for f in protective
     ) or "  - None identified"
 
@@ -125,19 +125,30 @@ async def explain_prediction(request: ExplainRequest):
 Result: {request.outcome_label}
 Estimated probability of poor outcome: {pct}%
 
-Factors increasing risk of poor outcome:
+SCORING CONTEXT — read this carefully before interpreting any values:
+- Oxford Knee Score (OKS) items (pain, limping, walking, stairs, etc.) are scored 0–4:
+  0 = most difficulty / worst (e.g. severe pain, cannot do activity)
+  4 = no difficulty / best (e.g. no pain, full function)
+  So a score of 2 means moderate difficulty, 1 means severe difficulty, 3 means mild difficulty.
+- Binary comorbidity flags (depression, diabetes, heart_disease, etc.): 1 = present, 0 = absent.
+- EQ-5D dimensions (mobility, self_care, activity, discomfort, anxiety): 1 = no problems, 2 = some problems, 3 = extreme problems.
+- disability, assisted, previous_surgery: 1 = yes, 0 = no.
+
+IMPORTANT: The factors below are taken directly from the model's output. Each lists the patient's ACTUAL recorded value. Do NOT infer presence or absence — use the value and the scoring context above to describe it accurately.
+
+Factors where this patient's value INCREASES risk of poor outcome:
 {risk_lines}
 
-Factors reducing risk (protective):
+Factors where this patient's value REDUCES risk (protective):
 {protective_lines}
 
 Write exactly two short explanations. Separate them with the exact marker [PATIENT] on its own line.
 
-CLINICAL: 2–3 sentences for the operating surgeon. Use appropriate clinical language. Mention the specific risk factors. Suggest what this means for pre-operative counselling. Do not say "the model" — say "the assessment".
+CLINICAL: 2–3 sentences for the operating surgeon. Use appropriate clinical language. Interpret each factor correctly using the scoring context above (e.g. a limping score of 1 means severe limping, not mild). Do not say "the model" — say "the assessment".
 
 [PATIENT]
 
-PATIENT: 2–3 sentences for the patient, in plain English. Be honest but not alarming. Explain what the key factors mean in everyday terms. Do not use words like "algorithm" or "model" — say "our assessment". Do not say "poor outcome" — say "getting the most benefit from surgery".
+PATIENT: 2–3 sentences for the patient, in plain English. Interpret scores correctly using the context above and explain what they mean in everyday terms (e.g. "you reported significant difficulty walking"). Be honest but not alarming. Do not use words like "algorithm" or "model" — say "our assessment". Do not say "poor outcome" — say "getting the most benefit from surgery".
 
 Output only the two explanation texts with no extra headings, labels, or commentary."""
 

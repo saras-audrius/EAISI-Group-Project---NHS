@@ -137,6 +137,7 @@ export interface PredictionResult {
   model_used: string;
   explanation_method?: string | null;
   feature_contributions?: FeatureContribution[];
+  baseline_score?: number;
 }
 
 export interface FeatureContribution {
