@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { predict, fetchSyntheticPatient, fetchCalibration, type PatientPayload, type PredictionResult, type CalibrationData } from '../utils/api';
+import { predict, fetchSyntheticPatient, fetchCalibration, fetchAIExplanation, type PatientPayload, type PredictionResult, type CalibrationData, type ExplanationResponse } from '../utils/api';
 import { generateSyntheticPatient, REGIONS } from '../utils/patientGenerator';
 
 const AGE_BANDS = [
@@ -66,6 +66,132 @@ const COMORBIDITIES = [
   { key: 'depression',     label: 'Depression or anxiety' },
   { key: 'arthritis',      label: 'Arthritis' },
 ] as const;
+
+// ---------------------------------------------------------------------------
+// AI Explanation Card
+// ---------------------------------------------------------------------------
+
+function AIExplanationCard({ result }: { result: PredictionResult }) {
+  const [explanation, setExplanation] = useState<ExplanationResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [tab, setTab] = useState<'clinical' | 'patient'>('clinical');
+
+  const generate = async (r: PredictionResult) => {
+    setLoading(true);
+    setError('');
+    setExplanation(null);
+    try {
+      const res = await fetchAIExplanation({
+        probability_at_risk: r.probability_at_risk,
+        outcome_label: r.outcome_label,
+        top_features: (r.feature_contributions ?? []).slice(0, 8),
+      });
+      setExplanation(res);
+      setTab('clinical');
+    } catch {
+      setError('Could not generate explanation. Make sure ANTHROPIC_API_KEY is set on the backend.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Auto-trigger whenever a new prediction arrives
+  useEffect(() => {
+    generate(result);
+  }, [result]);
+
+  return (
+    <div style={{ marginTop: '1.25rem', border: '1px solid #d4e4f7', borderRadius: '6px', overflow: 'hidden' }}>
+      {/* Header */}
+      <div style={{
+        background: '#f0f5ff',
+        borderBottom: '1px solid #d4e4f7',
+        padding: '0.75rem 1rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '1rem',
+      }}>
+        <div>
+          <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--nhs-blue)' }}>
+            AI-generated explanation
+          </div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--nhs-mid-grey)', marginTop: '0.125rem' }}>
+            Powered by Claude — translates the EBM's feature contributions into natural language
+          </div>
+        </div>
+        <button
+          className="nhs-btn nhs-btn--secondary nhs-btn--sm"
+          onClick={() => generate(result)}
+          disabled={loading}
+          style={{ whiteSpace: 'nowrap', flexShrink: 0 }}
+        >
+          {loading ? '⏳ Generating...' : '↺ Regenerate'}
+        </button>
+      </div>
+
+      {/* Body */}
+      <div style={{ padding: '0.875rem 1rem' }}>
+        {loading && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', color: 'var(--nhs-mid-grey)' }}>
+            <div className="nhs-spinner__ring" style={{ width: 18, height: 18, borderWidth: 2 }} />
+            Asking Claude to explain this prediction...
+          </div>
+        )}
+
+        {error && !loading && (
+          <p style={{ fontSize: '0.8125rem', color: 'var(--nhs-red)', margin: 0 }}>{error}</p>
+        )}
+
+        {explanation && !loading && (
+          <>
+            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.875rem' }}>
+              {(['clinical', 'patient'] as const).map(t => (
+                <button
+                  key={t}
+                  onClick={() => setTab(t)}
+                  style={{
+                    padding: '0.35rem 0.85rem',
+                    borderRadius: '4px',
+                    border: '1px solid',
+                    borderColor: tab === t ? 'var(--nhs-blue)' : 'var(--nhs-light-grey)',
+                    background: tab === t ? 'var(--nhs-blue)' : 'white',
+                    color: tab === t ? 'white' : 'var(--nhs-dark-grey)',
+                    fontWeight: tab === t ? 700 : 400,
+                    fontSize: '0.8125rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {t === 'clinical' ? '🩺 For the doctor' : '🧑 For the patient'}
+                </button>
+              ))}
+            </div>
+
+            <p style={{
+              fontSize: '0.9375rem',
+              lineHeight: 1.65,
+              color: 'var(--nhs-dark-grey)',
+              margin: 0,
+              background: tab === 'patient' ? '#f9fafb' : 'transparent',
+              padding: tab === 'patient' ? '0.75rem' : '0',
+              borderRadius: '4px',
+              borderLeft: tab === 'patient' ? '3px solid var(--nhs-light-blue)' : 'none',
+            }}>
+              {tab === 'clinical' ? explanation.clinical : explanation.patient}
+            </p>
+
+            <p style={{ fontSize: '0.6875rem', color: 'var(--nhs-mid-grey)', marginTop: '0.75rem', marginBottom: 0, fontStyle: 'italic' }}>
+              AI-generated — for decision support only. Always apply clinical judgement. Not a clinical diagnosis.
+            </p>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 
 type FormState = Omit<PatientPayload, 'oks_t0_score'>;
 
@@ -389,6 +515,11 @@ function ResultPanel({ result, loading, calibration }: { result: PredictionResul
               </details>
             </div>
           </div>
+        )}
+
+        {/* AI Explanation */}
+        {!!result.feature_contributions?.length && (
+          <AIExplanationCard result={result} />
         )}
 
         {/* Disclaimer */}

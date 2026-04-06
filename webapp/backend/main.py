@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from services.model_loader import load_all_models
-from routers import metrics, predict
+from routers import metrics, predict, explain
 
 
 @asynccontextmanager
@@ -47,6 +47,7 @@ app.add_middleware(
 
 app.include_router(metrics.router)
 app.include_router(predict.router)
+app.include_router(explain.router)
 
 
 @app.get("/")

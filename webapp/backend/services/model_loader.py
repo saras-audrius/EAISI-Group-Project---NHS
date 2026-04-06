@@ -1,4 +1,5 @@
 """Model loading utilities with caching."""
+from __future__ import annotations
 import joblib
 from pathlib import Path
 

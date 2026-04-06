@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 Metrics router - serves pre-computed model performance data.
 All metrics are sourced from notebook outputs (test set evaluation).

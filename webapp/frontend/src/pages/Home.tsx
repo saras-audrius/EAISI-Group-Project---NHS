@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ComposedChart, Line, XAxis, YAxis, Tooltip,
@@ -239,7 +239,7 @@ function ModelTable({ models }: { models: ModelMeta[] }) {
         </tr>
       </thead>
       <tbody>
-        {rows.map((row, i) => (
+        {rows.map((row) => (
           <tr key={`${row.modelName}-${row.param}`}>
             {row.rowSpan !== undefined && (
               <td rowSpan={row.rowSpan} style={{ verticalAlign: 'middle' }}>
@@ -727,6 +727,17 @@ export function Home() {
                   <p className="nhs-detail-body nhs-detail-body--white">Based on 2016–2019 data: ~46,412 knee replacements per year (~893/week). Approximately 152 patients/week historically experience poor outcomes. At threshold 0.8, the model flags ~4–5 poor-outcome patients per week for enhanced counselling. Over 25 weeks: ~100 avoidable surgeries in high-risk patients — reducing the poor-outcome proportion by approximately <strong style={{ color: 'rgba(255,255,255,0.9)' }}>0.4 percentage points</strong>. Annual evaluation against NHS PROMs data is the appropriate measurement cycle.</p>
                 </div>
               </div>
+              <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                <div className="nhs-detail-heading nhs-detail-heading--white">Why EBM over Random Forest?</div>
+                <div className="nhs-detail-split" style={{ marginTop: '0.75rem' }}>
+                  <div>
+                    <p className="nhs-detail-body nhs-detail-body--white">Random Forest matched EBM on precision but failed on explainability and stability. It requires post-hoc SHAP approximations that are computationally expensive and inconsistent across runs — each explanation is an approximation of an approximation. In a clinical setting, a clinician asking <em>"why is this patient flagged?"</em> needs a direct, auditable answer, not a statistical summary of 300 trees.</p>
+                  </div>
+                  <div>
+                    <p className="nhs-detail-body nhs-detail-body--white">EBM learns an explicit shape function per feature — the contribution of <em>pre-operative limping severity</em> to risk is a curve you can inspect, validate against clinical literature, and explain to a patient. This native interpretability is not a trade-off: the EBM matched Random Forest's precision (94.1% vs 97.2%) while being the more stable model across folds. For a tool intended to support clinical decisions, explainability is a hard requirement, not a nice-to-have.</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -736,22 +747,6 @@ export function Home() {
       <section ref={ch5.ref} className={`nhs-story-section nhs-section--grey${ch5.visible ? ' is-visible' : ''}`}>
         <div style={{ maxWidth: 'var(--max-width)', margin: '0 auto' }}>
           <div className="nhs-reveal"><div className="nhs-chapter-marker">Chapter 05 — The Tool</div></div>
-
-          <div className="nhs-reveal" style={{ transitionDelay: '80ms', marginBottom: '3rem' }}>
-            <div className="nhs-inset nhs-inset--blue" style={{ maxWidth: '760px' }}>
-              <strong>Why the Explainable Boosting Machine?</strong>
-              <p style={{ marginTop: '0.5rem', fontSize: '0.9375rem', lineHeight: 1.7 }}>
-                Random Forest achieved marginally higher precision (96.9% vs 94.1%), and SHAP
-                values could technically be applied to approximate its explanations after the
-                fact. But SHAP is a post-hoc approximation — it estimates what the model probably
-                relied on, it does not read the model directly. The EBM is an additive glass-box:
-                each feature's contribution is an exact, inspectable function of the input, with
-                no approximation involved. Given comparable performance, native full explainability
-                — for both global model behaviour and individual patient predictions — made the
-                EBM the clear choice for a clinical setting.
-              </p>
-            </div>
-          </div>
 
           <div className="nhs-story-split nhs-story-split--reversed">
             <div className="nhs-reveal" style={{ transitionDelay: '150ms' }}>

@@ -206,3 +206,19 @@ export const predict = async (patient: PatientPayload): Promise<PredictionResult
   const res = await api.post('/api/predict', patient);
   return res.data;
 };
+
+export interface ExplanationRequest {
+  probability_at_risk: number;
+  outcome_label: string;
+  top_features: FeatureContribution[];
+}
+
+export interface ExplanationResponse {
+  clinical: string;
+  patient: string;
+}
+
+export const fetchAIExplanation = async (req: ExplanationRequest): Promise<ExplanationResponse> => {
+  const res = await api.post('/api/explain', req, { timeout: 30000 });
+  return res.data;
+};
