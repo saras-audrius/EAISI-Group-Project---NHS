@@ -140,13 +140,16 @@ def _extract_local_explanation(model, X: pd.DataFrame) -> tuple[str | None, list
         # Extract intercept from 'extra' dict (EBM stores it there)
         extra = data.get("extra", {})
         extra_scores = extra.get("scores", []) if isinstance(extra, dict) else []
-        baseline_score = float(extra_scores[0]) if extra_scores else 0.0
+        # Negate: EBM scores are log-odds of class 1 (at-risk).
+        # We flip the sign so positive = pushes toward Good Outcome (green),
+        # negative = pushes toward At Risk (red). More intuitive for clinical display.
+        baseline_score = -float(extra_scores[0]) if extra_scores else 0.0
 
         items: list[FeatureContribution] = []
         for name, score, value in zip(names, scores, values):
             if score is None:
                 continue
-            contribution = float(score)
+            contribution = -float(score)  # negate: positive = protective = good
             items.append(
                 FeatureContribution(
                     feature=str(name),
