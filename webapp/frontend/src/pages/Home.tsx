@@ -751,7 +751,7 @@ export function Home() {
           <div className="nhs-story-split nhs-story-split--reversed">
             <div className="nhs-reveal" style={{ transitionDelay: '150ms' }}>
               <h2 className="nhs-story-heading">Built for the consultation room</h2>
-              <p className="nhs-story-body">The <strong>Knee Replacement Outcome Predictor</strong> translates the EBM's probabilistic output into a clear, visual decision framework. It presents a traffic-light recommendation alongside the patient's OKS subscale profile — and explains the top 3 factors driving the prediction, so the clinician can show the patient <em>why</em>, not just <em>what</em>.</p>
+              <p className="nhs-story-body">The <strong>Knee Replacement Outcome Predictor</strong> translates the EBM's probabilistic output into a clear, visual decision framework. It presents a traffic-light recommendation alongside the patient's OKS subscale profile — and explains the key factors driving the prediction — ranked by influence — so the clinician can show the patient <em>why</em>, not just <em>what</em>.</p>
               <p className="nhs-story-body" style={{ marginTop: '1rem' }}>The model output is not a gate. It is a structured conversation starter that supports shared decision-making rather than replacing it.</p>
               <button className="nhs-btn nhs-btn--primary" style={{ marginTop: '1.5rem' }} onClick={() => navigate('/predictor')}>Open the Predictor →</button>
             </div>
@@ -780,7 +780,7 @@ export function Home() {
                   <div className="nhs-detail-heading">Four interface components</div>
                   <p className="nhs-detail-body"><strong>1. Decision Indicator</strong> — Red or Green colour bar based on predicted probability ≥ 80%.</p>
                   <p className="nhs-detail-body" style={{ marginTop: '0.5rem' }}><strong>2. Patient Risk Profile</strong> — Pain, Function, Activity subscales visualised.</p>
-                  <p className="nhs-detail-body" style={{ marginTop: '0.5rem' }}><strong>3. The "Why?" explanation</strong> — Top 3 most influential factors (risk-increasing and decreasing).</p>
+                  <p className="nhs-detail-body" style={{ marginTop: '0.5rem' }}><strong>3. The "Why?" explanation</strong> — Most influential factors ranked by contribution (risk-increasing and decreasing).</p>
                   <p className="nhs-detail-body" style={{ marginTop: '0.5rem' }}><strong>4. Shared Decision Support</strong> — Actionable text suggesting the next clinical step.</p>
                 </div>
                 <div>
