@@ -435,6 +435,7 @@ export function Home() {
   const ch3 = useReveal();
   const ch4 = useReveal();
   const ch5 = useReveal();
+  const nextSteps = useReveal(0.05);
   const about = useReveal(0.05);
 
   const pct17 = useCounter(17.5, ch1.visible, 1400);
@@ -787,8 +788,8 @@ export function Home() {
         </div>
       </section>
 
-      {/* ── CHAPTER 06: NEXT STEPS ─────────────────────────── */}
-      <section id="next-steps" className="nhs-story-section" style={{ background: 'var(--nhs-white)' }}>
+      {/* ── NEXT STEPS ─────────────────────────────────────── */}
+      <section id="next-steps" ref={nextSteps.ref} className={`nhs-story-section${nextSteps.visible ? ' is-visible' : ''}`} style={{ background: 'var(--nhs-white)' }}>
         <div style={{ maxWidth: 'var(--max-width)', margin: '0 auto' }}>
           <div className="nhs-reveal"><div className="nhs-chapter-marker">Next Steps</div></div>
           <div className="nhs-reveal" style={{ transitionDelay: '100ms' }}>
