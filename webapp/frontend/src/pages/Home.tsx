@@ -470,7 +470,7 @@ export function Home() {
           </p>
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             <button className="nhs-btn nhs-btn--primary nhs-btn--large" onClick={() => navigate('/methodology')}>Read the Methodology</button>
-            <button className="nhs-btn nhs-btn--large" style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '2px solid rgba(255,255,255,0.45)' }} onClick={() => navigate('/predictor')}>Try the Predictor</button>
+            <button className="nhs-btn nhs-btn--large" style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '2px solid rgba(255,255,255,0.45)' }} onClick={() => { navigate('/predictor'); window.scrollTo(0, 0); }}>Try the Predictor</button>
           </div>
           <p className="nhs-hero__scroll-hint">Scroll to explore the story ↓</p>
         </div>
@@ -753,7 +753,7 @@ export function Home() {
               <h2 className="nhs-story-heading">Built for the consultation room</h2>
               <p className="nhs-story-body">The <strong>Knee Replacement Outcome Predictor</strong> translates the EBM's probabilistic output into a clear, visual decision framework. It presents a traffic-light recommendation alongside the patient's OKS subscale profile — and explains the key factors driving the prediction — ranked by influence — so the clinician can show the patient <em>why</em>, not just <em>what</em>.</p>
               <p className="nhs-story-body" style={{ marginTop: '1rem' }}>The model output is not a gate. It is a structured conversation starter that supports shared decision-making rather than replacing it.</p>
-              <button className="nhs-btn nhs-btn--primary" style={{ marginTop: '1.5rem' }} onClick={() => navigate('/predictor')}>Open the Predictor →</button>
+              <button className="nhs-btn nhs-btn--primary" style={{ marginTop: '1.5rem' }} onClick={() => { navigate('/predictor'); window.scrollTo(0, 0); }}>Open the Predictor →</button>
             </div>
             <div className="nhs-reveal" style={{ transitionDelay: '250ms' }}>
               <div className="nhs-decision-zones">
@@ -774,26 +774,34 @@ export function Home() {
 
           <div className={`nhs-chapter-expanded${ch5.visible ? ' is-open' : ''}`}>
             <div className="nhs-chapter-expanded__inner">
-              <div className="nhs-deep-dive-label">Interface Design &amp; Recommended Next Steps</div>
-              <div className="nhs-detail-split">
-                <div>
-                  <div className="nhs-detail-heading">Four interface components</div>
-                  <p className="nhs-detail-body"><strong>1. Decision Indicator</strong> — Red or Green colour bar based on predicted probability ≥ 80%.</p>
-                  <p className="nhs-detail-body" style={{ marginTop: '0.5rem' }}><strong>2. Patient Risk Profile</strong> — Pain, Function, Activity subscales visualised.</p>
-                  <p className="nhs-detail-body" style={{ marginTop: '0.5rem' }}><strong>3. The "Why?" explanation</strong> — Most influential factors ranked by contribution (risk-increasing and decreasing).</p>
-                  <p className="nhs-detail-body" style={{ marginTop: '0.5rem' }}><strong>4. Shared Decision Support</strong> — Actionable text suggesting the next clinical step.</p>
-                </div>
-                <div>
-                  <div className="nhs-detail-heading">Next steps for clinical adoption</div>
-                  <ul className="nhs-next-steps">
-                    <li><span className="nhs-next-steps__num">1</span><span><strong>Clinical validation pilot</strong> in several NHS hospitals to measure real-world performance and usability.</span></li>
-                    <li><span className="nhs-next-steps__num">2</span><span><strong>Grey Zone calibration</strong> — better define the boundary for intermediate-probability patients.</span></li>
-                    <li><span className="nhs-next-steps__num">3</span><span><strong>EHR integration</strong> — embed the predictor into Electronic Health Record systems.</span></li>
-                    <li><span className="nhs-next-steps__num">4</span><span><strong>Expansion to hip replacement</strong> using Oxford Hip Score data in the PROMs programme.</span></li>
-                  </ul>
-                </div>
+              <div className="nhs-deep-dive-label">Interface Design</div>
+              <div>
+                <div className="nhs-detail-heading">Four interface components</div>
+                <p className="nhs-detail-body"><strong>1. Decision Indicator</strong> — Red or Green colour bar based on predicted probability ≥ 80%.</p>
+                <p className="nhs-detail-body" style={{ marginTop: '0.5rem' }}><strong>2. Patient Risk Profile</strong> — Pain, Function, Activity subscales visualised.</p>
+                <p className="nhs-detail-body" style={{ marginTop: '0.5rem' }}><strong>3. The "Why?" explanation</strong> — Most influential factors ranked by contribution (risk-increasing and decreasing).</p>
+                <p className="nhs-detail-body" style={{ marginTop: '0.5rem' }}><strong>4. Shared Decision Support</strong> — Actionable text suggesting the next clinical step.</p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CHAPTER 06: NEXT STEPS ─────────────────────────── */}
+      <section id="next-steps" className="nhs-story-section" style={{ background: 'var(--nhs-white)' }}>
+        <div style={{ maxWidth: 'var(--max-width)', margin: '0 auto' }}>
+          <div className="nhs-reveal"><div className="nhs-chapter-marker">Next Steps</div></div>
+          <div className="nhs-reveal" style={{ transitionDelay: '100ms' }}>
+            <h2 className="nhs-story-heading">From prototype to practice</h2>
+            <p className="nhs-story-body">The model is production-ready for a supervised pilot. These are the steps needed to move from a validated prototype to a clinically embedded tool.</p>
+          </div>
+          <div className="nhs-reveal" style={{ transitionDelay: '200ms', marginTop: '2rem' }}>
+            <ul className="nhs-next-steps">
+              <li><span className="nhs-next-steps__num">1</span><span><strong>Clinical validation pilot</strong> — deploy in several NHS hospitals to measure real-world performance and usability.</span></li>
+              <li><span className="nhs-next-steps__num">2</span><span><strong>Grey Zone calibration</strong> — better define the boundary for intermediate-probability patients.</span></li>
+              <li><span className="nhs-next-steps__num">3</span><span><strong>EHR integration</strong> — embed the predictor into Electronic Health Record systems to remove manual data entry.</span></li>
+              <li><span className="nhs-next-steps__num">4</span><span><strong>Expansion to hip replacement</strong> — apply the same methodology to Oxford Hip Score data in the NHS PROMs programme.</span></li>
+            </ul>
           </div>
         </div>
       </section>

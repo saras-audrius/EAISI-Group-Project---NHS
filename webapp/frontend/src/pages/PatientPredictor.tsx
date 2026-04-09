@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { predict, fetchSyntheticPatient, fetchCalibration, fetchAIExplanation, type PatientPayload, type PredictionResult, type CalibrationData, type ExplanationResponse } from '../utils/api';
 import { generateSyntheticPatient, REGIONS } from '../utils/patientGenerator';
@@ -241,6 +242,7 @@ function defaultForm(): FormState {
 }
 
 function ResultPanel({ result, loading, calibration }: { result: PredictionResult | null; loading: boolean; calibration: CalibrationData | null }) {
+  const navigate = useNavigate();
   if (loading) {
     return (
       <div className="nhs-result-panel">
@@ -571,6 +573,21 @@ function ResultPanel({ result, loading, calibration }: { result: PredictionResul
             Not validated for clinical use. Do not base clinical decisions solely on this
             prediction. Always apply professional judgement.
           </p>
+        </div>
+
+        {/* Back to next steps */}
+        <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+          <button
+            className="nhs-btn nhs-btn--primary"
+            onClick={() => {
+              navigate('/#next-steps');
+              setTimeout(() => {
+                document.getElementById('next-steps')?.scrollIntoView({ behavior: 'smooth' });
+              }, 100);
+            }}
+          >
+            Next Steps for Clinical Adoption →
+          </button>
         </div>
       </div>
     </div>
