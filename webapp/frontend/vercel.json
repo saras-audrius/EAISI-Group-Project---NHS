@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://eaisi-group-project-nhs-production-2fa3.up.railway.app/api/:path*"
+      "destination": "https://eaisi-group-project-nhs-production.up.railway.app/api/:path*"
     }
   ]
 }
