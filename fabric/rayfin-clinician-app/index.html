@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Marrowfield Orthopaedic Centre — pre-operative knee replacement outcome review. Clinical decision support over a synthetic cohort."
+    />
+    <title>Knee Outcome Review — Marrowfield Orthopaedic Centre</title>
+
+    <!-- Theme is resolved before first paint so a dark-mode user never sees a
+         white flash. Kept inline and tiny; it is the only script in <head>. -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('mf-theme');
+          var dark =
+            stored === 'dark' ||
+            (stored !== 'light' &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (dark) document.documentElement.classList.add('dark');
+        } catch (e) {
+          /* private mode: fall through to light */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

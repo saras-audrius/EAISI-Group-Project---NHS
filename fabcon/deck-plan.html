@@ -1,0 +1,586 @@
+<title>Notebook to Bedside Deck Plan</title>
+<style>
+:root{
+  --paper:#F1F3F0; --surface:#FFFFFF; --surface-2:#E9EDE9;
+  --ink:#131A19; --ink-2:#3A4746; --muted:#5F6E6B; --line:#D5DBD7;
+  --accent:#0E6B62; --accent-soft:#DCEAE7;
+  --ochre:#8F6210; --ochre-soft:#F2E8D2;
+  --clay:#96382B; --clay-soft:#F4E0DB;
+  --shadow:0 1px 2px rgba(19,26,25,.06), 0 8px 24px -16px rgba(19,26,25,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1413; --surface:#15201E; --surface-2:#1B2725;
+    --ink:#E7EEEB; --ink-2:#C2CFCB; --muted:#8F9F9C; --line:#27352F;
+    --accent:#56B7AA; --accent-soft:#12302C;
+    --ochre:#D5A44F; --ochre-soft:#2E2718;
+    --clay:#DC8271; --clay-soft:#33201C;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1413; --surface:#15201E; --surface-2:#1B2725;
+  --ink:#E7EEEB; --ink-2:#C2CFCB; --muted:#8F9F9C; --line:#27352F;
+  --accent:#56B7AA; --accent-soft:#12302C;
+  --ochre:#D5A44F; --ochre-soft:#2E2718;
+  --clay:#DC8271; --clay-soft:#33201C;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:ui-sans-serif,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  font-size:16px; line-height:1.55; margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px; margin:0 auto; padding:clamp(28px,5vw,72px) clamp(18px,4vw,40px) 96px}
+h1,h2,h3{font-family:ui-serif,"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-wrap:balance; margin:0}
+h1{font-size:clamp(2.1rem,4.6vw,3.1rem); line-height:1.08; letter-spacing:-.015em; font-weight:600}
+h2{font-size:clamp(1.35rem,2.4vw,1.7rem); font-weight:600; letter-spacing:-.01em}
+h3{font-size:1.18rem; font-weight:600; line-height:1.25}
+p{margin:0}
+code,.mono{font-family:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace; font-size:.86em}
+code{background:var(--surface-2); padding:.1em .35em; border-radius:3px; color:var(--ink-2)}
+a{color:var(--accent)}
+.eyebrow{
+  font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; color:var(--muted);
+}
+
+/* ---------- header ---------- */
+header.head{display:flex; flex-direction:column; gap:18px; padding-bottom:26px; border-bottom:2px solid var(--ink)}
+.head .sub{max-width:62ch; color:var(--ink-2); font-size:1.05rem}
+.metarow{display:flex; flex-wrap:wrap; gap:8px}
+.tag{
+  font-family:ui-monospace,Menlo,monospace; font-size:.72rem; letter-spacing:.04em;
+  border:1px solid var(--line); background:var(--surface); color:var(--ink-2);
+  padding:.3em .6em; border-radius:2px;
+}
+.tag.hot{border-color:var(--clay); color:var(--clay); background:var(--clay-soft)}
+.tag.on{border-color:var(--accent); color:var(--accent); background:var(--accent-soft)}
+
+/* ---------- generic panels ---------- */
+section.block{margin-top:56px; display:flex; flex-direction:column; gap:18px}
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:22px 24px; box-shadow:var(--shadow)}
+.panel h3{margin-bottom:10px}
+.grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px}
+ul.tight{margin:0; padding-left:1.1em; display:flex; flex-direction:column; gap:7px}
+ul.tight li::marker{color:var(--accent)}
+ul.none{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px}
+.flag{display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:start}
+.flag .dot{width:9px;height:9px;border-radius:50%;background:var(--clay); margin-top:.5em}
+.flag .dot.warn{background:var(--ochre)}
+
+/* ---------- slide cards ---------- */
+.deck{display:flex; flex-direction:column; gap:0; margin-top:8px}
+.slide{
+  display:grid; grid-template-columns:76px 1fr; gap:0;
+  border-left:1px solid var(--line);
+}
+.slide .rail{
+  position:relative; padding:26px 14px 26px 0; display:flex; flex-direction:column; gap:4px; align-items:flex-start;
+}
+.slide .rail::before{
+  content:""; position:absolute; left:-5px; top:32px; width:9px; height:9px; border-radius:50%;
+  background:var(--accent); box-shadow:0 0 0 4px var(--paper);
+}
+.slide[data-mode="live"] .rail::before{background:var(--clay)}
+.slide[data-mode="flash"] .rail::before{background:var(--ochre)}
+.slide[data-mode="fixed"] .rail::before{background:var(--muted)}
+.slide .num{font-family:ui-monospace,Menlo,monospace; font-size:1.05rem; font-weight:600; color:var(--ink); padding-left:14px; font-variant-numeric:tabular-nums}
+.slide .clock{font-family:ui-monospace,Menlo,monospace; font-size:.72rem; color:var(--muted); padding-left:14px; font-variant-numeric:tabular-nums}
+.slide .card{padding:22px 0 34px}
+.chips{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:12px}
+.chip{
+  font-family:ui-monospace,Menlo,monospace; font-size:.68rem; letter-spacing:.03em;
+  padding:.28em .55em; border-radius:2px; border:1px solid var(--line); color:var(--muted); background:var(--surface);
+}
+.chip.lay{color:var(--ink-2)}
+.chip.m-slide{border-color:var(--accent); background:var(--accent-soft); color:var(--accent)}
+.chip.m-live{border-color:var(--clay); background:var(--clay-soft); color:var(--clay)}
+.chip.m-flash{border-color:var(--ochre); background:var(--ochre-soft); color:var(--ochre)}
+.chip.m-fixed{border-style:dashed}
+.slide h3{margin-bottom:12px}
+.cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:16px; margin-top:6px}
+.col{background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:14px 16px}
+.col h4{margin:0 0 8px; font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-family:ui-monospace,Menlo,monospace; font-weight:600}
+.col.clinical h4{color:var(--clay)}
+.col.fabric h4{color:var(--accent)}
+.col p, .col li{font-size:.93rem; color:var(--ink-2)}
+.visual{
+  margin-top:14px; border:1px dashed var(--line); border-radius:4px; padding:13px 16px;
+  background:transparent; font-size:.93rem; color:var(--ink-2);
+}
+.visual b{color:var(--ink); font-weight:600}
+.say{margin-top:14px; padding-left:14px; border-left:3px solid var(--ochre); font-family:ui-serif,"Iowan Old Style",Georgia,serif; font-size:1.02rem; color:var(--ink)}
+.fabline{margin-top:14px; display:grid; grid-template-columns:auto 1fr; gap:9px; align-items:baseline; font-size:.88rem; color:var(--accent)}
+.fabline .k{font-family:ui-monospace,Menlo,monospace; font-size:.67rem; letter-spacing:.1em; text-transform:uppercase}
+.fallback{margin-top:10px; font-size:.85rem; color:var(--muted)}
+.break{
+  grid-column:1/-1; margin:0 0 0 -1px; padding:16px 0 16px 90px; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  background:var(--surface-2);
+}
+.break .lbl{font-family:ui-monospace,Menlo,monospace; font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; color:var(--muted)}
+.break .t{font-family:ui-serif,"Iowan Old Style",Georgia,serif; font-size:1.25rem; font-weight:600}
+
+/* ---------- tables ---------- */
+.tblwrap{overflow-x:auto; border:1px solid var(--line); border-radius:4px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-size:.9rem; min-width:560px}
+th,td{text-align:left; padding:9px 13px; border-bottom:1px solid var(--line); vertical-align:top}
+th{font-family:ui-monospace,Menlo,monospace; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:600}
+tr:last-child td{border-bottom:none}
+td.num{font-variant-numeric:tabular-nums; text-align:right}
+footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--line); color:var(--muted); font-size:.85rem}
+</style>
+
+<div class="wrap">
+<header class="head">
+  <div class="eyebrow">FabCon 2026 &middot; 60-minute breakout &middot; Level 300</div>
+  <h1>From Notebook to Bedside</h1>
+  <p class="sub">Slide-by-slide build order for the session deck, mapped onto the supplied speaker template. Every content slide carries two halves: what it means for the patient, and the Fabric mechanic that makes it defensible. The template is not modified — only its existing layouts are reused.</p>
+  <div class="metarow">
+    <span class="tag on">Template layouts only</span>
+    <span class="tag">13.33 &times; 7.5 in &middot; Calibri / Calibri Light</span>
+    <span class="tag">27 slides &middot; 2 locked</span>
+    <span class="tag">~53 min content + 5 Q&amp;A</span>
+    <span class="tag hot">6 live demos</span>
+  </div>
+</header>
+
+<section class="block">
+  <h2>Rules the template imposes</h2>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Do not touch</h3>
+      <ul class="tight">
+        <li><b>Slide 1</b> — branded splash. Notes say: "The speaker should not edit, move or delete this slide."</li>
+        <li><b>Final slide</b> — "Rate This Session". Same instruction. Keep it last.</li>
+        <li>Masters, the 12 layouts, theme colours, Calibri/Calibri Light. No new fonts, no recoloured chrome.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>What you are allowed to do</h3>
+      <ul class="tight">
+        <li>Add slides, as many as needed, each one built on an existing layout.</li>
+        <li>Delete the title text box on any content layout (the notes explicitly permit it).</li>
+        <li>Resize the body font to fit. Drop tables, charts, images, video into the visual-data placeholders.</li>
+        <li>Delete the sample slides that come with the file once you have taken the layout you need from each.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>The nine layouts this deck uses</h3>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>Short name used below</th><th>Layout name in the template</th><th>Used for</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">SPLASH</td><td>Splash Screen</td><td>Slide 1 only, untouched</td></tr>
+          <tr><td class="mono">SECTION</td><td>Section Break Slide</td><td>Title slide + the six segment breaks</td></tr>
+          <tr><td class="mono">TEXT</td><td>Main Content : Title + Text Box</td><td>Single-column talk slides, live-demo anchors</td></tr>
+          <tr><td class="mono">DUAL-TEXT</td><td>Main Content : Title + Dual Text Box</td><td>Clinical half / Fabric half side by side</td></tr>
+          <tr><td class="mono">DUAL-TEXT-DARK</td><td>Main Content - Dark BKG : Title + Dual Text Box</td><td>The regulatory frame — dark = the constraint slides</td></tr>
+          <tr><td class="mono">VISUAL</td><td>Main Content : Visual Data</td><td>Full-bleed screenshots, appendix fallbacks</td></tr>
+          <tr><td class="mono">TITLE+VISUAL</td><td>Main Content : Title + Visual Data</td><td>One chart or diagram with a headline</td></tr>
+          <tr><td class="mono">VISUAL+TEXT</td><td>Main Content : Visual Data + Text</td><td>Patient card, agent grounding diagram</td></tr>
+          <tr><td class="mono">DUAL-VISUAL</td><td>Main Content : Title + Dual Visual Data</td><td>Two charts that argue with each other</td></tr>
+          <tr><td class="mono">DARK+VISUAL</td><td>Main Content - Dark BKG : Title + Visual Data</td><td>Endpoint contract, closing architecture</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <h2>Decide these before building</h2>
+  <div class="panel">
+    <ul class="none">
+      <li class="flag"><span class="dot"></span><div><b>The template is FabCon Europe / SQLEurope 26 branded</b> (<code>EMFCC26_SpeakerPPT_TemplateA</code>), and the splash notes name "FabConEurope+SQLEurope26". The session plan on file targets FabCon US, Atlanta, 28 Sept. If the talk is the Atlanta one, ask the organisers for Template A for that event — the splash and closing slides are event-branded and cannot be edited into shape.</div></li>
+      <li class="flag"><span class="dot"></span><div><b>Margaret must be synthetic, not a de-identified real record.</b> The plan picks her from the NHS PROMs test set; the clinician app ships a fictional trust (Marrowfield Orthopaedic Centre) over a generated cohort. Two provenance stories on one stage invites exactly the question you do not want. Recommendation: make Margaret a fixture patient from <code>src/services/fixtures.ts</code>, keep the synthetic banner visible, and say so once out loud in slide 4.</div></li>
+      <li class="flag"><span class="dot warn"></span><div><b>Two numbers are still missing from the story.</b> PR-AUC per model (the report's Table 5 caption promises it) and a calibration figure for the calibrated EBM — Brier score, or observed-vs-predicted in the top risk decile. Slides 14 and 16 both have a hole until those exist.</div></li>
+      <li class="flag"><span class="dot warn"></span><div><b>The title slide carries "Do not record or livestream this session."</b> Keep it only if true; delete the line otherwise.</div></li>
+      <li class="flag"><span class="dot warn"></span><div><b>Recall is 3.3%.</b> Someone in a Level 300 room will say so. It is owned head-on in slide 14 and turned into the ops arithmetic in slide 16 — do not let it surface first in Q&amp;A.</div></li>
+    </ul>
+  </div>
+</section>
+
+<section class="block">
+  <h2>Slide by slide</h2>
+  <p class="sub">Clock times are cumulative from the top of the hour and assume the run-of-show in the session plan. <span class="mono">Slides</span> = you are talking to the slide. <span class="mono">Flash</span> = up for 20&ndash;30 s as a demo anchor, then you switch to Fabric. <span class="mono">Live</span> = the slide is the landing pad you return to.</p>
+
+  <div class="deck">
+
+    <article class="slide" data-mode="fixed">
+      <div class="rail"><span class="num">01</span><span class="clock">0:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">SPLASH</span><span class="chip m-fixed">Locked &middot; do not edit</span></div>
+        <h3>Event splash</h3>
+        <p class="col" style="border:none;background:transparent;padding:0">Ships with the template. Leave it exactly as it is, including the notes page.</p>
+      </div>
+    </article>
+
+    <article class="slide" data-mode="slide">
+      <div class="rail"><span class="num">02</span><span class="clock">0:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">SECTION</span><span class="chip m-slide">Slides &middot; 30 s</span></div>
+        <h3>Title slide</h3>
+        <div class="visual"><b>On slide, in the template's own fields:</b> "From Notebook to Bedside" / "Building a clinical risk prediction pipeline in Fabric" &mdash; then two presenter blocks: name, title, company, country. Keep or delete the recording line per the flag above.</div>
+        <div class="say">"Two of us, one patient, and sixty minutes to get a risk score from a CSV to a clinician's screen without it ever leaving the governed estate."</div>
+      </div>
+    </article>
+
+    <article class="slide" data-mode="slide">
+      <div class="rail"><span class="num">03</span><span class="clock">0:30</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">TITLE+VISUAL</span><span class="chip m-slide">Slides &middot; 90 s</span></div>
+        <h3>1,000 knees</h3>
+        <div class="visual"><b>Visual V1 — waffle grid, 1,000 dots.</b> 170 dots in clay, 830 in neutral. Caption under it: "Poor outcome = Oxford Knee Score gain of 7 points or fewer at six months — at or below the minimal clinically important difference. 16.98% of the NHS PROMs knee cohort, 2016–2019." Second caption, smaller: "~893 knee replacements a week. ~152 of them land in the clay."</div>
+        <div class="say">"The surgery went fine. The knee is in, the wound healed, the audit is clean — and a year later 170 of these people would not do it again. That is the number this session is about. Not an AUC."</div>
+        <div class="fabline"><span class="k">Why Fabric</span><span>Nothing yet. Earn the platform argument; do not open with it.</span></div>
+      </div>
+    </article>
+
+    <article class="slide" data-mode="slide">
+      <div class="rail"><span class="num">04</span><span class="clock">2:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">VISUAL+TEXT</span><span class="chip m-slide">Slides &middot; 60 s</span></div>
+        <h3>Margaret, 68, awaiting a knee</h3>
+        <div class="cols">
+          <div class="col clinical"><h4>Visual half — the patient card</h4><p>Mock the card as it will actually look in the clinician app: baseline OKS, EQ-5D-3L, symptom period, previous surgery, comorbidity count, listed date. One pill: <b>awaiting surgery</b>. One line in the corner: <b>synthetic patient</b>.</p></div>
+          <div class="col fabric"><h4>Text half — the promise</h4><p>Three lines, nothing more:<br>"She is one row in a Lakehouse table."<br>"By the end of the hour she has a calibrated risk, six reasons, and a clinician's recorded decision."<br>"Every one of those artefacts stays inside one workspace."</p></div>
+        </div>
+        <div class="say">"Margaret is the only patient in this talk. Every stage answers the same two questions: what does this mean for her, and could we defend it to a regulator."</div>
+        <div class="fabline"><span class="k">Why Fabric</span><span>Plant the recurring callback you will repeat six times: same OneLake data, still labelled, still lineage-traced.</span></div>
+      </div>
+    </article>
+
+    <article class="slide" data-mode="slide">
+      <div class="rail"><span class="num">05</span><span class="clock">3:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">DUAL-TEXT-DARK</span><span class="chip m-slide">Slides &middot; 75 s</span></div>
+        <h3>This is a high-risk system. By law.</h3>
+        <div class="cols">
+          <div class="col clinical"><h4>Left — the obligation</h4><ul class="tight"><li><b>EU AI Act:</b> clinical decision support is high-risk — risk management, transparency, human oversight, record-keeping.</li><li><b>GDPR Art. 22:</b> a person subject to a (semi-)automated decision is owed a meaningful explanation.</li></ul></div>
+          <div class="col fabric"><h4>Right — what that forces on the build</h4><ul class="tight"><li>Interpretable model, not a post-hoc story about one.</li><li>Local explanation per patient.</li><li><b>Calibrated</b> probabilities — a risk number has to mean what it says.</li><li>Permission-aware delivery, and a recorded human decision.</li><li>Reconstructible training input, months later.</li></ul></div>
+        </div>
+        <div class="say">"Everything technical in the next fifty minutes is downstream of this slide. None of it is taste."</div>
+        <div class="fabline"><span class="k">Why Fabric</span><span>Frame the platform as the thing that makes five compliance obligations into five features you already have.</span></div>
+      </div>
+    </article>
+
+    <article class="slide" data-mode="slide">
+      <div class="rail"><span class="num">06</span><span class="clock">4:15</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">TITLE+VISUAL</span><span class="chip m-slide">Slides &middot; 45 s</span></div>
+        <h3>One estate, end to end</h3>
+        <div class="visual"><b>Visual V2 — the estate map.</b> Single horizontal strip, left to right: raw CSV drop &rarr; bronze &rarr; silver &rarr; gold &rarr; MLflow model &rarr; endpoint &rarr; SQL database in Fabric &rarr; clinician app &rarr; Data Agent. One boundary line drawn around the whole thing labelled <code>Healthcare-FabCon2026-Demo</code>. Two badges on the boundary: sensitivity label, Purview lineage. <b>This exact graphic returns as slide 25</b> — same geometry, stages lit up. Build it once.</div>
+        <div class="say">"Here is the whole hour on one slide. Nine stages. One workspace. Watch the boundary line — nothing crosses it, and that is the entire argument."</div>
+        <div class="fabline"><span class="k">Why Fabric</span><span>State the thesis outright, once: in a regulated domain, accuracy is the entry ticket — trust and governed delivery are what reach the bedside.</span></div>
+      </div>
+    </article>
+
+    <div class="break"><div class="lbl">Segment 2 &middot; 6 min &middot; live glance</div><div class="t">07 &nbsp;&mdash;&nbsp; Getting NHS PROMs into OneLake</div></div>
+
+    <article class="slide" data-mode="slide">
+      <div class="rail"><span class="num">08</span><span class="clock">5:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">DUAL-VISUAL</span><span class="chip m-slide">Slides &middot; 2 min</span></div>
+        <h3>Bronze, silver, gold — and why every table is Delta</h3>
+        <div class="cols">
+          <div class="col clinical"><h4>Left visual — V3, the medallion</h4><p>Vertical flow with the real table names, because real names are what make it credible:<br><code>Files/data/external/*.csv</code><br><code>bronze.knee_provider</code> — append-only, all strings, ingest metadata<br><code>silver.knee_episode</code> + <code>silver.provider</code> — typed, renamed, sentinels decoded, cohort applied<br><code>gold.knee_features</code> + <code>gold.knee_preop_cohort</code><br>Annotate the notebook that does each hop: <code>10_</code>, <code>20_</code>, <code>30_</code>.</p></div>
+          <div class="col fabric"><h4>Right visual — V4, parquet vs Delta</h4><p>Five-row tick table: Lakehouse <b>table</b> (SQL endpoint, Power BI, Data Agent) &middot; time travel &middot; audit history &middot; ACID &middot; MERGE. Parquet column: five crosses. Delta column: five ticks. Under it, one line of code:<br><code>SELECT * FROM gold.knee_features VERSION AS OF 7</code></p></div>
+        </div>
+        <div class="say">"Under the AI Act, record-keeping is an obligation. Time travel is the cheapest way in the world to satisfy it — the Delta version is one MLflow tag, and that one line reconstructs the exact training input months later. A folder of parquet cannot answer that question at all."</div>
+        <div class="fabline"><span class="k">Why Fabric</span><span>Anything you write to <code>Tables/</code> in a Lakehouse is already Delta. The compliance property is the default, not a project.</span></div>
+      </div>
+    </article>
+
+    <article class="slide" data-mode="live">
+      <div class="rail"><span class="num">09</span><span class="clock">7:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">TEXT</span><span class="chip m-flash">Flash 20 s &rarr; live 4 min</span></div>
+        <h3>Watch for three things</h3>
+        <div class="visual"><b>Three lines only, big.</b> 1. The gold table has human-readable column names. 2. The item carries a sensitivity label. 3. Purview lineage runs raw &rarr; gold, unbroken. Then switch to the workspace and show exactly those three, in that order, and nothing else.</div>
+        <div class="say">"Every downstream decision about Margaret is traceable to one row in here. Same estate, labelled, lineage-traced."</div>
+        <div class="fallback"><b>Fallback:</b> appendix slides A1–A3 — lakehouse tables, label dialog, lineage graph. VISUAL layout, full bleed.</div>
+      </div>
+    </article>
+
+    <div class="break"><div class="lbl">Segment 3 &middot; 7 min &middot; notebook</div><div class="t">10 &nbsp;&mdash;&nbsp; The minority class is the whole point</div></div>
+
+    <article class="slide" data-mode="slide">
+      <div class="rail"><span class="num">11</span><span class="clock">11:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">DUAL-VISUAL</span><span class="chip m-slide">Slides &middot; 2 min</span></div>
+        <h3>What the data does to you before you model</h3>
+        <div class="cols">
+          <div class="col clinical"><h4>Left visual — V5, missingness</h4><p>Missingness bar chart from <code>31_data_exploration</code>, worst fifteen features, percentages on the bars. Call out the two the report names: <code>t0_symptom_period</code> 0.79%, <code>t0_previous_surgery</code> 0.69% — and then the ones that are genuinely bad, so the contrast lands. Annotation: MICE, and one sentence on why not mean-fill a symptom period.</p></div>
+          <div class="col fabric"><h4>Right visual — V6, the imbalance</h4><p>Stacked bar: 83.02% good / <b>16.98% poor</b>. Beside it the ROC-vs-PR pair for the same model, same scale, so the room sees ROC flatter the problem. Label the PR curve "the one we optimise".</p></div>
+        </div>
+        <div class="say">"Ignoring the minority class here is not a metric choice, it is patient harm. An accuracy-optimised model that says 'good outcome' to everybody is 83% right and clinically worthless."</div>
+        <div class="fabline"><span class="k">Why Fabric</span><span>Notebook reads the gold Delta table directly — no extract, no local copy of patient data on a laptop. Turn autologging <b>off</b>: Fabric's default logs accuracy-first metrics for a problem where accuracy misleads.</span></div>
+      </div>
+    </article>
+
+    <article class="slide" data-mode="live">
+      <div class="rail"><span class="num">12</span><span class="clock">13:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">DUAL-TEXT</span><span class="chip m-flash">Flash 40 s &rarr; live 5 min</span></div>
+        <h3>Precision first — and who pays for each error</h3>
+        <div class="cols">
+          <div class="col clinical"><h4>False positive</h4><p>We tell a patient who would have done well that surgery may not help. They may forgo it. <b>Unrecoverable.</b> This is why precision wins.</p></div>
+          <div class="col fabric"><h4>False negative</h4><p>We miss someone who will not improve much. They have the surgery, gain less than 7 points, and are counselled no differently than today. <b>Bad, and survivable.</b></p></div>
+        </div>
+        <div class="visual">Then go live in <code>31_data_exploration</code> / <code>42_threshold_analysis</code>: missingness pattern, class balance, PR curve, and the SMOTE-vs-class-weights comparison that ends with "the balanced-weight variants were not better".</div>
+        <div class="say">"The asymmetry chooses the metric. Nothing else does."</div>
+        <div class="fallback"><b>Fallback:</b> pre-run notebook, outputs cached. Appendix A4 has the PR curve as a static image. <b>Compress here first</b> if you are running long.</div>
+      </div>
+    </article>
+
+    <div class="break"><div class="lbl">Segment 4 &middot; 11 min &middot; notebook &middot; hero 1</div><div class="t">13 &nbsp;&mdash;&nbsp; A model a clinician can argue with</div></div>
+
+    <article class="slide" data-mode="slide">
+      <div class="rail"><span class="num">14</span><span class="clock">19:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">TITLE+VISUAL</span><span class="chip m-slide">Slides &middot; 2 min</span></div>
+        <h3>Three models, honest numbers</h3>
+        <div class="visual"><b>Visual V7 — the comparison table, held-out test set at &tau; = 0.8.</b> Build it as a real table, tabular numerals, the EBM row tinted:
+        <div class="tblwrap" style="margin-top:10px">
+          <table>
+            <thead><tr><th>Model</th><th class="num">Flagged</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">F1</th><th class="num">FP</th><th>Interpretability</th></tr></thead>
+            <tbody>
+              <tr><td>Logistic regression</td><td class="num">18</td><td class="num">1.000</td><td class="num">0.003</td><td class="num">0.007</td><td class="num">0</td><td>glassbox</td></tr>
+              <tr><td>Random forest</td><td class="num">158</td><td class="num">0.969</td><td class="num">0.033</td><td class="num">0.064</td><td class="num">5</td><td>post-hoc SHAP</td></tr>
+              <tr><td><b>EBM (shipped)</b></td><td class="num">169</td><td class="num">0.941</td><td class="num">0.033</td><td class="num">0.064</td><td class="num">10</td><td><b>glassbox</b></td></tr>
+            </tbody>
+          </table>
+        </div>
+        Add one more row of evidence beside the table: EBM precision across splits <b>96.2 / 95.7 / 94.1</b> against RF's <b>100 / 92</b> train-to-validation swing. <span class="mono">TODO: PR-AUC column once computed.</span></div>
+        <div class="say">"Read the recall column and then let me say it before you do: three per cent. This model is deliberately, almost absurdly conservative, because the false positive is the error that cannot be taken back. And the EBM does not win on the headline — it ties the random forest and then beats it on the thing that matters, which is not moving when you change the split."</div>
+        <div class="fabline"><span class="k">Why Fabric</span><span><code>interpretability: glassbox | post_hoc_shap | blackbox</code> is an MLflow <b>tag</b>, which makes it a queryable deployment gate. "Show me every black-box model anyone trained here" is one call.</span></div>
+      </div>
+    </article>
+
+    <article class="slide" data-mode="live">
+      <div class="rail"><span class="num">15</span><span class="clock">21:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">TEXT</span><span class="chip m-flash">Flash 25 s &rarr; live 7 min &middot; hero 1</span></div>
+        <h3>The model shows its work</h3>
+        <div class="visual"><b>Anchor, three lines:</b> "Global: the shape function for baseline OKS." / "Local: six contributions for Margaret." / "Contrast: the same patient through the random forest, via SHAP." Then live in <code>43_explainability</code> — EBM shape functions, then Margaret's contribution bars, then the RF/SHAP contrast on the same patient. Say the additive identity out loud once: risk is <code>sigmoid(intercept + &Sigma; f&#8321;(x&#8321;))</code>, and the bars <b>are</b> those terms.</div>
+        <div class="say">"A regulator can read this. A clinician can disagree with it and point at which curve they disagree with. That conversation cannot happen with a black box — and under the AI Act, 'trust me, the SHAP values look reasonable' is not a defence."</div>
+        <div class="fallback"><b>Fallback:</b> pre-run notebook plus appendix A5–A6 as exported plots.</div>
+      </div>
+    </article>
+
+    <article class="slide" data-mode="slide">
+      <div class="rail"><span class="num">16</span><span class="clock">28:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">DUAL-VISUAL</span><span class="chip m-slide">Slides &middot; 2 min</span></div>
+        <h3>A number that means what it says — and where we put the line</h3>
+        <div class="cols">
+          <div class="col clinical"><h4>Left visual — V8, calibration</h4><p>Reliability curve for the calibrated EBM, diagonal reference, decile bins, counts per bin annotated. Headline above it: "72% has to mean 72 out of 100." <span class="mono">TODO: Brier score, or observed rate in the top decile.</span></p></div>
+          <div class="col fabric"><h4>Right visual — V9, threshold sweep</h4><p>Precision and flagged-count against threshold, 0.5 &rarr; 0.8, marker on 0.8. Beside it the weekly arithmetic, four lines: 893 surgeries a week &middot; ~152 poor outcomes &middot; model flags <b>4&ndash;5</b> &middot; and those 4&ndash;5 get a longer conversation, not a cancellation.</p></div>
+        </div>
+        <div class="say">"This is the slide where we stop selling. At 0.8 we reach four or five people a week out of a hundred and fifty. That is a small, real, defensible intervention — and the honest evaluation problem is that we never observe the counterfactual for the patient who declines surgery, so we measure this at population level, over years."</div>
+        <div class="fabline"><span class="k">Why Fabric</span><span><code>calibrated: true|false</code> is a tag too, and the rule it encodes is absolute: an uncalibrated probability must never reach a clinician. The threshold sweep is materialised as <code>ThresholdOption</code>, so the app can show the operating point it is actually running at.</span></div>
+      </div>
+    </article>
+
+    <article class="slide" data-mode="slide">
+      <div class="rail"><span class="num">17</span><span class="clock">30:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">DUAL-TEXT</span><span class="chip m-slide">Slides &middot; 90 s</span></div>
+        <h3>What an auditor actually asks for</h3>
+        <div class="cols">
+          <div class="col clinical"><h4>The question, two years later</h4><p>"Reconstruct the exact input this model was trained on, and show me who approved it."</p><p style="margin-top:8px">Most teams cannot answer. Not because they were careless — because the answer was never written down anywhere it could be queried.</p></div>
+          <div class="col fabric"><h4>The MLflow tag scheme that answers it</h4><p><code>gold_table</code> + <code>gold_table_version</code> &mdash; the Delta version. "Trained on gold" becomes "trained on gold as of version 7", which time travel reconstructs exactly. <b>This is the one they ask for.</b><br><code>feature_set_version</code> &mdash; bump when the feature list changes, or two incomparable runs look comparable.<br><code>model_role</code> &mdash; champion vs the challenger you keep for on-stage contrast.<br><code>approved_by</code> &mdash; empty at training time, set later. Tags are mutable; that is precisely why approval is a tag and not a param.</p></div>
+        </div>
+        <div class="say">"Params for what you compare, metrics for what you plot, tags for what you filter and later change. Get that split wrong and your experiment UI is unusable in a month — and your audit trail is unusable in a year."</div>
+        <div class="fabline"><span class="k">Why Fabric</span><span>MLflow is the workspace's own experiment store. The lineage from Delta version to registered model version to scored row never leaves the estate — and never depends on someone's naming discipline in a folder of pickles.</span></div>
+      </div>
+    </article>
+
+    <div class="break"><div class="lbl">Segment 5 &middot; 7 min &middot; live &middot; hero 2</div><div class="t">18 &nbsp;&mdash;&nbsp; From registered model to something you can call</div></div>
+
+    <article class="slide" data-mode="live">
+      <div class="rail"><span class="num">19</span><span class="clock">31:30</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">DARK+VISUAL</span><span class="chip m-flash">Flash 60 s &rarr; live 4 min &middot; hero 2</span></div>
+        <h3>The response contract</h3>
+        <div class="visual"><b>Visual V10 — the payload, as code on a dark slide.</b> Show the response shape, not a UML diagram: <code>episode_id</code>, <code>risk</code> (calibrated), <code>threshold</code>, <code>flagged</code>, <code>contributions[6]</code> with feature + signed value, <code>model_version</code>, <code>gold_table_version</code>. Highlight the last two in the accent colour. Underneath, three words: versioned, authenticated, in-estate.</div>
+        <div class="say">"The two fields nobody remembers to return are the two an auditor needs: which model version answered, and which data version it was trained on. Put them in the contract and provenance stops being a spreadsheet somebody maintains by hand. And note what is not happening — no model.pkl emailed to anyone."</div>
+        <div class="fabline"><span class="k">Why Fabric</span><span>Registered ML model &rarr; managed real-time endpoint inside the workspace. Auth is Entra, the model is versioned, and the batch path (<code>50_batch_score</code> &rarr; <code>gold.patient_risk</code> + <code>gold.risk_explanation</code>) writes the same contract back into gold for the app to read.</span></div>
+        <div class="fallback"><b>Fallback:</b> recorded clip of the call and response; appendix A7 holds the response as a still.</div>
+      </div>
+    </article>
+
+    <div class="break"><div class="lbl">Segment 6 &middot; 8 min &middot; live &middot; hero 3a</div><div class="t">20 &nbsp;&mdash;&nbsp; The bedside: a governed clinician app</div></div>
+
+    <article class="slide" data-mode="live">
+      <div class="rail"><span class="num">21</span><span class="clock">37:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">TITLE+VISUAL</span><span class="chip m-flash">Flash 90 s &rarr; live 5 min &middot; hero 3a</span></div>
+        <h3>Seven TypeScript classes become an application</h3>
+        <div class="visual"><b>Visual V11 — left/right arrow diagram.</b> Left: a decorated entity class from <code>rayfin/data/</code>, ten lines, real code. Right: the four things <code>rayfin up</code> provisions — SQL database in Fabric, GraphQL through Data API Builder, Entra ID sign-in, static hosting. All four inside the workspace boundary from slide 6. One command under it: <code>npx rayfin up --workspace "Healthcare-FabCon2026-Demo"</code>. Then live: the deployed app, Margaret's row, her risk, her six bars, and a clinician recording a decision.</div>
+        <div class="cols">
+          <div class="col clinical"><h4>What the clinician sees</h4><p>Their inbox of pre-op patients, one flagged. Margaret's score with the operating point beside it, her six contributions, her full pre-operative record, the model card, and a decision to record. <b>The recorded decision is the human-oversight artefact</b> the AI Act asks for.</p></div>
+          <div class="col fabric"><h4>What replaced what</h4><p>This is the slide where the old FastAPI + React box on a VM dies. Same model, same explanation — but auth, hosting, database and API are now workspace objects with workspace permissions, provisioned from the data model instead of assembled by hand.</p></div>
+        </div>
+        <div class="say">"Code-first data model, one command, and the thing that comes out the other end is secured and OneLake-integrated on day one — not after a security review."</div>
+        <div class="fallback"><b>Fallback:</b> <code>npm run dev:offline</code> on localhost:5173 — synthetic cohort, local identity, visible banner. It needs no Fabric, no Entra and no network, and it is the thing you run if the tenant misbehaves five minutes before you go on.</div>
+      </div>
+    </article>
+
+    <article class="slide" data-mode="live">
+      <div class="rail"><span class="num">22</span><span class="clock">44:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">DUAL-VISUAL</span><span class="chip m-live">Live &middot; 90 s &middot; the money moment</span></div>
+        <h3>Open devtools and try to see someone else's patient</h3>
+        <div class="cols">
+          <div class="col clinical"><h4>Left visual — V12, the policy</h4><p>The row-level policy, on screen, four lines:</p><p><code>policy: (claims, item) =&gt; claims.sub.eq(item.assignedClinicianId)</code></p><p>Plus the two-tier entity split: patient-scoped entities carry a policy; model-scoped ones (<code>CohortStat</code>, <code>ModelCurve</code>, <code>ThresholdOption</code>, <code>ModelCard</code>) describe the model, not a patient — and cohort bins under five are suppressed.</p></div>
+          <div class="col fabric"><h4>Right visual — V13, where it is enforced</h4><p>Two boxes, one crossed out. Frontend filter: crossed out. Data API Builder: enforced. Caption: "<code>RayfinDataService</code> contains no WHERE clause on clinician, deliberately."</p></div>
+        </div>
+        <div class="say">"So rewrite the GraphQL query in devtools and ask for the whole cohort. You get your own patients back. Paste a colleague's episode id into the URL — the deep link re-queries, and it returns nothing. The filter is not in the app I wrote, which is the only place a filter is worth anything."</div>
+        <div class="fabline"><span class="k">Why Fabric</span><span>Widening <code>PatientRisk</code> from eight columns to forty did not widen the disclosure by one row. Policies filter rows, not fields.</span></div>
+      </div>
+    </article>
+
+    <div class="break"><div class="lbl">Segment 7 &middot; 8 min &middot; live &middot; hero 3b</div><div class="t">23 &nbsp;&mdash;&nbsp; Asking the estate a question in English</div></div>
+
+    <article class="slide" data-mode="live">
+      <div class="rail"><span class="num">24</span><span class="clock">45:30</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">VISUAL+TEXT</span><span class="chip m-flash">Flash 90 s &rarr; live 5 min &middot; hero 3b</span></div>
+        <h3>A grounded answer, or no answer</h3>
+        <div class="cols">
+          <div class="col clinical"><h4>Visual half — V14, grounding path</h4><p>Question &rarr; Data Agent &rarr; Fabric IQ semantic layer &rarr; <code>gold.patient_risk</code> + <code>gold.risk_explanation</code> + <code>silver.provider</code> &rarr; cited answer. Draw the same workspace boundary as slide 6 around everything, and mark the permission check <b>on the way in</b>, not on the way out.</p></div>
+          <div class="col fabric"><h4>Text half — the four scripted questions</h4><ul class="tight"><li>"Which of my pre-op patients are flagged, and why?"</li><li>"Why is Margaret flagged — which factors contributed most?"</li><li>"How does our flag rate compare with other providers?"</li><li>"What happens to the flagged count if we move the threshold to 0.7?"</li></ul><p style="margin-top:8px">Then ask one you <b>cannot</b> answer, on purpose, and let it decline.</p></div>
+        </div>
+        <div class="say">"It answers from governed tables, under the same permissions as the app, with citations you can click through to the row. And when the question is outside what it can ground, the right behaviour is to say so — which is the one thing a general-purpose chatbot bolted onto a database will never do."</div>
+        <div class="fallback"><b>Fallback:</b> recorded clip of all four questions, timed. Appendix A8 has the cited answer as a still.</div>
+      </div>
+    </article>
+
+    <div class="break"><div class="lbl">Segment 8 &middot; 3 min &middot; slides</div><div class="t">Close</div></div>
+
+    <article class="slide" data-mode="slide">
+      <div class="rail"><span class="num">25</span><span class="clock">52:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">DARK+VISUAL</span><span class="chip m-slide">Slides &middot; 2 min</span></div>
+        <h3>Why Fabric, now that we have earned it</h3>
+        <div class="visual"><b>Visual V2 again — the estate map, lit.</b> Identical geometry to slide 6, every stage now filled in, and the six callbacks you have been repeating annotated on the strip: Delta version &middot; sensitivity label &middot; lineage &middot; glassbox tag &middot; RLS policy &middot; grounded agent. Nothing crosses the boundary line. Reusing the same graphic is the point — the room recognises it.</div>
+        <div class="say">"The data lives in OneLake. The modelling happens on it in place. The decision is delivered from it. No copies, no ungoverned exports, one lineage from a raw NHS row to a clinician's recorded decision about Margaret. In a regulated domain, accuracy is only the entry ticket — this is where a model earns trust and reaches the bedside without ever leaving the governed estate."</div>
+        <div class="fabline"><span class="k">Why Fabric</span><span>Data, analytics and decision in one governed place. Say the line, then stop talking.</span></div>
+      </div>
+    </article>
+
+    <article class="slide" data-mode="slide">
+      <div class="rail"><span class="num">26</span><span class="clock">54:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">DUAL-TEXT</span><span class="chip m-slide">Slides &middot; 60 s</span></div>
+        <h3>Take these five things back to work</h3>
+        <div class="cols">
+          <div class="col clinical"><h4>The transferable list</h4><ul class="tight"><li>Make every table Delta and log <code>gold_table_version</code> as a tag. One line of work, and your audit story is done.</li><li>Turn Fabric autologging off and log explicitly.</li><li>Make <code>interpretability</code> a tag, so it can be a gate.</li><li>Enforce row-level access in Data API Builder, never in your frontend.</li><li>Ship an offline fixture mode — it is your demo insurance and your test fixture at the same time.</li></ul></div>
+          <div class="col fabric"><h4>Where to get it</h4><p>QR code to the repo: the ten Fabric notebooks, the medallion and MLflow design notes, the Rayfin app with its offline mode, and the model card.</p><p style="margin-top:8px">Both presenter handles. One line: "The patients you saw are synthetic. The dataset, the Oxford Knee Score and the 7-point MCID are real."</p></div>
+        </div>
+        <div class="say">"Five things, none of which need a healthcare dataset to be useful to you on Monday."</div>
+      </div>
+    </article>
+
+    <article class="slide" data-mode="fixed">
+      <div class="rail"><span class="num">27</span><span class="clock">55:00</span></div>
+      <div class="card">
+        <div class="chips"><span class="chip lay">Dark Content (White Background)</span><span class="chip m-fixed">Locked &middot; do not edit</span></div>
+        <h3>Rate This Session</h3>
+        <p style="color:var(--ink-2); font-size:.93rem">Ships with the template, stays last. Leave it up through Q&amp;A — five minutes, and the appendix reserve slides below are what you answer from.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section class="block">
+  <h2>Appendix — hidden slides</h2>
+  <p class="sub">All on <span class="mono">VISUAL</span> (visual-data only, full bleed) unless noted. Hidden, so they never appear in the linear run, and you jump to them by number. Print the numbers on your cue card.</p>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Demo fallbacks</h3>
+      <ul class="tight">
+        <li><b>A1–A3</b> Lakehouse tables, sensitivity label dialog, Purview lineage graph</li>
+        <li><b>A4</b> PR curve + class balance, static</li>
+        <li><b>A5–A6</b> EBM shape functions; Margaret's contributions + the RF/SHAP contrast</li>
+        <li><b>A7</b> Endpoint request/response, still</li>
+        <li><b>A8</b> Agent answer with citations, still</li>
+        <li><b>A9</b> Clinician app, patient detail, still</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Q&amp;A reserve <span class="mono" style="font-size:.7rem">(DUAL-TEXT)</span></h3>
+      <ul class="tight">
+        <li><b>A10</b> "Three per cent recall is useless" — the weekly arithmetic, the harm asymmetry, and what a higher-recall operating point would cost</li>
+        <li><b>A11</b> Retraining and drift — annual retrain on a rolling 3-year PROMs window, calibration monitored by subgroup (age, sex, comorbidity, deprivation)</li>
+        <li><b>A12</b> Fairness — performance across subgroups, and what is not yet measured</li>
+        <li><b>A13</b> Cost and capacity — SKU, what the endpoint and app cost to leave running</li>
+        <li><b>A14</b> External validity — trained on one cohort, not externally validated; what a pilot would have to show first</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <h2>Visual assets to build</h2>
+  <p class="sub">Fourteen graphics. Two are reused, so thirteen builds. Everything chart-shaped comes out of a notebook — export at 300 dpi, no chart titles (the slide's title box carries it), and check every colour against the template's own palette rather than matplotlib defaults.</p>
+  <div class="tblwrap">
+    <table>
+      <thead><tr><th>#</th><th>Asset</th><th>Slide</th><th>Source</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">V1</td><td>1,000-knee waffle</td><td>03</td><td>Hand-built from the 16.98% base rate</td><td>The only emotional graphic in the deck. Make it big and let it breathe.</td></tr>
+        <tr><td class="mono">V2</td><td>Estate map</td><td>06 + 25</td><td>Hand-built</td><td>Build once, two states: outline and lit. Identical geometry.</td></tr>
+        <tr><td class="mono">V3</td><td>Medallion flow</td><td>08</td><td><code>MEDALLION.md</code></td><td>Use the real table and notebook names.</td></tr>
+        <tr><td class="mono">V4</td><td>Parquet vs Delta ticks</td><td>08</td><td><code>MEDALLION.md</code></td><td>Native PowerPoint table, not an image.</td></tr>
+        <tr><td class="mono">V5</td><td>Missingness bars</td><td>11</td><td><code>31_data_exploration</code></td><td>Worst 15 features, percentages on bars.</td></tr>
+        <tr><td class="mono">V6</td><td>Imbalance + ROC vs PR</td><td>11</td><td><code>31_data_exploration</code></td><td>Same axes scale on both curves or the comparison is unfair.</td></tr>
+        <tr><td class="mono">V7</td><td>Three-model table</td><td>14</td><td>Report Tables 4–5</td><td>Native table. Tabular numerals. PR-AUC column still missing.</td></tr>
+        <tr><td class="mono">V8</td><td>Calibration curve</td><td>16</td><td><code>40_train_register</code></td><td>Annotate bin counts. Needs a Brier number.</td></tr>
+        <tr><td class="mono">V9</td><td>Threshold sweep</td><td>16</td><td><code>42_threshold_analysis</code></td><td>Marker at 0.8. Flagged count on the second axis.</td></tr>
+        <tr><td class="mono">V10</td><td>Endpoint payload</td><td>19</td><td>Endpoint contract</td><td>Code on the dark layout. Highlight the two version fields.</td></tr>
+        <tr><td class="mono">V11</td><td>Entity class → four provisioned objects</td><td>21</td><td><code>rayfin/data/</code></td><td>Real decorated class, ten lines, unedited.</td></tr>
+        <tr><td class="mono">V12</td><td>RLS policy + entity tiers</td><td>22</td><td>App README</td><td>The policy verbatim. Do not paraphrase code on this slide.</td></tr>
+        <tr><td class="mono">V13</td><td>Enforced-at-DAB diagram</td><td>22</td><td>Hand-built</td><td>Two boxes, one crossed out. Deliberately blunt.</td></tr>
+        <tr><td class="mono">V14</td><td>Agent grounding path</td><td>24</td><td>Hand-built</td><td>Permission check on the way in. Reuse the slide-6 boundary.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="block">
+  <h2>Time budget</h2>
+  <div class="tblwrap">
+    <table>
+      <thead><tr><th>Segment</th><th>Slides</th><th class="num">Slide min</th><th class="num">Live min</th><th class="num">Cumulative</th></tr></thead>
+      <tbody>
+        <tr><td>Framing &amp; stakes</td><td>02–06</td><td class="num">4.0</td><td class="num">—</td><td class="num">4:15</td></tr>
+        <tr><td>Ingestion</td><td>07–09</td><td class="num">2.3</td><td class="num">4.0</td><td class="num">11:00</td></tr>
+        <tr><td>Missingness &amp; imbalance</td><td>10–12</td><td class="num">2.7</td><td class="num">5.0</td><td class="num">19:00</td></tr>
+        <tr><td>Glass-box model &nbsp;<span class="mono" style="font-size:.7rem">hero 1</span></td><td>13–17</td><td class="num">5.5</td><td class="num">7.0</td><td class="num">31:30</td></tr>
+        <tr><td>Endpoint &nbsp;<span class="mono" style="font-size:.7rem">hero 2</span></td><td>18–19</td><td class="num">1.3</td><td class="num">4.0</td><td class="num">37:00</td></tr>
+        <tr><td>Governed delivery &nbsp;<span class="mono" style="font-size:.7rem">hero 3a</span></td><td>20–22</td><td class="num">2.0</td><td class="num">6.5</td><td class="num">45:30</td></tr>
+        <tr><td>Data Agent &nbsp;<span class="mono" style="font-size:.7rem">hero 3b</span></td><td>23–24</td><td class="num">1.5</td><td class="num">5.0</td><td class="num">52:00</td></tr>
+        <tr><td>Close</td><td>25–26</td><td class="num">3.0</td><td class="num">—</td><td class="num">55:00</td></tr>
+        <tr><td><b>Q&amp;A</b></td><td>27</td><td class="num">—</td><td class="num">5.0</td><td class="num"><b>60:00</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="panel">
+    <h3>If you are running long</h3>
+    <ul class="tight">
+      <li>Cut the SMOTE-vs-class-weights comparison in slide 12's live section first. Buys 2 minutes, costs nothing structural.</li>
+      <li>Then drop the RF/SHAP contrast inside hero 1 — slide 14 already makes the argument with numbers. Buys 2–3 minutes.</li>
+      <li>Never cut slide 22 (the devtools challenge) or slide 16 (calibration and the operating point). They are what separate this talk from a model demo.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  Drafted 12 Sept 2026 against <code>EMFCC26_SpeakerPPT_TemplateA</code> and the session plan of 25 July 2026. Slide numbers assume the template's sample content slides are deleted once each layout has been used. Metrics are from the project report's Tables 4–5 (held-out test set, &tau; = 0.8); the two marked <span class="mono">TODO</span> do not exist yet.
+</footer>
+</div>

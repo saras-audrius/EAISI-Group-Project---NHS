@@ -1,0 +1,274 @@
+@import 'tailwindcss';
+
+/* Marrowfield runs light or dark from a class on <html>, not from a media query
+   alone: a clinic room is often brighter than the OS setting assumes, so the
+   clinician gets an explicit switch. `useTheme` writes the class. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+   Marrowfield Orthopaedic Centre — identity tokens
+   A fictional trust invented for this demonstration. No real health
+   organisation is referenced, imitated, or approximated anywhere in here.
+
+   Two families, kept apart on purpose:
+
+   * surface / border / text / accent — the chrome. One accent only.
+   * risk-*                           — the four-band clinical ramp.
+
+   They never share a hue. A colour that means "interactive" must not also be
+   able to mean "this patient is at risk".
+   --------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  --mf-surface: #fbfaf8;
+  --mf-surface-sunken: #f2f0ec;
+  --mf-elevated: #ffffff;
+  --mf-border: #e2dfd9;
+  --mf-border-strong: #c9c5bd;
+  --mf-text-primary: #191c1a;
+  --mf-text-secondary: #585e5a;
+  --mf-text-inverse: #ffffff;
+
+  --mf-accent: #0b5c55;
+  --mf-accent-hover: #084a44;
+  --mf-accent-text: #084a44;
+  --mf-accent-fg: #ffffff;
+  --mf-accent-tint: #e6f1ef;
+
+  --mf-focus: #0b5c55;
+
+  /* The four-band ramp.
+
+     `ink`  is the readable text colour        — every pairing below is >= 4.5:1.
+     `mark` is the chart fill                  — every pairing is >= 3:1 (WCAG 1.4.11)
+                                                 and the four are monotone in
+                                                 greyscale (73 / 59 / 44 / 10),
+                                                 so a projector or a printer keeps
+                                                 the ordering that hue carried.
+     `tint` is the badge background.
+     `edge` outlines a fill so a pale mark still has an edge against the card.
+
+     Colour is never the only channel: RiskBadge also carries a four-block glyph,
+     the band name, and — in the charts — position on a shared scale. */
+  --mf-risk-low-ink: #1e7a5c;
+  --mf-risk-low-mark: #5e9e85;
+  --mf-risk-low-tint: #e4f2ec;
+  --mf-risk-low-edge: #1e7a5c;
+
+  --mf-risk-moderate-ink: #8a5a08;
+  --mf-risk-moderate-mark: #ae7a1c;
+  --mf-risk-moderate-tint: #f6ebd8;
+  --mf-risk-moderate-edge: #8a5a08;
+
+  --mf-risk-high-ink: #b0442a;
+  --mf-risk-high-mark: #c0512f;
+  --mf-risk-high-tint: #fae7e1;
+  --mf-risk-high-edge: #8f3a21;
+
+  --mf-risk-very-high-ink: #7a1230;
+  --mf-risk-very-high-mark: #6b1130;
+  --mf-risk-very-high-tint: #f7e2e7;
+  --mf-risk-very-high-edge: #560d26;
+
+  /* Non-band chart colours. `axis` and `grid` are deliberately weak — the data
+     should be the darkest thing in a chart. */
+  --mf-chart-axis: #8d918d;
+  --mf-chart-grid: #e6e3dd;
+  --mf-chart-neutral: #b6b1a8;
+  --mf-chart-you: #191c1a;
+  --mf-chart-increase: #b0442a;
+  --mf-chart-decrease: #1e7a5c;
+
+  --mf-warn-tint: #fdf3dd;
+  --mf-warn-border: #ddbe73;
+  --mf-warn-ink: #6b4c07;
+  --mf-danger-tint: #fae7e1;
+  --mf-danger-border: #e0a996;
+  --mf-danger-ink: #8f2f16;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --mf-surface: #121513;
+  --mf-surface-sunken: #0c0f0d;
+  --mf-elevated: #1a1e1c;
+  --mf-border: #2f3633;
+  --mf-border-strong: #46504b;
+  --mf-text-primary: #edf0ee;
+  --mf-text-secondary: #a6afaa;
+  --mf-text-inverse: #0a1310;
+
+  --mf-accent: #5fd3bc;
+  --mf-accent-hover: #7fe0cb;
+  --mf-accent-text: #7fe0cb;
+  --mf-accent-fg: #0a1310;
+  --mf-accent-tint: #12312c;
+
+  --mf-focus: #7fe0cb;
+
+  /* Dark-mode ramp greyscale: 70 / 76 / 84 / 141 — monotone the other way,
+     so "brighter = worse" reads correctly against a dark card. */
+  --mf-risk-low-ink: #4fbf95;
+  --mf-risk-low-mark: #4c9e82;
+  --mf-risk-low-tint: #12291f;
+  --mf-risk-low-edge: #4fbf95;
+
+  --mf-risk-moderate-ink: #d9a441;
+  --mf-risk-moderate-mark: #b98e3a;
+  --mf-risk-moderate-tint: #2b2113;
+  --mf-risk-moderate-edge: #d9a441;
+
+  --mf-risk-high-ink: #f0785a;
+  --mf-risk-high-mark: #de8464;
+  --mf-risk-high-tint: #31170f;
+  --mf-risk-high-edge: #f0785a;
+
+  --mf-risk-very-high-ink: #ff9bb0;
+  --mf-risk-very-high-mark: #ffaec0;
+  --mf-risk-very-high-tint: #33141c;
+  --mf-risk-very-high-edge: #ff9bb0;
+
+  --mf-chart-axis: #7c847f;
+  --mf-chart-grid: #2b312e;
+  --mf-chart-neutral: #5b635e;
+  --mf-chart-you: #edf0ee;
+  --mf-chart-increase: #f0785a;
+  --mf-chart-decrease: #4fbf95;
+
+  --mf-warn-tint: #2b2210;
+  --mf-warn-border: #6a5620;
+  --mf-warn-ink: #e8c465;
+  --mf-danger-tint: #2f1610;
+  --mf-danger-border: #6d3524;
+  --mf-danger-ink: #f6a48a;
+}
+
+/* `@theme inline` emits `--color-surface: var(--mf-surface)` rather than a
+   literal, which is what lets one class list serve both themes. */
+@theme inline {
+  --color-surface: var(--mf-surface);
+  --color-sunken: var(--mf-surface-sunken);
+  --color-elevated: var(--mf-elevated);
+  --color-line: var(--mf-border);
+  --color-line-strong: var(--mf-border-strong);
+  --color-ink: var(--mf-text-primary);
+  --color-muted: var(--mf-text-secondary);
+  --color-inverse: var(--mf-text-inverse);
+
+  --color-accent: var(--mf-accent);
+  --color-accent-hover: var(--mf-accent-hover);
+  --color-accent-text: var(--mf-accent-text);
+  --color-accent-fg: var(--mf-accent-fg);
+  --color-accent-tint: var(--mf-accent-tint);
+
+  --color-risk-low: var(--mf-risk-low-ink);
+  --color-risk-low-mark: var(--mf-risk-low-mark);
+  --color-risk-low-tint: var(--mf-risk-low-tint);
+  --color-risk-moderate: var(--mf-risk-moderate-ink);
+  --color-risk-moderate-mark: var(--mf-risk-moderate-mark);
+  --color-risk-moderate-tint: var(--mf-risk-moderate-tint);
+  --color-risk-high: var(--mf-risk-high-ink);
+  --color-risk-high-mark: var(--mf-risk-high-mark);
+  --color-risk-high-tint: var(--mf-risk-high-tint);
+  --color-risk-very-high: var(--mf-risk-very-high-ink);
+  --color-risk-very-high-mark: var(--mf-risk-very-high-mark);
+  --color-risk-very-high-tint: var(--mf-risk-very-high-tint);
+
+  --color-warn-tint: var(--mf-warn-tint);
+  --color-warn-border: var(--mf-warn-border);
+  --color-warn-ink: var(--mf-warn-ink);
+  --color-danger-tint: var(--mf-danger-tint);
+  --color-danger-border: var(--mf-danger-border);
+  --color-danger-ink: var(--mf-danger-ink);
+
+  /* System stack. Nothing is fetched at runtime: a hosted clinical app should
+     not make a third-party request to render its own text. */
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, 'Noto Sans', sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono',
+    monospace;
+
+  /* A five-step scale, tight at the bottom because this screen is a worklist.
+     Anything larger than `display` would be a marketing decision. */
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1rem;
+  --text-small: 0.8125rem;
+  --text-small--line-height: 1.25rem;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.5rem;
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.625rem;
+  --text-title: 1.5rem;
+  --text-title--line-height: 1.875rem;
+  --text-display: 2.75rem;
+  --text-display--line-height: 1;
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--mf-border);
+  }
+
+  html {
+    background-color: var(--mf-surface);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.5rem;
+    color: var(--mf-text-primary);
+    background-color: var(--mf-surface);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* One focus treatment everywhere, including inside SVG, so keyboard users get
+     the same affordance on a chart bar as on a button. */
+  :focus-visible {
+    outline: 2px solid var(--mf-focus);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Numbers in a clinical table have to line up column-wise to be scannable. */
+  table,
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer utilities {
+  /* Visible only to screen readers. Every chart has one of these holding its
+     data as text or a table — see `ChartFrame`. */
+  .sr-only-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
