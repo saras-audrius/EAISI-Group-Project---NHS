@@ -7,6 +7,8 @@ import App from '@/App';
 import { AuthProvider } from '@/hooks/AuthContext';
 import { OfflineAuthService } from '@/services/OfflineAuthService';
 import { OfflineDataService } from '@/services/OfflineDataService';
+import { LocalAgentService } from '@/services/agent/LocalAgentService';
+import { setAgentService } from '@/services/agent';
 import { fixturePatients } from '@/services/fixtures';
 import { setDataService } from '@/services/patients';
 
@@ -21,6 +23,7 @@ import { setDataService } from '@/services/patients';
  */
 function renderApp(route = '/') {
   setDataService(new OfflineDataService());
+  setAgentService(new LocalAgentService());
   return render(
     <AuthProvider authService={new OfflineAuthService()}>
       <MemoryRouter initialEntries={[route]}>
@@ -55,10 +58,23 @@ describe('sign-in', () => {
   });
 });
 
+describe('overview', () => {
+  it('opens on the service view with headline figures', async () => {
+    const user = userEvent.setup();
+    renderApp();
+    await signIn(user);
+
+    expect(await screen.findByRole('heading', { name: /your pre-operative list/i })).toBeInTheDocument();
+    expect(await screen.findByText(/surgeries ahead/i)).toBeInTheDocument();
+    expect(await screen.findByText(/what is producing these scores/i)).toBeInTheDocument();
+    expect(await screen.findByText(/move the cut-off/i)).toBeInTheDocument();
+  });
+});
+
 describe('cohort list', () => {
   it('lists the clinician’s patients after sign-in', async () => {
     const user = userEvent.setup();
-    renderApp();
+    renderApp('/worklist');
     await signIn(user);
 
     expect(await screen.findByRole('heading', { name: /pre-operative list/i })).toBeInTheDocument();
@@ -68,7 +84,7 @@ describe('cohort list', () => {
 
   it('declares the cohort as synthetic where the patients are', async () => {
     const user = userEvent.setup();
-    renderApp();
+    renderApp('/worklist');
     await signIn(user);
     expect(
       await screen.findByText(/every patient shown here is synthetic/i)
@@ -77,7 +93,7 @@ describe('cohort list', () => {
 
   it('filters the list by risk band', async () => {
     const user = userEvent.setup();
-    renderApp();
+    renderApp('/worklist');
     await signIn(user);
     await screen.findByRole('link', { name: fixturePatients[0].displayName });
 
@@ -96,7 +112,7 @@ describe('cohort list', () => {
 
   it('narrows the list by search', async () => {
     const user = userEvent.setup();
-    renderApp();
+    renderApp('/worklist');
     await signIn(user);
     const first = fixturePatients[0];
     await screen.findByRole('link', { name: first.displayName });
@@ -198,5 +214,81 @@ describe('the decision form resists automation bias', () => {
     await waitFor(() => {
       expect(screen.getByText(/overrode the model/i)).toBeInTheDocument();
     });
+  });
+});
+
+describe('ask', () => {
+  it('grounds a rehearsed question, cites patients, and shows the query', async () => {
+    const user = userEvent.setup();
+    renderApp('/ask');
+    await signIn(user);
+
+    await user.click(await screen.findByRole('button', { name: /flagged, and why/i }));
+
+    expect(await screen.findByText(/^grounded$/i)).toBeInTheDocument();
+    expect(screen.getAllByText('gold.risk_explanation').length).toBeGreaterThan(1);
+    expect(screen.getByText(/show the query/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: fixturePatients[0].displayName })).toBeInTheDocument();
+  });
+
+  it('declines a clinical-judgement question instead of answering it', async () => {
+    const user = userEvent.setup();
+    renderApp('/ask');
+    await signIn(user);
+
+    await user.type(await screen.findByLabelText(/your question/i), 'Should I cancel her operation?{Enter}');
+
+    expect(await screen.findByText(/^declined$/i)).toBeInTheDocument();
+    expect(screen.getByText(/clinical judgement/i)).toBeInTheDocument();
+  });
+});
+
+describe('how this works', () => {
+  it('explains the model in plain language, names the alternatives, and states the limits', async () => {
+    const user = userEvent.setup();
+    renderApp('/model');
+    await signIn(user);
+
+    expect(
+      await screen.findByRole('heading', { name: /what the model does, and what it does not/i })
+    ).toBeInTheDocument();
+
+    // The three candidates, and which one ships. "Random forest" appears twice —
+    // once as a row and once in the prose explaining why it did not win.
+    expect(await screen.findByText(/^logistic regression$/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/random forest/i).length).toBeGreaterThanOrEqual(1);
+    // "in use" also labels the chosen cut-off on the threshold chart further down.
+    expect(screen.getAllByText(/^in use$/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/explainable boosting machine/i).length).toBeGreaterThanOrEqual(1);
+
+    // The two claims a clinician most needs, in words rather than jargon alone.
+    expect(screen.getByText(/why 34% really means about 34 in 100/i)).toBeInTheDocument();
+    expect(screen.getByText(/a sum of simple curves, not a black box/i)).toBeInTheDocument();
+
+    // And the honest half.
+    expect(screen.getByText(/what this model cannot do/i)).toBeInTheDocument();
+    expect(screen.getByText(/it is not causal\./i)).toBeInTheDocument();
+  });
+});
+
+describe('provider comparison', () => {
+  it('is not a league table on the clinician overview', async () => {
+    const user = userEvent.setup();
+    renderApp('/');
+    await signIn(user);
+    await screen.findByText(/surgeries ahead/i);
+
+    expect(screen.queryByText(/flag rate by provider/i)).not.toBeInTheDocument();
+  });
+
+  it('answers the provider question with the case-mix caveat attached', async () => {
+    const user = userEvent.setup();
+    renderApp('/ask');
+    await signIn(user);
+
+    await user.click(await screen.findByRole('button', { name: /compare with other providers/i }));
+
+    expect(await screen.findByText(/not the quality of its surgery/i)).toBeInTheDocument();
+    expect(screen.getByText(/case-mix adjusted instrument/i)).toBeInTheDocument();
   });
 });

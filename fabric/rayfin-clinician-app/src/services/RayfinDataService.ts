@@ -8,8 +8,52 @@ import type {
   ModelCardRow,
   ModelCurveRow,
   PatientRow,
+  ProviderStatRow,
   ThresholdOptionRow,
 } from './types';
+
+/**
+ * Rows per request when reading a list that can outgrow one page.
+ *
+ * Data API Builder pages at 100 rows by default and `execute()` returns that
+ * single page without saying whether more exist — a worklist read that way is
+ * the 100 highest-risk patients, with no sign the other two thousand are there.
+ * `executePaginated()` carries the cursor, so these reads page to the end.
+ */
+const PAGE_SIZE = 500;
+
+/** The slice of the query builder these paged reads use. */
+interface PagedQuery {
+  after(cursor: string): PagedQuery;
+  executePaginated(): Promise<{
+    items: unknown[];
+    hasNextPage: boolean;
+    endCursor?: string;
+  }>;
+}
+
+/**
+ * Read every page of a query.
+ *
+ * `build` is called once per page and must set `.first(PAGE_SIZE)` itself, since
+ * the builder is single-use. Row-level security is evaluated per request, so a
+ * clinician pages through their own rows and nobody else's.
+ */
+async function readAllPages<T>(build: () => PagedQuery): Promise<T[]> {
+  const all: T[] = [];
+  let cursor: string | undefined;
+
+  do {
+    const base = build();
+    const page = await (cursor ? base.after(cursor) : base).executePaginated();
+    all.push(...(page.items as T[]));
+    // Advance only with both a next page and a cursor, so a server that reports
+    // one without the other ends the loop instead of re-reading page one.
+    cursor = page.hasNextPage ? page.endCursor : undefined;
+  } while (cursor);
+
+  return all;
+}
 
 const PATIENT_FIELDS = [
   'id',
@@ -72,10 +116,11 @@ export class RayfinDataService implements ClinicalDataService {
 
   async listPatients(): Promise<PatientRow[]> {
     const client = getRayfinClient();
-    const rows = await client.data.PatientRisk.select([...PATIENT_FIELDS])
-      .orderBy({ riskPoorOutcome: 'desc' })
-      .execute();
-    return rows as PatientRow[];
+    return readAllPages<PatientRow>(() =>
+      client.data.PatientRisk.select([...PATIENT_FIELDS])
+        .orderBy({ riskPoorOutcome: 'desc' })
+        .first(PAGE_SIZE) as unknown as PagedQuery
+    );
   }
 
   /**
@@ -109,6 +154,28 @@ export class RayfinDataService implements ClinicalDataService {
     return rows as ExplanationRow[];
   }
 
+  /**
+   * Every explanation row the caller is entitled to see, in one query. The
+   * policy on `RiskExplanation` filters by `assignedClinicianId`, so this is
+   * the caller's own patients' rows and nobody else's — the same guarantee as
+   * `listPatients`, and again with no WHERE clause written here.
+   */
+  async listExplanations(): Promise<ExplanationRow[]> {
+    const client = getRayfinClient();
+    const rows = await client.data.RiskExplanation.select([
+      'episodeId',
+      'rank',
+      'feature',
+      'featureLabel',
+      'featureValue',
+      'contribution',
+      'direction',
+    ])
+      .orderBy({ rank: 'asc' })
+      .execute();
+    return rows as ExplanationRow[];
+  }
+
   async getDecisions(episodeId: string): Promise<DecisionRow[]> {
     const client = getRayfinClient();
     const rows = await client.data.ReviewDecision.select([
@@ -123,6 +190,25 @@ export class RayfinDataService implements ClinicalDataService {
       'decidedAt',
     ])
       .where({ episodeId })
+      .orderBy({ decidedAt: 'desc' })
+      .execute();
+    return rows as DecisionRow[];
+  }
+
+  /** Every decision the caller may read — their own, under the `ReviewDecision` policy. */
+  async listDecisions(): Promise<DecisionRow[]> {
+    const client = getRayfinClient();
+    const rows = await client.data.ReviewDecision.select([
+      'id',
+      'episodeId',
+      'clinicianName',
+      'decision',
+      'rationale',
+      'modelAgreement',
+      'riskShown',
+      'modelVersion',
+      'decidedAt',
+    ])
       .orderBy({ decidedAt: 'desc' })
       .execute();
     return rows as DecisionRow[];
@@ -157,23 +243,29 @@ export class RayfinDataService implements ClinicalDataService {
     return rows as CohortStatRow[];
   }
 
+  /**
+   * Calibration points and every shape function, across all features — well past
+   * one page once a model has more than a handful of terms, and a curve cut
+   * mid-feature draws as a line that simply stops.
+   */
   async getModelCurves(): Promise<ModelCurveRow[]> {
     const client = getRayfinClient();
-    const rows = await client.data.ModelCurve.select([
-      'curveType',
-      'series',
-      'seriesLabel',
-      'pointIndex',
-      'x',
-      'y',
-      'yLower',
-      'yUpper',
-      'n',
-      'xUnit',
-    ])
-      .orderBy({ pointIndex: 'asc' })
-      .execute();
-    return rows as ModelCurveRow[];
+    return readAllPages<ModelCurveRow>(() =>
+      client.data.ModelCurve.select([
+        'curveType',
+        'series',
+        'seriesLabel',
+        'pointIndex',
+        'x',
+        'y',
+        'yLower',
+        'yUpper',
+        'n',
+        'xUnit',
+      ])
+        .orderBy({ pointIndex: 'asc' })
+        .first(PAGE_SIZE) as unknown as PagedQuery
+    );
   }
 
   async getThresholdOptions(): Promise<ThresholdOptionRow[]> {
@@ -212,5 +304,32 @@ export class RayfinDataService implements ClinicalDataService {
       'scoredAt',
     ]).execute();
     return (rows[0] as ModelCardRow | undefined) ?? null;
+  }
+
+  /**
+   * One row per provider. NHS PROMs covers several hundred, so reading a single
+   * page would drop the tail — and the tail is sorted to be the lowest-risk
+   * providers, which is exactly the comparison a partial read distorts.
+   */
+  async getProviderStats(): Promise<ProviderStatRow[]> {
+    const client = getRayfinClient();
+    return readAllPages<ProviderStatRow>(() =>
+      client.data.ProviderStat.select([
+        'providerCode',
+        'providerType',
+        'region',
+        'patients',
+        'meanRisk',
+        'medianRisk',
+        'flagged',
+        'low',
+        'moderate',
+        'high',
+        'veryHigh',
+        'medianOks',
+      ])
+        .orderBy({ meanRisk: 'desc' })
+        .first(PAGE_SIZE) as unknown as PagedQuery
+    );
   }
 }

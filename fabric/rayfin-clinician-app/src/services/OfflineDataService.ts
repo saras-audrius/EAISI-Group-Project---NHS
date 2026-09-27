@@ -5,6 +5,7 @@ import {
   fixtureModelCard,
   fixtureModelCurves,
   fixturePatients,
+  fixtureProviderStats,
   fixtureThresholdOptions,
 } from './fixtures';
 import type {
@@ -16,6 +17,7 @@ import type {
   ModelCardRow,
   ModelCurveRow,
   PatientRow,
+  ProviderStatRow,
   ThresholdOptionRow,
 } from './types';
 
@@ -63,12 +65,20 @@ export class OfflineDataService implements ClinicalDataService {
     return delayed(fixtureExplanation(episodeId));
   }
 
+  listExplanations(): Promise<ExplanationRow[]> {
+    return delayed(fixturePatients.flatMap((p) => fixtureExplanation(p.episodeId)));
+  }
+
   getDecisions(episodeId: string): Promise<DecisionRow[]> {
     return delayed(
       this.decisions
         .filter((d) => d.episodeId === episodeId)
         .sort((a, b) => b.decidedAt.getTime() - a.decidedAt.getTime())
     );
+  }
+
+  listDecisions(): Promise<DecisionRow[]> {
+    return delayed([...this.decisions].sort((a, b) => b.decidedAt.getTime() - a.decidedAt.getTime()));
   }
 
   async recordDecision(input: DecisionInput): Promise<void> {
@@ -100,5 +110,9 @@ export class OfflineDataService implements ClinicalDataService {
 
   getModelCard(): Promise<ModelCardRow | null> {
     return delayed(fixtureModelCard);
+  }
+
+  getProviderStats(): Promise<ProviderStatRow[]> {
+    return delayed(fixtureProviderStats);
   }
 }

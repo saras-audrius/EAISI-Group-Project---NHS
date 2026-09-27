@@ -1,0 +1,469 @@
+{"kind":"deck","id":"pr/ywy8mv","name":"Deck"}
+{"kind":"layout","layoutId":"/ppt/slideMasters/slideMaster1.xml","name":"","type":"master","placeholders":[{"name":"title","type":"title"},{"name":"body","type":"body"},{"name":"footer","type":"footer"},{"name":"dateTime","type":"dateTime"},{"name":"slideNumber","type":"slideNumber","textPreview":"#"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout1.xml","name":"Title Slide","type":"obj","placeholders":[{"name":"title","type":"title"},{"name":"subtitle","type":"subtitle"},{"name":"footer","type":"footer"},{"name":"dateTime","type":"dateTime"},{"name":"slideNumber","type":"slideNumber","textPreview":"#"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout2.xml","name":"Title and Content","type":"obj","placeholders":[{"name":"title","type":"title"},{"name":"body","type":"body"},{"name":"footer","type":"footer"},{"name":"dateTime","type":"dateTime"},{"name":"slideNumber","type":"slideNumber","textPreview":"#"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout3.xml","name":"Two Content","type":"obj","placeholders":[{"name":"title","type":"title"},{"name":"holder 3"},{"name":"holder 4"},{"name":"footer","type":"footer"},{"name":"dateTime","type":"dateTime"},{"name":"slideNumber","type":"slideNumber","textPreview":"#"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout4.xml","name":"Title Only","type":"obj","placeholders":[{"name":"title","type":"title"},{"name":"footer","type":"footer"},{"name":"dateTime","type":"dateTime"},{"name":"slideNumber","type":"slideNumber","textPreview":"#"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout5.xml","name":"Blank","type":"obj","placeholders":[{"name":"footer","type":"footer"},{"name":"dateTime","type":"dateTime"},{"name":"slideNumber","type":"slideNumber","textPreview":"#"}]}
+{"kind":"slide","id":"sl/y90nupkv","slide":1,"title":"EUROPEAN","textShapes":5}
+{"kind":"textbox","id":"sh/7qp4be9c","slide":1,"name":"object 4","placeholder":"title","text":"EUROPEAN","textPreview":"EUROPEAN","textChars":8,"textLines":1,"bbox":[120.53,293.01,281.47,76.27]}
+{"kind":"textbox","id":"sh/65g3298r","slide":1,"name":"object 5","text":"MICROOFT","textPreview":"MICROOFT","textChars":8,"textLines":1,"bbox":[121,341.31,326.93,77.07]}
+{"kind":"textbox","id":"sh/ts7md4r2","slide":1,"name":"object 6","text":"FABRIC SäL","textPreview":"FABRIC SäL","textChars":10,"textLines":1,"bbox":[120.83,390.93,332.93,76.27]}
+{"kind":"textbox","id":"sh/sryl4zqx","slide":1,"name":"object 7","text":"CoitmunityConfeænce","textPreview":"CoitmunityConfeænce","textChars":19,"textLines":1,"bbox":[121.92,446.96,302.93,41.87]}
+{"kind":"textbox","id":"sh/fu94fe98","slide":1,"name":"object 8","text":"BARCELONA\n- 01 OCT 2026","textPreview":"BARCELONA | - 01 OCT 2026","textChars":23,"textLines":2,"bbox":[123.34,571.15,250.53,60.87]}
+{"kind":"image","id":"im/7mp0jixo","slide":1,"name":"object 2","bbox":[125.76,132.48,144,140.16]}
+{"kind":"image","id":"im/jqxw72dk","slide":1,"name":"object 3","bbox":[473.28,48,806.4,672]}
+{"kind":"notes","id":"nt/y90nupkv","slide":1,"text":""}
+{"kind":"slide","id":"sl/hwbqtkby","slide":2,"title":"From Notebook to Bedside: Building a Clinical Risk Prediction Pipeline in Fabric","textShapes":5}
+{"kind":"shape","id":"sh/b29kza94","slide":2,"name":"object 4","bbox":[0,0,1279.73,49.93]}
+{"kind":"textbox","id":"sh/a10jqpsj","slide":2,"name":"object 5","placeholder":"title","text":"From Notebook to Bedside: Building a Clinical Risk Prediction Pipeline in Fabric","textPreview":"From Notebook to Bedside: Building a Clinical Risk Prediction Pipeline in Fabric","textChars":80,"textLines":1,"bbox":[72.19,138.79,772.33,214.47]}
+{"kind":"textbox","id":"sh/x4r21kru","slide":2,"name":"object 6","text":"Do not record or livestream this session","textPreview":"Do not record or livestream this session","textChars":40,"textLines":1,"bbox":[382.6,6.71,522.87,35]}
+{"kind":"textbox","id":"sh/w3i1sfa9","slide":2,"name":"object 7","text":"Manu Huygens\nCloud & Data Engineer\nKPMG Netherlands","textPreview":"Manu Huygens | Cloud & Data Engineer | KPMG Netherlands","textChars":51,"textLines":3,"bbox":[620.28,396.44,275.67,99.47]}
+{"kind":"textbox","id":"sh/q5wjelsz","slide":2,"name":"object 9","text":"Audrius Šaras\nAI & Data Engineer\nKPMG Netherlands\n/sarasaudrius","textPreview":"Audrius Šaras | AI & Data Engineer | KPMG Netherlands | /sarasaudrius","textChars":63,"textLines":4,"bbox":[188.81,392.9,232,151]}
+{"kind":"textbox","id":"sh/wjy9sry9","slide":2,"name":"object 14","text":"/","textPreview":"/","textChars":1,"textLines":1,"bbox":[665.8,521.17,9.8,24.6]}
+{"kind":"image","id":"im/atwv650n","slide":2,"name":"object 3","bbox":[0,0.01,1279.68,719.99]}
+{"kind":"image","id":"im/xwne10je","slide":2,"name":"object 8","bbox":[187.2,514.69,33.6,34.57]}
+{"kind":"image","id":"im/wved8fit","slide":2,"name":"object 11","bbox":[616.32,516.61,34.56,34.57]}
+{"kind":"image","id":"im/nqlwvq1w","slide":2,"name":"object 12","bbox":[461.76,402.24,160.8,188.64]}
+{"kind":"image","id":"im/mpcv2l0b","slide":2,"name":"object 13","bbox":[30.72,395.52,160.8,188.64]}
+{"kind":"notes","id":"nt/hwbqtkby","slide":2,"text":""}
+{"kind":"slide","id":"sl/ofy9wn61","slide":3,"title":"Agenda","textShapes":1}
+{"kind":"textbox","id":"sh/d0jax03i","slide":3,"name":"object 3","placeholder":"title","text":"Agenda","textPreview":"Agenda","textChars":6,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"table","id":"tb/it87elgv","slide":3,"name":"object 4","rows":6,"cols":3,"preview":"01 | Fabric Data Science & ML | XX","bbox":[100.11,154.19,539.8,348.4]}
+{"kind":"image","id":"im/7ut4nih0","slide":3,"name":"object 2","bbox":[0,0.01,1279.68,719.99]}
+{"kind":"notes","id":"nt/ofy9wn61","slide":3,"text":""}
+{"kind":"slide","id":"sl/jyx0ra1s","slide":4,"title":"Fabric Data Science & Machine Learning","textShapes":1}
+{"kind":"textbox","id":"sh/1cj2d8b6","slide":4,"name":"object 2","placeholder":"title","text":"Fabric Data Science & Machine Learning","textPreview":"Fabric Data Science & Machine Learning","textChars":38,"textLines":1,"bbox":[96.32,247.54,950.67,149.27]}
+{"kind":"notes","id":"nt/jyx0ra1s","slide":4,"text":""}
+{"kind":"slide","id":"sl/i107q5of","slide":5,"title":"ML as a subset of AI","textShapes":1}
+{"kind":"textbox","id":"sh/cf2tcr61","slide":5,"name":"object 3","placeholder":"title","text":"ML as a subset of AI","textPreview":"ML as a subset of AI","textChars":20,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"image","id":"im/ulsbm18f","slide":5,"name":"object 2","bbox":[0,0.01,1279.68,719.99]}
+{"kind":"image","id":"im/vm1cv6p0","slide":5,"name":"object 4","bbox":[165.12,191.08,974.4,409.07]}
+{"kind":"notes","id":"nt/i107q5of","slide":5,"text":""}
+{"kind":"slide","id":"sl/x8f69ofe","slide":6,"title":"The data science process","textShapes":3}
+{"kind":"textbox","id":"sh/h4bupgn6","slide":6,"name":"object 10","placeholder":"title","text":"The data science process","textPreview":"The data science process","textChars":24,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/w32twb6l","slide":6,"name":"object 11","text":"EUROPEAN\nMICROSOFT FABRIC SQL","textPreview":"EUROPEAN | MICROSOFT FABRIC SQL","textChars":29,"textLines":2,"bbox":[66.8,668.35,209.47,39.67]}
+{"kind":"textbox","id":"sh/v2tcn650","slide":6,"name":"object 12","text":"Community Conference","textPreview":"Community Conference","textChars":20,"textLines":1,"bbox":[67.02,700.37,94.13,13.87]}
+{"kind":"image","id":"im/t03ulobq","slide":6,"name":"object 2","bbox":[298.24,666.88,981.12,53.12]}
+{"kind":"image","id":"im/y9sbm9c3","slide":6,"name":"object 3","bbox":[96.96,247.36,1059.52,303.04]}
+{"kind":"image","id":"im/ju1cfeto","slide":6,"name":"object 4","bbox":[164.48,168.96,64.64,65.92]}
+{"kind":"image","id":"im/kvatojut","slide":6,"name":"object 5","bbox":[597.76,169.92,57.92,58.24]}
+{"kind":"image","id":"im/lw3uh4be","slide":6,"name":"object 6","bbox":[1031.04,168.96,64.64,65.92]}
+{"kind":"image","id":"im/a5sbipcr","slide":6,"name":"object 8","bbox":[42.88,704.64,15.04,6.4]}
+{"kind":"image","id":"im/b61sbutc","slide":6,"name":"object 9","bbox":[24.32,674.88,36.8,29.76]}
+{"kind":"notes","id":"nt/x8f69ofe","slide":6,"text":""}
+{"kind":"slide","id":"sl/gnmp4jqx","slide":7,"title":"Microsoft Fabric as a platform for Data Science","textShapes":14}
+{"kind":"textbox","id":"sh/cb2tkvap","slide":7,"name":"object 2","placeholder":"title","text":"Microsoft Fabric as a platform for Data Science","textPreview":"Microsoft Fabric as a platform for Data Science","textChars":47,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/ydkbm5sv","slide":7,"name":"object 4","text":"GOV","textPreview":"GOV","textChars":3,"textLines":1,"bbox":[488.63,221.33,29.27,17.73]}
+{"kind":"textbox","id":"sh/zedcfa9g","slide":7,"name":"object 5","text":"E2E","textPreview":"E2E","textChars":3,"textLines":1,"bbox":[764.28,221.33,25.47,17.73]}
+{"kind":"textbox","id":"sh/kzmdova1","slide":7,"name":"object 6","text":"SCALE","textPreview":"SCALE","textChars":5,"textLines":1,"bbox":[794.73,336.53,43.67,17.73]}
+{"kind":"textbox","id":"sh/l0vuh0rm","slide":7,"name":"object 7","text":"MLflow","textPreview":"MLflow","textChars":6,"textLines":1,"bbox":[744.92,460.85,37,14.2]}
+{"kind":"textbox","id":"sh/eh0ba1sr","slide":7,"name":"object 8","text":"Auto ML","textPreview":"Auto ML","textChars":7,"textLines":1,"bbox":[494.83,461.81,39.27,14.2]}
+{"kind":"textbox","id":"sh/fi9c369c","slide":7,"name":"object 9","text":"AI","textPreview":"AI","textChars":2,"textLines":1,"bbox":[459.49,336.85,11.87,14.27]}
+{"kind":"textbox","id":"sh/baxkjqlk","slide":7,"name":"object 10","text":"Governance & Compliance\nRole-based access, lineage and versioning\nkeep models secure, auditable and\ncompliant.","textPreview":"Governance & Compliance | Role-based access, lineage and versioning | keep models secure, auditable and | compliant.","textChars":110,"textLines":4,"bbox":[220.89,191.99,243.07,77.33]}
+{"kind":"textbox","id":"sh/a9ojq5kz","slide":7,"name":"object 11","text":"End-to-End Unification\nOne platform for ingestion, preparation,\ntraining, deployment and visualization.","textPreview":"End-to-End Unification | One platform for ingestion, preparation, | training, deployment and visualization.","textChars":103,"textLines":3,"bbox":[824.6,191.99,222.67,62.93]}
+{"kind":"textbox","id":"sh/xcz2l03q","slide":7,"name":"object 12","text":"Scalability\nDistributed Spark compute handles large datasets and complex ML models.","textPreview":"Scalability | Distributed Spark compute handles large datasets and complex ML models.","textChars":83,"textLines":2,"bbox":[863.09,310.09,153.47,77.33]}
+{"kind":"textbox","id":"sh/cbq1sv25","slide":7,"name":"object 13","text":"MLflow integration\nAutolog runs, metrics and parameters to compare\nmodels and experiments without manual tracking.","textPreview":"MLflow integration | Autolog runs, metrics and parameters to compare | models and experiments without manual tracking.","textChars":114,"textLines":3,"bbox":[811.23,420.67,280.53,62.93]}
+{"kind":"textbox","id":"sh/n6x0fqlo","slide":7,"name":"object 14","text":"AutoML (low-code)\nStart ML tasks quickly while Fabric automates\nmuch of the workflow.","textPreview":"AutoML (low-code) | Start ML tasks quickly while Fabric automates | much of the workflow.","textChars":85,"textLines":3,"bbox":[228.53,420.67,259.13,62.93]}
+{"kind":"textbox","id":"sh/25ojml43","slide":7,"name":"object 15","text":"AI-powered Copilot\nAccelerates data-science work and makes common tasks more\naccessible.","textPreview":"AI-powered Copilot | Accelerates data-science work and makes common tasks more | accessible.","textChars":88,"textLines":3,"bbox":[228.37,302.6,198.73,77.2]}
+{"kind":"textbox","id":"sh/p8fih03e","slide":7,"name":"object 16","text":"Fabric  + ML\nData Science in Microsoft Fabric","textPreview":"Fabric  + ML | Data Science in Microsoft Fabric","textChars":45,"textLines":2,"bbox":[557.16,285.65,173.67,107.73]}
+{"kind":"image","id":"im/j2xwvyhk","slide":7,"name":"object 3","bbox":[434.69,193.97,413.17,306.49]}
+{"kind":"image","id":"im/8rqxsni1","slide":7,"name":"object 18","bbox":[598.08,271.75,31.68,31.69]}
+{"kind":"image","id":"im/tsze1szm","slide":7,"name":"object 19","bbox":[691.2,272.71,31.68,31.69]}
+{"kind":"notes","id":"nt/gnmp4jqx","slide":7,"text":""}
+{"kind":"slide","id":"sl/fu1gfa1s","slide":8,"title":"Prediction Models in Healthcare","textShapes":1}
+{"kind":"textbox","id":"sh/18byd4zy","slide":8,"name":"object 2","placeholder":"title","text":"Prediction Models in Healthcare","textPreview":"Prediction Models in Healthcare","textChars":31,"textLines":1,"bbox":[96.32,247.54,629.53,149.27]}
+{"kind":"notes","id":"nt/fu1gfa1s","slide":8,"text":""}
+{"kind":"slide","id":"sl/udsvah03","slide":9,"title":"AI and ML is being embedded in EU healthcare systems","textShapes":8}
+{"kind":"textbox","id":"sh/1cfmhgne","slide":9,"name":"object 2","placeholder":"title","text":"AI and ML is being embedded in EU healthcare systems","textPreview":"AI and ML is being embedded in EU healthcare systems","textChars":52,"textLines":1,"bbox":[101.95,28.65,939.53,99.6]}
+{"kind":"textbox","id":"sh/nex4jq5k","slide":9,"name":"object 4","text":"48%\nRadiology","textPreview":"48% | Radiology","textChars":13,"textLines":2,"bbox":[443.77,202.76,114.07,137.2]}
+{"kind":"textbox","id":"sh/mdonql4z","slide":9,"name":"object 5","text":"74%\nEU countries","textPreview":"74% | EU countries","textChars":16,"textLines":2,"bbox":[467.44,427.62,114.2,121.73]}
+{"kind":"textbox","id":"sh/9gzml0nq","slide":9,"name":"object 6","text":"94%\nProviders","textPreview":"94% | Providers","textChars":13,"textLines":2,"bbox":[727.24,310.42,114.4,124.2]}
+{"kind":"textbox","id":"sh/ofq5svm5","slide":9,"name":"object 7","text":"Provider pipeline\n94% of surveyed EU healthcare providers already use AI solutions or plan to adopt them.","textPreview":"Provider pipeline | 94% of surveyed EU healthcare providers already use AI solutions or plan to adopt them.","textChars":105,"textLines":2,"bbox":[943.77,196.98,217.27,128.53]}
+{"kind":"textbox","id":"sh/bih4na5w","slide":9,"name":"object 8","text":"Diagnostics spread\nNearly 3 in 4 EU countries report AI-assisted diagnostics in clinical settings.","textPreview":"Diagnostics spread | Nearly 3 in 4 EU countries report AI-assisted diagnostics in clinical settings.","textChars":98,"textLines":2,"bbox":[132.93,424.9,227.93,107.33]}
+{"kind":"textbox","id":"sh/ah8nu54b","slide":9,"name":"object 9","text":"Radiology reality\n48% of 572 European radiology respondents used AI; another 25% planned adoption.","textPreview":"Radiology reality | 48% of 572 European radiology respondents used AI; another 25% planned adoption.","textChars":98,"textLines":2,"bbox":[132.93,196.98,214.33,128.53]}
+{"kind":"textbox","id":"sh/oza1gfyh","slide":9,"name":"object 10","text":"Measurement caveat: no harmonized EU hospital-level adoption ranking exists; these indicators use different denominators and are not directly comparable.\nSources: WHO/Europe EU readiness survey (2024–25); European Commission Digital Health Observ atory (2026); Zanardo et al., Insights into Imaging (2024).","textPreview":"Measurement caveat: no harmonized EU hospital-level adoption ranking exists; these indicators use different denominators and are not dire...","textChars":306,"textLines":2,"bbox":[132.93,619.69,831.27,29.67]}
+{"kind":"image","id":"im/u987u5cf","slide":9,"name":"object 3","bbox":[299.84,209.59,629.12,406.73]}
+{"kind":"notes","id":"nt/udsvah03","slide":9,"text":""}
+{"kind":"slide","id":"sl/m90b6t0r","slide":10,"title":"However, EU rules turn healthcare ML into a governed clinical process","textShapes":4}
+{"kind":"textbox","id":"sh/xc3mho32","slide":10,"name":"object 2","placeholder":"title","text":"However, EU rules turn healthcare ML into a governed clinical process","textPreview":"However, EU rules turn healthcare ML into a governed clinical process","textChars":69,"textLines":1,"bbox":[101.95,28.65,1095.4,99.6]}
+{"kind":"shape","id":"sh/zelojyl8","slide":10,"name":"object 4","bbox":[458.88,171.88,33.6,412]}
+{"kind":"shape","id":"sh/ydcnatkn","slide":10,"name":"object 5","bbox":[787.2,146.92,52.8,461.93]}
+{"kind":"shape","id":"sh/l036l83y","slide":10,"name":"object 6","bbox":[104.64,193.97,354.27,368.73]}
+{"kind":"textbox","id":"sh/kzu5c32t","slide":10,"name":"object 7","text":"\nEU AI Act\nHigh-risk clinical decision support requires risk management, transparency, human oversight and record-keeping.\n\nGDPR Article 22\nPeople affected by semi-automated decisions need meaningful information and safeguards.\n\nEuropean Health Data Space\nRegistry data can support secondary use—but only through governed access and permitted purposes.","textPreview":"| EU AI Act | High-risk clinical decision support requires risk management, transparency, human oversight and record-keeping. |  | GDPR A...","textChars":352,"textLines":9,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/725onyl4","slide":10,"name":"object 8","text":"\nImpact on care delivery\nHuman oversight, transparency and an auditable decision become part of the clinical workflow.\n\n\n\n\n\n\n\nImpact on model delivery\nEvidence, permissions and data lineage must remain clear from training through clinical use.","textPreview":"| Impact on care delivery | Human oversight, transparency and an auditable decision become part of the clinical workflow. |  |  |  |  |  ...","textChars":243,"textLines":12,"bbox":[492.48,171.88,294.73,412]}
+{"kind":"shape","id":"sh/m1cnetkj","slide":10,"name":"object 9","bbox":[123.84,229.49,37.47,260.27]}
+{"kind":"textbox","id":"sh/s7yt4b21","slide":10,"name":"object 10","text":"\n\nREQUIRED DEVELOPMENT ACTIONS\n\nMake decisions explainable\nUse an interpretable model, document intended use and limits, and provide a patient-level explanation.\n\n\nValidate and retain oversight\nTest calibration and performance; define human\nreview and record the final clinical decision.\n\n\nGovern data and traceability\nEnforce permissions; version data and models; retain reconstructable inputs, logs and monitoring.","textPreview":"|  | REQUIRED DEVELOPMENT ACTIONS |  | Make decisions explainable | Use an interpretable model, document intended use and limits, and pro...","textChars":416,"textLines":15,"bbox":[840,146.91,336,461.93]}
+{"kind":"notes","id":"nt/m90b6t0r","slide":10,"text":""}
+{"kind":"slide","id":"sl/jetc3ut0","slide":11,"title":"Yet not all institutions are prepared…","textShapes":1}
+{"kind":"textbox","id":"sh/wbih4b6d","slide":11,"name":"object 3","placeholder":"title","text":"Yet not all institutions are prepared…","textPreview":"Yet not all institutions are prepared…","textChars":38,"textLines":1,"bbox":[0,0,0,0]}
+{"kind":"image","id":"im/exczy10r","slide":11,"name":"object 2","bbox":[0,0.01,1279.68,719.99]}
+{"kind":"image","id":"im/fylg76hc","slide":11,"name":"object 4","bbox":[136.32,134.44,1071.36,451.31]}
+{"kind":"notes","id":"nt/jetc3ut0","slide":11,"text":""}
+{"kind":"slide","id":"sl/8f2psfyx","slide":12,"title":"Three audiences face different obligations","textShapes":8}
+{"kind":"textbox","id":"sh/1gbm9s3a","slide":12,"name":"object 2","placeholder":"title","text":"Three audiences face different obligations","textPreview":"Three audiences face different obligations","textChars":42,"textLines":1,"bbox":[87.75,50.21,421.73,99.67]}
+{"kind":"shape","id":"sh/ra943il8","slide":12,"name":"object 4","bbox":[510.72,191.09,255.4,238.13]}
+{"kind":"shape","id":"sh/q903ad4n","slide":12,"name":"object 5","bbox":[576,324.56,127.73,121]}
+{"kind":"shape","id":"sh/dcbm583y","slide":12,"name":"object 6","bbox":[640.32,307.28,190.13,254.47]}
+{"kind":"shape","id":"sh/sb2lcnmd","slide":12,"name":"object 7","bbox":[449.28,325.52,254.4,236.27]}
+{"kind":"shape","id":"sh/b6d4f2lc","slide":12,"name":"object 8","bbox":[105.12,183.88,1072.33,290]}
+{"kind":"textbox","id":"sh/a543mx4r","slide":12,"name":"object 9","text":"Regulators & governance\nNeed auditable lineage, versioning, monitoring and a recorded human decision for every use.","textPreview":"Regulators & governance | Need auditable lineage, versioning, monitoring and a recorded human decision for every use.","textChars":115,"textLines":2,"bbox":[149.16,192.38,241.87,92.6]}
+{"kind":"textbox","id":"sh/wvupgz6t","slide":12,"name":"object 10","text":"Clinicians\nNeed an interpretable, calibrated score in an approved workflow—while retaining final accountability.","textPreview":"Clinicians | Need an interpretable, calibrated score in an approved workflow—while retaining final accountability.","textChars":112,"textLines":2,"bbox":[103.21,420.48,246.2,92.73]}
+{"kind":"textbox","id":"sh/xw3q94ne","slide":12,"name":"object 11","text":"Patients\nNeed a clear explanation of the score, its uncertainty and how it influenced—or can be challenged in—care.","textPreview":"Patients | Need a clear explanation of the score, its uncertainty and how it influenced—or can be challenged in—care.","textChars":115,"textLines":2,"bbox":[926.23,294.69,248.87,92.53]}
+{"kind":"textbox","id":"sh/atc7epon","slide":12,"name":"object 12","text":"Clinicians","textPreview":"Clinicians","textChars":10,"textLines":1,"bbox":[531.6,468.27,73.2,22.33]}
+{"kind":"textbox","id":"sh/bulo7u58","slide":12,"name":"object 13","text":"Patients","textPreview":"Patients","textChars":8,"textLines":1,"bbox":[724.69,376.55,62.87,22.27]}
+{"kind":"textbox","id":"sh/orapcf6h","slide":12,"name":"object 14","text":"Governance","textPreview":"Governance","textChars":10,"textLines":1,"bbox":[530.77,273.35,80.6,20]}
+{"kind":"textbox","id":"sh/9sj65kn2","slide":12,"name":"object 15","text":"Trusted\nuse","textPreview":"Trusted | use","textChars":11,"textLines":2,"bbox":[611.08,363.88,58.87,52.67]}
+{"kind":"shape","id":"sh/nq1o3a5w","slide":12,"name":"object 17","bbox":[561.4,163.03,235.8,153.87]}
+{"kind":"shape","id":"sh/0nap8f6l","slide":12,"name":"object 18","bbox":[637.44,246.79,37.47,35.53]}
+{"kind":"shape","id":"sh/hkbm5wzu","slide":12,"name":"object 20","bbox":[646.76,407.44,212.67,182.4]}
+{"kind":"shape","id":"sh/gj25cry9","slide":12,"name":"object 21","bbox":[724.8,459.95,29.8,35.53]}
+{"kind":"shape","id":"sh/uh0na1g3","slide":12,"name":"object 23","bbox":[418.35,304.64,88.13,270.13]}
+{"kind":"shape","id":"sh/tgrm1wzy","slide":12,"name":"object 24","bbox":[491.52,422.51,35.53,30.73]}
+{"kind":"notes","id":"nt/8f2psfyx","slide":12,"text":""}
+{"kind":"slide","id":"sl/hgzapcr6","slide":13,"title":"Fabric Healthcare Data Solutions","textShapes":1}
+{"kind":"textbox","id":"sh/bq9orito","slide":13,"name":"object 3","placeholder":"title","text":"Fabric Healthcare Data Solutions","textPreview":"Fabric Healthcare Data Solutions","textChars":32,"textLines":1,"bbox":[101.78,39.95,463.6,99.6]}
+{"kind":"image","id":"im/dcvmdk7y","slide":13,"name":"object 2","bbox":[0,0.01,1279.68,719.99]}
+{"kind":"image","id":"im/cbm54fqd","slide":13,"name":"object 4","bbox":[106.56,169,1046.4,489.72]}
+{"kind":"notes","id":"nt/hgzapcr6","slide":13,"text":""}
+{"kind":"slide","id":"sl/6lsnupw7","slide":14,"title":"The case: knee replacement on NHS PROMs","textShapes":1}
+{"kind":"textbox","id":"sh/xc7eds76","slide":14,"name":"object 2","placeholder":"title","text":"The case: knee replacement on NHS PROMs","textPreview":"The case: knee replacement on NHS PROMs","textChars":39,"textLines":1,"bbox":[85.79,165.14,1106.93,149.2]}
+{"kind":"notes","id":"nt/6lsnupw7","slide":14,"text":""}
+{"kind":"slide","id":"sl/vaxsvy10","slide":15,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":10}
+{"kind":"shape","id":"sh/ihw3mlkv","slide":15,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/547mhg3m","slide":15,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/k3y5ov21","slide":15,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/76p4jqls","slide":15,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/65gnqlk7","slide":15,"text":"15","textPreview":"15","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/t87ml0ji","slide":15,"text":"NHS PROMs: the prediction starts before surgery","textPreview":"NHS PROMs: the prediction starts before surgery","textChars":47,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/s7y5sv2x","slide":15,"text":"A pre-operative cohort, a six-month outcome, and a clinically meaningful threshold","textPreview":"A pre-operative cohort, a six-month outcome, and a clinically meaningful threshold","textChars":82,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"textbox","id":"sh/na5476l8","slide":15,"text":"One row per episode","textPreview":"One row per episode","textChars":19,"textLines":1,"bbox":[76,184,360,45]}
+{"kind":"textbox","id":"sh/m9c3e1kn","slide":15,"text":"Pre-operative OKS, EQ-5D-3L, comorbidities, mobility and provider context form the feature set. The outcome arrives when the patient returns the questionnaire six months later.","textPreview":"Pre-operative OKS, EQ-5D-3L, comorbidities, mobility and provider context form the feature set. The outcome arrives when the patient retu...","textChars":176,"textLines":1,"bbox":[76,242,400,160]}
+{"kind":"shape","id":"sh/wrm9kvep","slide":15,"bbox":[76,438,238,36]}
+{"kind":"textbox","id":"sh/hsvat0fa","slide":15,"text":"PRE-OPERATIVE INPUTS","textPreview":"PRE-OPERATIVE INPUTS","textChars":20,"textLines":1,"bbox":[88,445,214,24]}
+{"kind":"shape","id":"sh/upkrilwj","slide":15,"bbox":[76,490,238,36]}
+{"kind":"textbox","id":"sh/vqdsrqx4","slide":15,"text":"OUTCOME AT 6 MONTHS","textPreview":"OUTCOME AT 6 MONTHS","textChars":19,"textLines":1,"bbox":[88,497,214,24]}
+{"kind":"textbox","id":"sh/5wvax0f6","slide":15,"text":"The knee cohort concentrates around a positive change, which makes the “poor outcome” definition a clinical choice rather than a generic label.","textPreview":"The knee cohort concentrates around a positive change, which makes the “poor outcome” definition a clinical choice rather than a generic ...","textChars":143,"textLines":1,"bbox":[540,600,650,48]}
+{"kind":"image","id":"im/je14bi9s","slide":15,"name":"","alt":"Knee patient Oxford Knee Score change distribution from the exploration notebook","bbox":[540,170,650,420]}
+{"kind":"notes","id":"nt/vaxsvy10","slide":15,"text":"Evidence: code/Finalized notebooks/01_all_dataset_exploration.ipynb"}
+{"kind":"slide","id":"sl/gny5sjyp","slide":16,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":10}
+{"kind":"shape","id":"sh/j6947i9w","slide":16,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/i503ydsr","slide":16,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/p4vmlwrm","slide":16,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/o3m5crq1","slide":16,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/wnadcrqh","slide":16,"text":"16","textPreview":"16","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/xoju5wr2","slide":16,"text":"What counts as a poor outcome?","textPreview":"What counts as a poor outcome?","textChars":30,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/alsbahsb","slide":16,"text":"Oxford Knee Score runs from 0 to 48. A 7-point improvement is used as the minimum clinically important difference.","textPreview":"Oxford Knee Score runs from 0 to 48. A 7-point improvement is used as the minimum clinically important difference.","textChars":114,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"shape","id":"sh/vm1c3m9w","slide":16,"bbox":[80,190,460,270]}
+{"kind":"textbox","id":"sh/kbudgrqt","slide":16,"text":"OKS at six months − OKS before surgery","textPreview":"OKS at six months − OKS before surgery","textChars":38,"textLines":1,"bbox":[112,224,390,55]}
+{"kind":"textbox","id":"sh/5c3u9wry","slide":16,"text":"< 7 points\nPoor outcome\n\n≥ 7 points\nMeaningful improvement","textPreview":"< 7 points | Poor outcome |  | ≥ 7 points | Meaningful improvement","textChars":58,"textLines":5,"bbox":[112,305,300,118]}
+{"kind":"shape","id":"sh/i9sve18n","slide":16,"bbox":[112,385,130,10]}
+{"kind":"shape","id":"sh/ja1c7m98","slide":16,"bbox":[242,385,210,10]}
+{"kind":"textbox","id":"sh/sfudkbqp","slide":16,"text":"The model only receives information available before the decision to operate.","textPreview":"The model only receives information available before the decision to operate.","textChars":77,"textLines":1,"bbox":[650,220,445,86]}
+{"kind":"textbox","id":"sh/tg3udgra","slide":16,"text":"That keeps the score suitable for a pre-operative conversation. It does not diagnose a patient or decide treatment.","textPreview":"That keeps the score suitable for a pre-operative conversation. It does not diagnose a patient or decide treatment.","textChars":115,"textLines":1,"bbox":[650,340,445,105]}
+{"kind":"shape","id":"sh/3apg3atc","slide":16,"bbox":[650,490,326,42]}
+{"kind":"textbox","id":"sh/29wfa5sr","slide":16,"text":"CLINICAL DECISION SUPPORT","textPreview":"CLINICAL DECISION SUPPORT","textChars":25,"textLines":1,"bbox":[662,497,302,30]}
+{"kind":"table","id":"tb/m1gzuxsz","slide":16,"name":"object 11","rows":10,"cols":10,"bbox":[941.76,188.21,225.93,211.87]}
+{"kind":"table","id":"tb/exwzqdsn","slide":16,"name":"object 23","rows":10,"cols":10,"bbox":[670.08,188.21,225.93,211.87]}
+{"kind":"image","id":"im/ra58rqho","slide":16,"name":"object 19","bbox":[459.98,211.01,18.98,12.86]}
+{"kind":"image","id":"im/sbep0vi9","slide":16,"name":"object 20","bbox":[448.83,167.99,6.88,7.09]}
+{"kind":"image","id":"im/tcnqtgze","slide":16,"name":"object 22","bbox":[483.07,168,6.92,7.13]}
+{"kind":"image","id":"im/jmlon6hc","slide":16,"name":"object 30","bbox":[461.72,550.33,13.89,14.08]}
+{"kind":"notes","id":"nt/gny5sjyp","slide":16,"text":"Threshold described in 2026-07-25-notebook-to-bedside-session-design.md and project notebooks."}
+{"kind":"slide","id":"sl/14bup87q","slide":17,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":8}
+{"kind":"shape","id":"sh/e9wvu54r","slide":17,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/1c7e50ni","slide":17,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/gbedwfmx","slide":17,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/rm5czq50","slide":17,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/6lwvql4v","slide":17,"text":"17","textPreview":"17","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/t8ne10n6","slide":17,"text":"Exploration drove the modelling choices","textPreview":"Exploration drove the modelling choices","textChars":39,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/snedsvml","slide":17,"text":"The notebook outputs keep the choices inspectable instead of hiding them inside training code.","textPreview":"The notebook outputs keep the choices inspectable instead of hiding them inside training code.","textChars":94,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"textbox","id":"sh/ihcvml4j","slide":17,"text":"Three questions before training","textPreview":"Three questions before training","textChars":31,"textLines":1,"bbox":[850,190,330,54]}
+{"kind":"textbox","id":"sh/4by9or6l","slide":17,"text":"How common is the poor-outcome class?\n\nWhich variables are missing by design?\n\nWhich threshold fits the capacity for follow-up?","textPreview":"How common is the poor-outcome class? |  | Which variables are missing by design? |  | Which threshold fits the capacity for follow-up?","textChars":127,"textLines":5,"bbox":[850,274,340,230]}
+{"kind":"shape","id":"sh/pc7qhwn6","slide":17,"bbox":[842,555,345,36]}
+{"kind":"textbox","id":"sh/29grm1of","slide":17,"text":"NOTEBOOK 31: READ-ONLY EXPLORATION","textPreview":"NOTEBOOK 31: READ-ONLY EXPLORATION","textChars":34,"textLines":1,"bbox":[854,562,321,24]}
+{"kind":"image","id":"im/qdkn2t8v","slide":17,"name":"","alt":"Precision-recall and threshold exploration notebook output","bbox":[55,155,745,468]}
+{"kind":"notes","id":"nt/14bup87q","slide":17,"text":"Evidence: code/Finalized notebooks/05_modelling.ipynb; Fabric notebook 31_data_exploration is the production counterpart."}
+{"kind":"slide","id":"sl/y5wne50z","slide":18,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":15}
+{"kind":"shape","id":"sh/vqlkjuto","slide":18,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/wrelszu9","slide":18,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/hsn2l4bu","slide":18,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/itw3upcf","slide":18,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/je5knut0","slide":18,"text":"18","textPreview":"18","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/4felwzu5","slide":18,"text":"Train and test split","textPreview":"Train and test split","textChars":20,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/5gnmp4bq","slide":18,"text":"The preprocessing pipeline is fitted on training data only. The held-out set stays untouched until evaluation.","textPreview":"The preprocessing pipeline is fitted on training data only. The held-out set stays untouched until evaluation.","textChars":110,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"shape","id":"sh/6hw3y9sb","slide":18,"bbox":[88,230,320,245]}
+{"kind":"textbox","id":"sh/rip4retw","slide":18,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[114,252,70,46]}
+{"kind":"textbox","id":"sh/fapkr6pw","slide":18,"text":"Stratified split","textPreview":"Stratified split","textChars":16,"textLines":1,"bbox":[114,320,250,42]}
+{"kind":"textbox","id":"sh/upg3i18r","slide":18,"text":"Preserve the poor-outcome rate in both sets","textPreview":"Preserve the poor-outcome rate in both sets","textChars":43,"textLines":1,"bbox":[114,382,252,60]}
+{"kind":"shape","id":"sh/1cr2tg72","slide":18,"bbox":[473,230,320,245]}
+{"kind":"textbox","id":"sh/gbylkbqh","slide":18,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[499,252,70,46]}
+{"kind":"textbox","id":"sh/7mpknmp0","slide":18,"text":"Fit transforms","textPreview":"Fit transforms","textChars":14,"textLines":1,"bbox":[499,320,250,42]}
+{"kind":"textbox","id":"sh/6lg3e18f","slide":18,"text":"Imputation and encoding learn from training rows","textPreview":"Imputation and encoding learn from training rows","textChars":48,"textLines":1,"bbox":[499,382,252,60]}
+{"kind":"shape","id":"sh/to72pw76","slide":18,"bbox":[858,230,320,245]}
+{"kind":"textbox","id":"sh/snylgrql","slide":18,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[884,252,70,46]}
+{"kind":"textbox","id":"sh/bi94zqp4","slide":18,"text":"Evaluate once","textPreview":"Evaluate once","textChars":13,"textLines":1,"bbox":[884,320,250,42]}
+{"kind":"textbox","id":"sh/qh03ql8j","slide":18,"text":"Use the held-out cohort for model comparison","textPreview":"Use the held-out cohort for model comparison","textChars":44,"textLines":1,"bbox":[884,382,252,60]}
+{"kind":"textbox","id":"sh/md4nipsr","slide":18,"text":"Leakage prevention is part of the model design, not a last-minute validation check.","textPreview":"Leakage prevention is part of the model design, not a last-minute validation check.","textChars":83,"textLines":1,"bbox":[150,550,950,42]}
+{"kind":"notes","id":"nt/y5wne50z","slide":18,"text":"Design based on fabric/notebooks/40_train_register.ipynb."}
+{"kind":"slide","id":"sl/nid43ytk","slide":19,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":8}
+{"kind":"shape","id":"sh/mt07mlsr","slide":19,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/9gb6xgbi","slide":19,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/8v2pobax","slide":19,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/vitozqt8","slide":19,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/ahk7qls3","slide":19,"text":"19","textPreview":"19","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/xkbq10be","slide":19,"text":"Model selection favoured an explainable model","textPreview":"Model selection favoured an explainable model","textChars":45,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/wj2psvat","slide":19,"text":"The experiment compared linear baselines, tree models and an Explainable Boosting Machine.","textPreview":"The experiment compared linear baselines, tree models and an Explainable Boosting Machine.","textChars":90,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"textbox","id":"sh/il47u5sz","slide":19,"text":"Why the EBM?","textPreview":"Why the EBM?","textChars":12,"textLines":1,"bbox":[835,190,300,44]}
+{"kind":"textbox","id":"sh/cri1gnql","slide":19,"text":"It provides a calibrated risk score and a direct explanation of how each input shifts risk.\n\nThat lets clinicians inspect both the model-wide pattern and the individual prediction.","textPreview":"It provides a calibrated risk score and a direct explanation of how each input shifts risk. |  | That lets clinicians inspect both the mo...","textChars":180,"textLines":3,"bbox":[835,266,335,190]}
+{"kind":"shape","id":"sh/dsri9sr6","slide":19,"bbox":[835,520,220,38]}
+{"kind":"textbox","id":"sh/qpgjex8f","slide":19,"text":"GLASSBOX MODEL","textPreview":"GLASSBOX MODEL","textChars":14,"textLines":1,"bbox":[847,527,196,26]}
+{"kind":"image","id":"im/qpsvupk7","slide":19,"name":"","alt":"EBM hyperparameter tuning results from model notebook","bbox":[58,160,710,468]}
+{"kind":"notes","id":"nt/nid43ytk","slide":19,"text":"Evidence: code/Finalized notebooks/05_modelling.ipynb and Model_Comparison_Analysis.md."}
+{"kind":"slide","id":"sl/zyxsni5k","slide":20,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":8}
+{"kind":"shape","id":"sh/dcnixw7e","slide":20,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/qpwjmh8n","slide":20,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/rq50vmp8","slide":20,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/4nu1krqh","slide":20,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/po3itc72","slide":20,"text":"20","textPreview":"20","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/2lczih8r","slide":20,"text":"Performance depends on the threshold","textPreview":"Performance depends on the threshold","textChars":36,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/3ml0rmpw","slide":20,"text":"Precision rises as the flagging threshold rises. Recall falls. The operating point is a care-pathway decision.","textPreview":"Precision rises as the flagging threshold rises. Recall falls. The operating point is a care-pathway decision.","textChars":110,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"textbox","id":"sh/hk3ipcr6","slide":20,"text":"A score is not a decision","textPreview":"A score is not a decision","textChars":25,"textLines":1,"bbox":[830,188,330,48]}
+{"kind":"textbox","id":"sh/dkfmp4zy","slide":20,"text":"The model estimates risk. The service chooses the threshold based on how many patients it can support and the cost of missed cases.","textPreview":"The model estimates risk. The service chooses the threshold based on how many patients it can support and the cost of missed cases.","textChars":131,"textLines":1,"bbox":[830,260,340,130]}
+{"kind":"shape","id":"sh/cj65wzyd","slide":20,"bbox":[830,430,334,115]}
+{"kind":"textbox","id":"sh/rid4nuhs","slide":20,"text":"Threshold\nPolicy choice","textPreview":"Threshold | Policy choice","textChars":23,"textLines":2,"bbox":[860,452,260,65]}
+{"kind":"image","id":"im/9cvypwf6","slide":20,"name":"","alt":"Saved EBM test set evaluation across thresholds","bbox":[58,160,710,468]}
+{"kind":"notes","id":"nt/zyxsni5k","slide":20,"text":"Evidence: code/Finalized notebooks/05_modelling.ipynb; threshold is explicitly described as clinical policy in fabric/rayfin-clinician-app/src/clinical.ts."}
+{"kind":"slide","id":"sl/m1wvqtk3","slide":21,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":5}
+{"kind":"shape","id":"sh/edk3mdoj","slide":21,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/1gbmxs7a","slide":21,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/0f2lon6p","slide":21,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/ra9kryp8","slide":21,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/qp03yt8n","slide":21,"text":"21","textPreview":"21","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/dcb2t87y","slide":21,"text":"A model a clinician can argue with","textPreview":"A model a clinician can argue with","textChars":34,"textLines":1,"bbox":[85,230,1090,86]}
+{"kind":"textbox","id":"sh/sb2lk36t","slide":21,"text":"Global behaviour, local explanations, and calibration","textPreview":"Global behaviour, local explanations, and calibration","textChars":53,"textLines":1,"bbox":[220,345,840,48]}
+{"kind":"notes","id":"nt/m1wvqtk3","slide":21,"text":""}
+{"kind":"slide","id":"sl/5onypobq","slide":22,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":8}
+{"kind":"shape","id":"sh/tcjqt8vi","slide":22,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/6987itcr","slide":22,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/7a18rydc","slide":22,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/k7qpgjul","slide":22,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/58zqpov6","slide":22,"text":"22","textPreview":"22","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/il87etcv","slide":22,"text":"Calibration makes a risk score interpretable","textPreview":"Calibration makes a risk score interpretable","textChars":44,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/jmh8nyd0","slide":22,"text":"When the model estimates 34%, the observed poor-outcome rate should be close to 34% for similar patients.","textPreview":"When the model estimates 34%, the observed poor-outcome rate should be close to 34% for similar patients.","textChars":105,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"textbox","id":"sh/p43q1sva","slide":22,"text":"A probability needs a reality check","textPreview":"A probability needs a reality check","textChars":35,"textLines":1,"bbox":[910,205,250,78]}
+{"kind":"textbox","id":"sh/p4z6tcri","slide":22,"text":"The curve follows the diagonal closely across the observed probability range. The distribution shows most patients below high-risk territory.","textPreview":"The curve follows the diagonal closely across the observed probability range. The distribution shows most patients below high-risk territ...","textChars":141,"textLines":1,"bbox":[910,320,245,160]}
+{"kind":"shape","id":"sh/436507qx","slide":22,"bbox":[910,535,210,36]}
+{"kind":"textbox","id":"sh/3ixor29c","slide":22,"text":"CALIBRATED EBM","textPreview":"CALIBRATED EBM","textChars":14,"textLines":1,"bbox":[922,542,186,24]}
+{"kind":"image","id":"im/d476hgja","slide":22,"name":"","alt":"EBM calibration curve and predicted probability distribution","bbox":[65,160,800,440]}
+{"kind":"notes","id":"nt/5onypobq","slide":22,"text":"Evidence: code/Finalized notebooks/06_ebm_calibration.ipynb."}
+{"kind":"slide","id":"sl/c7uhcr6t","slide":23,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":8}
+{"kind":"shape","id":"sh/mxkrixgf","slide":23,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/90vqdczq","slide":23,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/8zm9k7y5","slide":23,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/v2d8fmhw","slide":23,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/a14rmhgb","slide":23,"text":"23","textPreview":"23","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/xovqhcz2","slide":23,"text":"Each patient receives a local explanation","textPreview":"Each patient receives a local explanation","textChars":41,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/w3m9o7yh","slide":23,"text":"The model exposes signed feature contributions instead of a black-box score.","textPreview":"The model exposes signed feature contributions instead of a black-box score.","textChars":76,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"textbox","id":"sh/ip4rqhgn","slide":23,"text":"What changes the conversation","textPreview":"What changes the conversation","textChars":29,"textLines":1,"bbox":[950,190,240,62]}
+{"kind":"textbox","id":"sh/sby90zm1","slide":23,"text":"The clinician can see which pre-operative factors push risk up or down, then decide whether the result fits the patient’s context.","textPreview":"The clinician can see which pre-operative factors push risk up or down, then decide whether the result fits the patient’s context.","textChars":130,"textLines":1,"bbox":[950,285,230,174]}
+{"kind":"shape","id":"sh/tc7at436","slide":23,"bbox":[950,520,210,36]}
+{"kind":"textbox","id":"sh/69gry94v","slide":23,"text":"LOCAL EXPLANATION","textPreview":"LOCAL EXPLANATION","textChars":17,"textLines":1,"bbox":[962,527,186,24]}
+{"kind":"image","id":"im/u5w7ih4b","slide":23,"name":"","alt":"Patient-level feature contribution plots from explainability notebook","bbox":[45,165,870,430]}
+{"kind":"notes","id":"nt/c7uhcr6t","slide":23,"text":"Evidence: code/Finalized notebooks/07_ebm_explainability.ipynb."}
+{"kind":"slide","id":"sl/7qto7e10","slide":24,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":7}
+{"kind":"shape","id":"sh/e5o72dcv","slide":24,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/1sfqxsv6","slide":24,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/0r6p4nul","slide":24,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/nux8zidc","slide":24,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/2to76dcr","slide":24,"text":"24","textPreview":"24","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/9wzq1svi","slide":24,"text":"Global patterns remain inspectable","textPreview":"Global patterns remain inspectable","textChars":34,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/ov6p8nux","slide":24,"text":"A transparent model supports a discussion about patterns across the cohort as well as a discussion about one patient.","textPreview":"A transparent model supports a discussion about patterns across the cohort as well as a discussion about one patient.","textChars":117,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"textbox","id":"sh/ix47utcn","slide":24,"text":"Two views of the same model","textPreview":"Two views of the same model","textChars":27,"textLines":1,"bbox":[865,192,300,54]}
+{"kind":"textbox","id":"sh/8veh8ril","slide":24,"text":"Global view\nWhich pre-operative features matter most across the cohort?\n\nLocal view\nWhy did this patient receive this score?","textPreview":"Global view | Which pre-operative features matter most across the cohort? |  | Local view | Why did this patient receive this score?","textChars":124,"textLines":5,"bbox":[865,278,300,205]}
+{"kind":"image","id":"im/6hc3m947","slide":24,"name":"","alt":"Feature importance comparison from modelling notebook","bbox":[42,160,780,440]}
+{"kind":"notes","id":"nt/7qto7e10","slide":24,"text":"Evidence: code/Finalized notebooks/05_modelling.ipynb and 07_ebm_explainability.ipynb."}
+{"kind":"slide","id":"sl/69wfm9o7","slide":25,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":20}
+{"kind":"shape","id":"sh/adgb2lwr","slide":25,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/xg7axgf2","slide":25,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/cfyt4beh","slide":25,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/napsr6x0","slide":25,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/29wby1wf","slide":25,"text":"25","textPreview":"25","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/pc7atgf6","slide":25,"text":"A score must survive an audit","textPreview":"A score must survive an audit","textChars":29,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/obyt0bel","slide":25,"text":"The model record joins the data version, feature set, threshold and model version to the clinical decision.","textPreview":"The model record joins the data version, feature set, threshold and model version to the clinical decision.","textChars":107,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"shape","id":"sh/fm5snmx4","slide":25,"bbox":[52,305,190,130]}
+{"kind":"textbox","id":"sh/elwbu1wj","slide":25,"text":"Gold table","textPreview":"Gold table","textChars":10,"textLines":1,"bbox":[66,330,160,28]}
+{"kind":"textbox","id":"sh/wza9cbqp","slide":25,"text":"Delta version","textPreview":"Delta version","textChars":13,"textLines":1,"bbox":[66,373,160,34]}
+{"kind":"textbox","id":"sh/h0jalgra","slide":25,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[245,344,32,35]}
+{"kind":"shape","id":"sh/uxsra18j","slide":25,"bbox":[288,305,190,130]}
+{"kind":"textbox","id":"sh/vy1sj694","slide":25,"text":"Training run","textPreview":"Training run","textChars":12,"textLines":1,"bbox":[302,330,160,28]}
+{"kind":"textbox","id":"sh/8ba98bqt","slide":25,"text":"Parameters + metrics","textPreview":"Parameters + metrics","textChars":20,"textLines":1,"bbox":[302,373,160,34]}
+{"kind":"textbox","id":"sh/9cjahgry","slide":25,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[481,344,32,35]}
+{"kind":"shape","id":"sh/m98r618n","slide":25,"bbox":[524,305,190,130]}
+{"kind":"textbox","id":"sh/7a1sf698","slide":25,"text":"Registered model","textPreview":"Registered model","textChars":16,"textLines":1,"bbox":[538,330,160,28]}
+{"kind":"textbox","id":"sh/s7utkvqx","slide":25,"text":"Version + tags","textPreview":"Version + tags","textChars":14,"textLines":1,"bbox":[538,373,160,34]}
+{"kind":"textbox","id":"sh/t83at0ri","slide":25,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[717,344,32,35]}
+{"kind":"shape","id":"sh/1czihwva","slide":25,"bbox":[760,305,190,130]}
+{"kind":"textbox","id":"sh/gbq1obep","slide":25,"text":"Patient score","textPreview":"Patient score","textChars":13,"textLines":1,"bbox":[774,330,160,28]}
+{"kind":"textbox","id":"sh/fax0f6d4","slide":25,"text":"Risk + explanation","textPreview":"Risk + explanation","textChars":18,"textLines":1,"bbox":[774,373,160,34]}
+{"kind":"textbox","id":"sh/e9ojm1wj","slide":25,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[953,344,32,35]}
+{"kind":"shape","id":"sh/t8fidwfe","slide":25,"bbox":[996,305,190,130]}
+{"kind":"textbox","id":"sh/s761kret","slide":25,"text":"Review decision","textPreview":"Review decision","textChars":15,"textLines":1,"bbox":[1010,330,160,28]}
+{"kind":"textbox","id":"sh/r6x0bmx8","slide":25,"text":"Clinician record","textPreview":"Clinician record","textChars":16,"textLines":1,"bbox":[1010,373,160,34]}
+{"kind":"textbox","id":"sh/6lojihwn","slide":25,"text":"“Which input created this score, and who acted on it?”","textPreview":"“Which input created this score, and who acted on it?”","textChars":54,"textLines":1,"bbox":[170,520,940,45]}
+{"kind":"notes","id":"nt/69wfm9o7","slide":25,"text":"Design based on fabric/MLFLOW.md, fabric/notebooks/40_train_register.ipynb and fabric/DAY_PLAN.md."}
+{"kind":"slide","id":"sl/l0bepsfm","slide":26,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":14}
+{"kind":"shape","id":"sh/h4bm1g3i","slide":26,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/uhk36lk7","slide":26,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/vitkzqlc","slide":26,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/8fil4b21","slide":26,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/tgr2xg3m","slide":26,"text":"26","textPreview":"26","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/md0321kv","slide":26,"text":"From experiment to registered model","textPreview":"From experiment to registered model","textChars":35,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/7e9kv6lg","slide":26,"text":"Fabric keeps the training lineage and the deployable model in the same governed estate.","textPreview":"Fabric keeps the training lineage and the deployable model in the same governed estate.","textChars":87,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"textbox","id":"sh/kbil0r2p","slide":26,"text":"ML experiment","textPreview":"ML experiment","textChars":13,"textLines":1,"bbox":[112,208,260,38]}
+{"kind":"textbox","id":"sh/lcr2tw3a","slide":26,"text":"Each training run records metrics and explicit tags such as data version and interpretability.","textPreview":"Each training run records metrics and explicit tags such as data version and interpretability.","textChars":94,"textLines":1,"bbox":[112,265,265,120]}
+{"kind":"textbox","id":"sh/lsja143i","slide":26,"text":"Registered model","textPreview":"Registered model","textChars":16,"textLines":1,"bbox":[508,208,280,38]}
+{"kind":"textbox","id":"sh/krat8z2x","slide":26,"text":"The selected calibrated EBM receives a version and a champion alias before it reaches scoring.","textPreview":"The selected calibrated EBM receives a version and a champion alias before it reaches scoring.","textChars":94,"textLines":1,"bbox":[508,265,270,120]}
+{"kind":"textbox","id":"sh/z61szulc","slide":26,"text":"Scored cohort","textPreview":"Scored cohort","textChars":13,"textLines":1,"bbox":[908,208,250,38]}
+{"kind":"textbox","id":"sh/y5sr69kr","slide":26,"text":"Batch scoring writes risk and explanation tables that the clinician app reads.","textPreview":"Batch scoring writes risk and explanation tables that the clinician app reads.","textChars":78,"textLines":1,"bbox":[908,265,250,120]}
+{"kind":"textbox","id":"sh/x4jax436","slide":26,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[292,305,70,50]}
+{"kind":"textbox","id":"sh/c3a94z21","slide":26,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[688,305,70,50]}
+{"kind":"shape","id":"sh/b21svulg","slide":26,"bbox":[160,485,960,72]}
+{"kind":"textbox","id":"sh/a18r2pkv","slide":26,"text":"No model file needs to leave the estate to reach the workflow.","textPreview":"No model file needs to leave the estate to reach the workflow.","textChars":62,"textLines":1,"bbox":[200,506,880,32]}
+{"kind":"notes","id":"nt/l0bepsfm","slide":26,"text":"Evidence: fabric/notebooks/40_train_register.ipynb, 50_batch_score.ipynb and fabric/README.md."}
+{"kind":"slide","id":"sl/4vyxknqp","slide":27,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":5}
+{"kind":"shape","id":"sh/zmdsbi5s","slide":27,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/kn694nmx","slide":27,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/lofadsni","slide":27,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/mpor6x43","slide":27,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/7qxsfi5o","slide":27,"text":"27","textPreview":"27","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/8r698nm9","slide":27,"text":"Delivery inside the governed estate","textPreview":"Delivery inside the governed estate","textChars":35,"textLines":1,"bbox":[85,220,1100,74]}
+{"kind":"textbox","id":"sh/9sfahsnu","slide":27,"text":"Versioned model · scored cohort · clinician workflow · access policy","textPreview":"Versioned model · scored cohort · clinician workflow · access policy","textChars":68,"textLines":1,"bbox":[175,340,930,44]}
+{"kind":"notes","id":"nt/4vyxknqp","slide":27,"text":""}
+{"kind":"slide","id":"sl/3mdove10","slide":28,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":8}
+{"kind":"shape","id":"sh/947ipwje","slide":28,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/lg3690fq","slide":28,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/kfu5gfe5","slide":28,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/je1o7ax0","slide":28,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/ytsne5wf","slide":28,"text":"28","textPreview":"28","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/tk36dkf2","slide":28,"text":"The score carries its own evidence","textPreview":"The score carries its own evidence","textChars":34,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/8ju5kfeh","slide":28,"text":"The endpoint response brings risk, threshold, top contributions and lineage metadata together.","textPreview":"The endpoint response brings risk, threshold, top contributions and lineage metadata together.","textChars":94,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"shape","id":"sh/7ilobaxw","slide":28,"bbox":[70,165,690,440]}
+{"kind":"textbox","id":"sh/6hcni5wb","slide":28,"text":"{\n  \"episode_id\": \"…\",\n  \"risk\": 0.34,\n  \"threshold\": 0.50,\n  \"flagged\": false,\n  \"contributions\": [ … ],\n  \"model_version\": \"champion\",\n  \"gold_table_version\": 7\n}","textPreview":"{ |   \"episode_id\": \"…\", |   \"risk\": 0.34, |   \"threshold\": 0.50, |   \"flagged\": false, |   \"contributions\": [ … ], |   \"model_version\": ...","textChars":164,"textLines":9,"bbox":[120,205,580,330]}
+{"kind":"textbox","id":"sh/9ojm1gfi","slide":28,"text":"The response is designed for the next human question:","textPreview":"The response is designed for the next human question:","textChars":53,"textLines":1,"bbox":[835,205,320,70]}
+{"kind":"textbox","id":"sh/ona58ved","slide":28,"text":"“Why this score?”\n\n“Which model and data version produced it?”\n\n“Was the patient flagged at the active threshold?”","textPreview":"“Why this score?” |  | “Which model and data version produced it?” |  | “Was the patient flagged at the active threshold?”","textChars":114,"textLines":5,"bbox":[835,315,340,170]}
+{"kind":"image","id":"im/pc7yh832","slide":28,"name":"object 2","bbox":[0,0.01,1279.68,719.99]}
+{"kind":"notes","id":"nt/3mdove10","slide":28,"text":"Payload fields based on fabric/notebooks/50_batch_score.ipynb and the clinician app data model. Example values are illustrative."}
+{"kind":"slide","id":"sl/i5o3q10v","slide":29,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":10}
+{"kind":"shape","id":"sh/6hc76hs7","slide":29,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/tk36hwby","slide":29,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/8jup8rad","slide":29,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/vmlojmto","slide":29,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/ulc7a1s3","slide":29,"text":"29","textPreview":"29","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/h8n6lwbu","slide":29,"text":"The clinician app turns a score into a review task","textPreview":"The clinician app turns a score into a review task","textChars":50,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/g7upcra9","slide":29,"text":"The app uses the scored cohort and explanation tables, without exposing a generic model interface to a clinician.","textPreview":"The app uses the scored cohort and explanation tables, without exposing a generic model interface to a clinician.","textChars":113,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"shape","id":"sh/bq1o72tk","slide":29,"bbox":[80,175,470,410]}
+{"kind":"textbox","id":"sh/apsnyxcz","slide":29,"text":"Patient review","textPreview":"Patient review","textChars":14,"textLines":1,"bbox":[116,215,320,42]}
+{"kind":"textbox","id":"sh/kf2tw7a1","slide":29,"text":"Risk band\nHigh\n\nWhy?\nReduced mobility\nBaseline pain\nPrior surgery\n\nRecord decision","textPreview":"Risk band | High |  | Why? | Reduced mobility | Baseline pain | Prior surgery |  | Record decision","textChars":82,"textLines":9,"bbox":[116,292,300,230]}
+{"kind":"textbox","id":"sh/5gbupcrm","slide":29,"text":"The workflow supports judgement, not automation","textPreview":"The workflow supports judgement, not automation","textChars":47,"textLines":1,"bbox":[650,210,450,52]}
+{"kind":"textbox","id":"sh/idkbuxsv","slide":29,"text":"A model score identifies a patient for review. The clinician sees the explanation, adds context and records the decision. The app does not make the care decision.","textPreview":"A model score identifies a patient for review. The clinician sees the explanation, adds context and records the decision. The app does no...","textChars":162,"textLines":1,"bbox":[650,300,450,155]}
+{"kind":"shape","id":"sh/jetc329g","slide":29,"bbox":[650,510,370,40]}
+{"kind":"textbox","id":"sh/s32t07ax","slide":29,"text":"RISK + EXPLANATION + DECISION","textPreview":"RISK + EXPLANATION + DECISION","textChars":29,"textLines":1,"bbox":[662,517,346,28]}
+{"kind":"notes","id":"nt/i5o3q10v","slide":29,"text":"Evidence: fabric/rayfin-clinician-app/src/pages and UX_AUDIT_AND_DESIGN.md. Layout is a conceptual representation, not a production screenshot."}
+{"kind":"slide","id":"sl/wnqh07ex","slide":30,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":9}
+{"kind":"shape","id":"sh/21g32tov","slide":30,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/po72d8nm","slide":30,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/o3yl4361","slide":30,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/bqpkfy5s","slide":30,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/apg36do7","slide":30,"text":"30","textPreview":"30","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/xsr2h8ni","slide":30,"text":"Row-level security sits beside the data","textPreview":"Row-level security sits beside the data","textChars":39,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/cril836d","slide":30,"text":"The access rule is evaluated by Data API Builder before a patient row reaches the app.","textPreview":"The access rule is evaluated by Data API Builder before a patient row reaches the app.","textChars":86,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"shape","id":"sh/ru5k3ep8","slide":30,"bbox":[85,195,485,270]}
+{"kind":"textbox","id":"sh/6twju9o3","slide":30,"text":"policy: (claims, item) =>\n  claims.sub\n    .eq(item.assignedClinicianId)\n    .or(\n      claims.email.eq(\n        item.assignedClinicianEmail\n      )\n    )","textPreview":"policy: (claims, item) => |   claims.sub |     .eq(item.assignedClinicianId) |     .or( |       claims.email.eq( |         item.assignedC...","textChars":154,"textLines":8,"bbox":[120,230,415,190]}
+{"kind":"textbox","id":"sh/onqx8zix","slide":30,"text":"No client-side filter","textPreview":"No client-side filter","textChars":21,"textLines":1,"bbox":[700,215,340,44]}
+{"kind":"textbox","id":"sh/p8ze14zi","slide":30,"text":"Filtering in the frontend only hides rows in one screen. The data policy protects every request, including deep links and API calls.","textPreview":"Filtering in the frontend only hides rows in one screen. The data policy protects every request, including deep links and API calls.","textChars":132,"textLines":1,"bbox":[700,285,380,120]}
+{"kind":"shape","id":"sh/2l8f6p0r","slide":30,"bbox":[700,465,350,40]}
+{"kind":"textbox","id":"sh/3mhwzu1c","slide":30,"text":"ENFORCED IN DATA API BUILDER","textPreview":"ENFORCED IN DATA API BUILDER","textChars":28,"textLines":1,"bbox":[712,472,326,28]}
+{"kind":"notes","id":"nt/wnqh07ex","slide":30,"text":"Source: fabric/rayfin-clinician-app/rayfin/data/PatientRisk.ts and RiskExplanation.ts."}
+{"kind":"slide","id":"sl/lcn6tkb6","slide":31,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":17}
+{"kind":"shape","id":"sh/qdsrytgn","slide":31,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/dgja98fe","slide":31,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/cfa903yt","slide":31,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/zilsbyx4","slide":31,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/ehsr2dgz","slide":31,"text":"31","textPreview":"31","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/1k3ad8fa","slide":31,"text":"A grounded answer, or none","textPreview":"A grounded answer, or none","textChars":26,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/0jut43yp","slide":31,"text":"The agent can answer from the governed model outputs and provider context, with the same permission boundary.","textPreview":"The agent can answer from the governed model outputs and provider context, with the same permission boundary.","textChars":109,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"shape","id":"sh/fmhszex0","slide":31,"bbox":[65,290,240,155]}
+{"kind":"textbox","id":"sh/ul8rq9gf","slide":31,"text":"Question","textPreview":"Question","textChars":8,"textLines":1,"bbox":[81,318,208,28]}
+{"kind":"textbox","id":"sh/4vm5g7al","slide":31,"text":"Which patients are flagged and why?","textPreview":"Which patients are flagged and why?","textChars":35,"textLines":1,"bbox":[83,365,204,55]}
+{"kind":"textbox","id":"sh/5wvmpcr6","slide":31,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[305,340,55,50]}
+{"kind":"shape","id":"sh/it4nexsf","slide":31,"bbox":[360,290,240,155]}
+{"kind":"textbox","id":"sh/3ud4n290","slide":31,"text":"Semantic layer","textPreview":"Semantic layer","textChars":14,"textLines":1,"bbox":[376,318,208,28]}
+{"kind":"textbox","id":"sh/sz65k7ah","slide":31,"text":"Risk, explanation and provider data","textPreview":"Risk, explanation and provider data","textChars":35,"textLines":1,"bbox":[378,365,204,55]}
+{"kind":"textbox","id":"sh/d0fmtcr2","slide":31,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[600,340,55,50]}
+{"kind":"shape","id":"sh/qx4nihsb","slide":31,"bbox":[655,290,240,155]}
+{"kind":"textbox","id":"sh/ryd4rm9w","slide":31,"text":"Permission check","textPreview":"Permission check","textChars":16,"textLines":1,"bbox":[671,318,208,28]}
+{"kind":"textbox","id":"sh/832l8nad","slide":31,"text":"Caller can only see assigned patients","textPreview":"Caller can only see assigned patients","textChars":37,"textLines":1,"bbox":[673,365,204,55]}
+{"kind":"textbox","id":"sh/t4bmhsry","slide":31,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[895,340,55,50]}
+{"kind":"shape","id":"sh/9032l43m","slide":31,"bbox":[950,290,240,155]}
+{"kind":"textbox","id":"sh/8zu1cj21","slide":31,"text":"Answer","textPreview":"Answer","textChars":6,"textLines":1,"bbox":[966,318,208,28]}
+{"kind":"textbox","id":"sh/nylkjelg","slide":31,"text":"Cited, scoped response","textPreview":"Cited, scoped response","textChars":22,"textLines":1,"bbox":[968,365,204,55]}
+{"kind":"textbox","id":"sh/mxcja9kv","slide":31,"text":"The answer should remain traceable to the scored tables and the caller’s permissions.","textPreview":"The answer should remain traceable to the scored tables and the caller’s permissions.","textChars":85,"textLines":1,"bbox":[140,530,1000,38]}
+{"kind":"notes","id":"nt/lcn6tkb6","slide":31,"text":"Evidence: fabric/rayfin-clinician-app/src/services/agent and fabric/README.md."}
+{"kind":"slide","id":"sl/6l0j294r","slide":32,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":11}
+{"kind":"shape","id":"sh/ry94z29w","slide":32,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/qx0nqx8b","slide":32,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/d0bm1c7m","slide":32,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/szi5s7qh","slide":32,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/3a94vi9k","slide":32,"text":"32","textPreview":"32","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/i903mx8z","slide":32,"text":"The missing layer is delivery with evidence","textPreview":"The missing layer is delivery with evidence","textChars":43,"textLines":1,"bbox":[95,135,1050,70]}
+{"kind":"shape","id":"sh/5crmxsrq","slide":32,"bbox":[90,290,310,185]}
+{"kind":"textbox","id":"sh/4bilonq5","slide":32,"text":"Clinician","textPreview":"Clinician","textChars":9,"textLines":1,"bbox":[112,326,266,32]}
+{"kind":"textbox","id":"sh/v6p4ri9o","slide":32,"text":"Risk, explanation and a recorded decision","textPreview":"Risk, explanation and a recorded decision","textChars":41,"textLines":1,"bbox":[118,386,254,55]}
+{"kind":"shape","id":"sh/u5g3yd83","slide":32,"bbox":[460,290,310,185]}
+{"kind":"textbox","id":"sh/y1gnadsv","slide":32,"text":"Patient","textPreview":"Patient","textChars":7,"textLines":1,"bbox":[482,326,266,32]}
+{"kind":"textbox","id":"sh/j2p43itg","slide":32,"text":"A clear, calibrated probability","textPreview":"A clear, calibrated probability","textChars":31,"textLines":1,"bbox":[488,386,254,55]}
+{"kind":"shape","id":"sh/k3y5cna1","slide":32,"bbox":[830,290,310,185]}
+{"kind":"textbox","id":"sh/l4765sbm","slide":32,"text":"Regulator","textPreview":"Regulator","textChars":9,"textLines":1,"bbox":[852,326,266,32]}
+{"kind":"textbox","id":"sh/65gneds7","slide":32,"text":"Lineage, model version and access policy","textPreview":"Lineage, model version and access policy","textChars":40,"textLines":1,"bbox":[858,386,254,55]}
+{"kind":"textbox","id":"sh/76po7its","slide":32,"text":"Data, analytics and decision remain in one governed place.","textPreview":"Data, analytics and decision remain in one governed place.","textChars":58,"textLines":1,"bbox":[160,545,960,36]}
+{"kind":"image","id":"im/2xozu1o7","slide":32,"name":"object 2","bbox":[0,0.01,1279.68,719.99]}
+{"kind":"notes","id":"nt/6l0j294r","slide":32,"text":""}
+{"kind":"slide","id":"sl/nax4b2dk","slide":33,"title":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textShapes":20}
+{"kind":"shape","id":"sh/8nul0fmh","slide":33,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/vql4bu5s","slide":33,"bbox":[0,676,1280,44]}
+{"kind":"textbox","id":"sh/apc32p47","slide":33,"text":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textPreview":"EUROPEAN MICROSOFT FABRIC · SQL COMMUNITY CONFERENCE","textChars":52,"textLines":1,"bbox":[28,688,390,18]}
+{"kind":"textbox","id":"sh/grad8zah","slide":33,"text":"#FABCON EUROPE     #SQLCON EUROPE","textPreview":"#FABCON EUROPE     #SQLCON EUROPE","textChars":33,"textLines":1,"bbox":[815,686,420,20]}
+{"kind":"textbox","id":"sh/hsjuhkb2","slide":33,"text":"33","textPreview":"33","textChars":2,"textLines":1,"bbox":[1160,688,55,16]}
+{"kind":"textbox","id":"sh/upsv6psb","slide":33,"text":"What transfers to the next project","textPreview":"What transfers to the next project","textChars":34,"textLines":1,"bbox":[70,48,1140,62]}
+{"kind":"textbox","id":"sh/vq1cfutw","slide":33,"text":"The reusable work is not only the model. It is the governed path from data to decision.","textPreview":"The reusable work is not only the model. It is the governed path from data to decision.","textChars":87,"textLines":1,"bbox":[72,112,1050,32]}
+{"kind":"textbox","id":"sh/4vadczad","slide":33,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[92,168,42,35]}
+{"kind":"textbox","id":"sh/5w3ul4by","slide":33,"text":"Version the inputs","textPreview":"Version the inputs","textChars":18,"textLines":1,"bbox":[160,168,330,30]}
+{"kind":"textbox","id":"sh/itsvapsn","slide":33,"text":"Record the Delta table and feature-set version with each run","textPreview":"Record the Delta table and feature-set version with each run","textChars":60,"textLines":1,"bbox":[515,168,650,34]}
+{"kind":"shape","id":"sh/3u1cjut8","slide":33,"bbox":[160,224,1000,0]}
+{"kind":"textbox","id":"sh/czudgjap","slide":33,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[92,256,42,35]}
+{"kind":"textbox","id":"sh/dk3ep4ba","slide":33,"text":"Make explanations first-class","textPreview":"Make explanations first-class","textChars":29,"textLines":1,"bbox":[160,256,330,30]}
+{"kind":"textbox","id":"sh/lgzu94je","slide":33,"text":"Store local explanations beside the score","textPreview":"Store local explanations beside the score","textChars":41,"textLines":1,"bbox":[515,256,650,34]}
+{"kind":"shape","id":"sh/0fqd0z2t","slide":33,"bbox":[160,312,1000,0]}
+{"kind":"textbox","id":"sh/zehc7u18","slide":33,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[92,344,42,35]}
+{"kind":"textbox","id":"sh/yd8vy9kn","slide":33,"text":"Treat thresholds as policy","textPreview":"Treat thresholds as policy","textChars":26,"textLines":1,"bbox":[160,344,330,30]}
+{"kind":"textbox","id":"sh/9kjudoja","slide":33,"text":"Connect flagging volume to the care pathway","textPreview":"Connect flagging volume to the care pathway","textChars":43,"textLines":1,"bbox":[515,344,650,34]}
+{"kind":"shape","id":"sh/8jad4j2p","slide":33,"bbox":[160,400,1000,0]}
+{"kind":"textbox","id":"sh/nihcbe1k","slide":33,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[92,432,42,35]}
+{"kind":"textbox","id":"sh/mh8v29kz","slide":33,"text":"Enforce access in the data layer","textPreview":"Enforce access in the data layer","textChars":32,"textLines":1,"bbox":[160,432,330,30]}
+{"kind":"textbox","id":"sh/pofu1k36","slide":33,"text":"Do not rely on a frontend filter","textPreview":"Do not rely on a frontend filter","textChars":32,"textLines":1,"bbox":[515,432,650,34]}
+{"kind":"shape","id":"sh/4n6tsf2l","slide":33,"bbox":[160,488,1000,0]}
+{"kind":"textbox","id":"sh/uhkjm1w7","slide":33,"text":"5","textPreview":"5","textChars":1,"textLines":1,"bbox":[92,520,42,35]}
+{"kind":"textbox","id":"sh/vit0f6ds","slide":33,"text":"Keep a usable fallback","textPreview":"Keep a usable fallback","textChars":22,"textLines":1,"bbox":[160,520,330,30]}
+{"kind":"textbox","id":"sh/gj21ored","slide":33,"text":"Pre-run notebooks and offline app mode for the demo","textPreview":"Pre-run notebooks and offline app mode for the demo","textChars":51,"textLines":1,"bbox":[515,520,650,34]}
+{"kind":"shape","id":"sh/h4bihwvy","slide":33,"bbox":[160,576,1000,0]}
+{"kind":"image","id":"im/gbilo7ud","slide":33,"name":"object 2","bbox":[0,0.01,1279.68,719.99]}
+{"kind":"notes","id":"nt/nax4b2dk","slide":33,"text":"Evidence: fabric/DAY_PLAN.md, fabric/README.md, fabric/MLFLOW.md and clinician-app README."}
+{"kind":"slide","id":"sl/ofu103u5","slide":34,"title":"Please rate","textShapes":2}
+{"kind":"shape","id":"sh/qx8napc7","slide":34,"name":"object 5","bbox":[126.09,246.17,354.33,50.2]}
+{"kind":"textbox","id":"sh/d0zm54bi","slide":34,"name":"object 6","placeholder":"title","text":"Please rate","textPreview":"Please rate","textChars":11,"textLines":1,"bbox":[120.12,224.28,359.53,87.07]}
+{"kind":"shape","id":"sh/czq5czux","slide":34,"name":"object 7","bbox":[121.29,313.83,380.93,51.53]}
+{"kind":"textbox","id":"sh/z2147eto","slide":34,"name":"object 8","text":"this session","textPreview":"this session","textChars":12,"textLines":1,"bbox":[118.89,292.63,382.6,87.8]}
+{"kind":"image","id":"im/3uhwfilg","slide":34,"name":"object 2","bbox":[0,665.18,1279.68,48.01]}
+{"kind":"image","id":"im/fytwfe10","slide":34,"name":"object 4","bbox":[0,90.79,1279.68,480.99]}
+{"kind":"notes","id":"nt/ofu103u5","slide":34,"text":""}

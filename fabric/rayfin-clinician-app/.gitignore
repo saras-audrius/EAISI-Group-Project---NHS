@@ -11,3 +11,6 @@ rayfin/.env.secrets
 
 # Deployment registry: item ids, capacity URL, publishable key. Machine-local.
 rayfin/.deployments.json
+
+# Local venv for tools/agent_proxy.py
+tools/.venv/

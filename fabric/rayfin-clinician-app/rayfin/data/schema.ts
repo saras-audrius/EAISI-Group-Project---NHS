@@ -2,6 +2,7 @@ import { CohortStat } from './CohortStat.js';
 import { ModelCard } from './ModelCard.js';
 import { ModelCurve } from './ModelCurve.js';
 import { PatientRisk } from './PatientRisk.js';
+import { ProviderStat } from './ProviderStat.js';
 import { ReviewDecision } from './ReviewDecision.js';
 import { RiskExplanation } from './RiskExplanation.js';
 import { ThresholdOption } from './ThresholdOption.js';
@@ -17,16 +18,17 @@ import { ThresholdOption } from './ThresholdOption.js';
  * * **Patient-scoped** — `PatientRisk`, `RiskExplanation`, `ReviewDecision`.
  *   Every one filters rows against a claim. A clinician sees their own patients
  *   and nobody else's.
- * * **Model-scoped** — `CohortStat`, `ModelCurve`, `ThresholdOption`,
- *   `ModelCard`. Aggregates and model documentation, readable by any
- *   authenticated user. Each carries a comment explaining why a row predicate
- *   would be wrong rather than merely absent.
+ * * **Model-scoped** — `CohortStat`, `ProviderStat`, `ModelCurve`,
+ *   `ThresholdOption`, `ModelCard`. Aggregates and model documentation,
+ *   readable by any authenticated user. Each carries a comment explaining why
+ *   a row predicate would be wrong rather than merely absent.
  */
 export type ClinicianAppSchema = {
   PatientRisk: PatientRisk;
   RiskExplanation: RiskExplanation;
   ReviewDecision: ReviewDecision;
   CohortStat: CohortStat;
+  ProviderStat: ProviderStat;
   ModelCurve: ModelCurve;
   ThresholdOption: ThresholdOption;
   ModelCard: ModelCard;
@@ -37,6 +39,7 @@ export const schema = [
   RiskExplanation,
   ReviewDecision,
   CohortStat,
+  ProviderStat,
   ModelCurve,
   ThresholdOption,
   ModelCard,

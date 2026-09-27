@@ -227,10 +227,19 @@ export const SYMPTOM_PERIOD: Readonly<Record<number, string>> = {
 /**
  * Code 3 (long-term care) was merged into 4 in `30_gold_features` — 84 episodes,
  * too thin to model alone — so the label for 4 has to cover both, and says so.
+ *
+ * **1 and 2 were the wrong way round here until 2026-09-13.** The NHS PROMs Data
+ * Dictionary v3.4 defines `Q1 Living Arrangements` as `1 = I live with
+ * partner/spouse/family/friends` and `2 = I live alone`, and nothing in silver or
+ * gold reverses them — `30_gold_features` only folds 3 into 4. The app was
+ * therefore telling a clinician that a patient living with their family lived
+ * alone, and the reverse, on the panel whose stated purpose is deciding whether
+ * "optimise before surgery" is realistic. Discharge planning and the feasibility
+ * of a pre-habilitation programme both turn on it.
  */
 export const LIVING_ARRANGEMENTS: Readonly<Record<number, string>> = {
-  1: 'Lives alone',
-  2: 'Lives with partner, family or friends',
+  1: 'Lives with partner, family or friends',
+  2: 'Lives alone',
   4: 'Care setting or other arrangement',
 };
 
@@ -322,4 +331,229 @@ export function comorbidityCoverage(patient: PatientRow): {
     else unrecorded.push(key);
   }
   return { present, absent, unrecorded };
+}
+
+// ---------------------------------------------------------------------------
+// Translating a raw feature value into what the patient actually answered
+// ---------------------------------------------------------------------------
+
+/**
+ * What a model feature's value *means*, in the questionnaire's own words.
+ *
+ * The explanation chart previously rendered the model's raw input: "Pre-op OKS:
+ * washing — 0". That number is unreadable and, worse, invites the wrong reading.
+ * On the Oxford Knee Score **0 is the worst possible answer**, not an absence —
+ * "washing = 0" is a patient who cannot wash and dry themselves at all. A
+ * clinician scanning the screen has every reason to read a zero as "nothing to
+ * see here", and the whole value of a glassbox model is that they can check its
+ * inputs against the patient in front of them.
+ *
+ * Every scale below is transcribed from the **NHS PROMs Data Dictionary v3.4**
+ * (`references/nhs/proms_data_dictionary.pdf`), not inferred. Each Oxford Knee
+ * Score item has its own wording — "Rarely/Never" for limping is not the same
+ * answer as "No trouble at all" for washing — so they are carried per item, the
+ * way the instrument is written.
+ *
+ * Codes reaching the app have already been through `20_silver_clean`, which maps
+ * the questionnaire's `2 = No` onto `0` for the yes/no items and decodes the
+ * missing-value sentinels. So the booleans here are 1/0, not the raw 1/2.
+ */
+
+/** The five answers to an Oxford Knee Score item, worst (0) to best (4). */
+type OksItemScale = readonly [string, string, string, string, string];
+
+const OKS_ITEM_SCALES: Readonly<Record<string, { question: string; answers: OksItemScale }>> = {
+  pain: {
+    question: 'How would you describe the pain you usually had from your knee?',
+    answers: ['Severe', 'Moderate', 'Mild', 'Very mild', 'None'],
+  },
+  night_pain: {
+    question: 'Have you been troubled by pain from your knee in bed at night?',
+    answers: ['Every night', 'Most nights', 'Some nights', 'Only 1 or 2 nights', 'No nights'],
+  },
+  washing: {
+    question: 'Have you had trouble washing and drying yourself (all over) because of your knee?',
+    answers: ['Impossible to do', 'Extreme difficulty', 'Moderate trouble', 'Very little trouble', 'No trouble at all'],
+  },
+  transport: {
+    question: 'Have you had trouble getting in or out of a car or using public transport because of your knee?',
+    answers: ['Impossible to do', 'Extreme difficulty', 'Moderate trouble', 'Very little trouble', 'No trouble at all'],
+  },
+  walking: {
+    question: 'For how long have you been able to walk before pain from your knee becomes severe?',
+    answers: ['Not at all — pain severe on walking', 'Around the house only', '5–15 minutes', '16–30 minutes', 'No pain, or more than 30 minutes'],
+  },
+  standing: {
+    question: 'After a meal, how painful has it been to stand up from a chair because of your knee?',
+    answers: ['Unbearable', 'Very painful', 'Moderately painful', 'Slightly painful', 'Not at all painful'],
+  },
+  limping: {
+    question: 'Have you been limping when walking, because of your knee?',
+    answers: ['All of the time', 'Most of the time', 'Often, not just at first', 'Sometimes or just at first', 'Rarely or never'],
+  },
+  kneeling: {
+    question: 'Could you kneel down and get up again afterwards?',
+    answers: ['No, impossible', 'With extreme difficulty', 'With moderate difficulty', 'With little difficulty', 'Yes, easily'],
+  },
+  work: {
+    question: 'How much has pain from your knee interfered with your usual work, including housework?',
+    answers: ['Totally', 'Greatly', 'Moderately', 'A little bit', 'Not at all'],
+  },
+  confidence: {
+    question: "Have you felt that your knee might suddenly 'give way' or let you down?",
+    answers: ['All of the time', 'Most of the time', 'Often, not just at first', 'Sometimes or just at first', 'Rarely or never'],
+  },
+  shopping: {
+    question: 'Could you do the household shopping on your own?',
+    answers: ['No, impossible', 'With extreme difficulty', 'With moderate difficulty', 'With little difficulty', 'Yes, easily'],
+  },
+  stairs: {
+    question: 'Could you walk down one flight of stairs?',
+    answers: ['No, impossible', 'With extreme difficulty', 'With moderate difficulty', 'With little difficulty', 'Yes, easily'],
+  },
+};
+
+/** EQ-5D-3L dimensions, keyed by the model's feature name. */
+const EQ5D_BY_FEATURE: Readonly<Record<string, Eq5dKey>> = {
+  t0_mobility: 'eq5dMobility',
+  t0_self_care: 'eq5dSelfCare',
+  t0_activity: 'eq5dActivity',
+  t0_discomfort: 'eq5dDiscomfort',
+  t0_anxiety: 'eq5dAnxiety',
+};
+
+/**
+ * Yes/no features. The value is just "Yes" or "No" because the factor's own
+ * label always sits immediately before it — "Previous surgery on this knee —
+ * Yes — previous surgery on this knee" is how you get a screen nobody reads.
+ * The question, where the instrument asks one, carries the context instead.
+ */
+const YES_NO_FEATURES: Readonly<Record<string, { question?: string }>> = {
+  t0_previous_surgery: { question: 'Have you previously had surgery on this knee?' },
+  t0_disability: { question: 'Do you have a disability?' },
+  t0_assisted: { question: 'Did someone help you complete this questionnaire?' },
+  university_hospital: {},
+  independent_hospital: {},
+  heart_disease: {},
+  high_bp: {},
+  stroke: {},
+  circulation: {},
+  lung_disease: {},
+  diabetes: {},
+  kidney_disease: {},
+  nervous_system: {},
+  liver_disease: {},
+  cancer: {},
+  depression: {},
+  arthritis: {},
+};
+
+/** A totalled score: the value, its maximum, and which end is bad. */
+const TOTAL_FEATURES: Readonly<Record<string, { max: number; lowerIsWorse: boolean; noun: string }>> = {
+  oks_t0_score: { max: 48, lowerIsWorse: true, noun: 'points' },
+  oks_pain_subscale: { max: 8, lowerIsWorse: true, noun: 'points' },
+  oks_function_subscale: { max: 24, lowerIsWorse: true, noun: 'points' },
+  oks_adl_subscale: { max: 16, lowerIsWorse: true, noun: 'points' },
+  comorbidity_count: { max: 12, lowerIsWorse: false, noun: 'conditions' },
+};
+
+export interface FeatureValueMeaning {
+  /** What the patient answered, in the instrument's own words. */
+  text: string;
+  /** The raw value and its range, for a clinician who wants to check it. */
+  scale?: string;
+  /** The question that produced it, where the instrument asks one. */
+  question?: string;
+  /** True when this is the worst available answer — worth seeing at a glance. */
+  isWorst?: boolean;
+}
+
+/**
+ * Turn `(feature, value)` into something a clinician can check against the
+ * patient. Returns `null` when the feature has no known scale, so the caller can
+ * fall back to the raw number rather than inventing a meaning for it.
+ */
+export function describeFeatureValue(
+  feature: string,
+  value: number | undefined
+): FeatureValueMeaning | null {
+  if (value === undefined || Number.isNaN(value)) return null;
+
+  // --- Oxford Knee Score items: 0 is the WORST answer, 4 the best ------------
+  if (feature.startsWith('oks_t0_') && !(feature in TOTAL_FEATURES)) {
+    const item = OKS_ITEM_SCALES[feature.slice('oks_t0_'.length)];
+    if (item) {
+      const i = Math.round(value);
+      if (i >= 0 && i <= 4) {
+        return {
+          text: item.answers[i],
+          scale: 'scored 0 to 4 · 0 is the worst answer, 4 the best',
+          question: item.question,
+          isWorst: i === 0,
+        };
+      }
+    }
+  }
+
+  // --- EQ-5D-3L: 1 no problems, 3 extreme -----------------------------------
+  const eqKey = EQ5D_BY_FEATURE[feature];
+  if (eqKey) {
+    const dim = EQ5D_DIMENSIONS.find((d) => d.key === eqKey);
+    const level = Math.round(value);
+    if (dim && level >= 1 && level <= 3) {
+      return {
+        text: dim.levels[level - 1],
+        scale: 'levels 1 to 3 · 1 is no problems, 3 is the worst',
+        isWorst: level === 3,
+      };
+    }
+  }
+
+  // --- yes / no --------------------------------------------------------------
+  const yn = YES_NO_FEATURES[feature];
+  if (yn) {
+    return { text: value >= 0.5 ? 'Yes' : 'No', scale: '1 is yes, 0 is no', question: yn.question };
+  }
+
+  // --- ordered categories ----------------------------------------------------
+  if (feature === 't0_symptom_period') {
+    const label = SYMPTOM_PERIOD[Math.round(value)];
+    if (label) {
+      return {
+        text: label,
+        scale: 'coded 1 to 4 · 1 is under a year, 4 is over ten',
+        question: 'How long have you had knee symptoms?',
+        isWorst: Math.round(value) === 4,
+      };
+    }
+  }
+  if (feature === 't0_living_arrangements' || feature === 'living_arrangements_grouped') {
+    const label = LIVING_ARRANGEMENTS[Math.round(value)];
+    if (label) return { text: label, scale: 'a category, not a scale', question: 'What are your living arrangements?' };
+  }
+
+  // --- totals ----------------------------------------------------------------
+  const total = TOTAL_FEATURES[feature];
+  if (total) {
+    return {
+      text: `${value} of ${total.max} ${total.noun}`,
+      scale: total.lowerIsWorse ? 'lower is worse' : 'higher means more conditions',
+      isWorst: total.lowerIsWorse ? value === 0 : value === total.max,
+    };
+  }
+
+  // --- one-hot columns: the label already names the category ------------------
+  if (/^(region_|age_band_grouped_|sex_|year_|living_arrangements_grouped_)/.test(feature)) {
+    return { text: value >= 0.5 ? 'Yes' : 'No', scale: '1 is yes, 0 is no' };
+  }
+
+  return null;
+}
+
+/** The one-line form used where space is tight, e.g. under a bar in a chart. */
+export function featureValueShort(feature: string, value: number | undefined): string {
+  const meaning = describeFeatureValue(feature, value);
+  if (meaning) return meaning.text;
+  if (value === undefined || Number.isNaN(value)) return 'not recorded';
+  return Number.isInteger(value) ? String(value) : value.toFixed(2);
 }

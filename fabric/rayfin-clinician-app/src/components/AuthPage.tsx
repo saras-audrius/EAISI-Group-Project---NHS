@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { BRAND } from '@/brand';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { Wordmark } from '@/components/Wordmark';
 import { useAuth } from '@/hooks/AuthContext';
 import { isOfflineDemo } from '@/services/patients';
@@ -23,15 +22,8 @@ const msLogo = (
 );
 
 /**
- * The first screen anybody sees, and the one that has to establish what this is.
- *
- * It previously said "Todo App" over a gradient with two decorative blur circles
- * — untouched template boilerplate. That is not a cosmetic problem. The sign-in
- * page is where a clinical system declares whose it is, what it does, and what it
- * does not do, and a screen that declares none of those things has already
- * mis-set expectations before the first patient is loaded.
- *
- * So: the organisation, the product, the outcome being predicted, and the
+ * The first screen anybody sees, and the one that has to establish what this is:
+ * the organisation, the product, the outcome being predicted, and the
  * decision-support boundary — before the button, not after it.
  */
 export function AuthPage() {
@@ -61,56 +53,35 @@ export function AuthPage() {
       : 'Continue to the offline demonstration';
 
   return (
-    <div className="flex min-h-screen flex-col bg-surface">
+    <div className="paper flex min-h-screen flex-col bg-surface">
       <header className="border-b border-line bg-elevated">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-2.5">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-2.5">
           <Wordmark />
-          <ThemeToggle />
         </div>
       </header>
 
-      <div className="mx-auto flex w-full max-w-3xl flex-1 items-start px-4 py-10">
-        <div className="w-full space-y-5">
+      <div className="mx-auto grid w-full max-w-5xl flex-1 gap-10 px-5 py-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:py-20">
+        <div className="rise space-y-6" style={{ '--i': 0 } as React.CSSProperties}>
           <div>
-            <h1 className="text-title font-semibold tracking-tight text-ink">
+            <div className="eyebrow mb-3">Pre-operative decision support · knee replacement</div>
+            <h1 className="text-[2.25rem] font-semibold leading-tight tracking-tight text-ink">
               Pre-operative outcome review
             </h1>
-            <p className="mt-2 max-w-prose text-body text-muted">
+            <p className="mt-5 max-w-[52ch] text-lead text-muted">
               A calibrated model scores patients awaiting knee replacement for the
-              probability of a <strong className="text-ink">poor outcome</strong> — an
-              Oxford Knee Score gain of 7 points or fewer at six months, at or below the
-              minimal clinically important difference. You review the score, see the
+              probability of a <strong className="font-semibold text-ink">poor outcome</strong>{' '}
+              — an Oxford Knee Score gain of 7 points or fewer at six months, at or below
+              the minimal clinically important difference. You review the score, see the
               reasoning behind it, and record what you decided.
             </p>
           </div>
-
-          <div className="rounded-lg border border-line bg-elevated p-4">
-            <h2 className="text-small font-semibold text-ink">What this tool is</h2>
-            <p className="mt-1 max-w-prose text-small text-muted">{BRAND.disclaimer}</p>
-            <p className="mt-2 max-w-prose text-small text-muted">
-              Your recorded decision — including whether you agreed with the model or
-              overrode it, and why — is the oversight record. It is stored against the
-              model version you actually saw.
-            </p>
-          </div>
-
-          {offline && (
-            <div
-              role="note"
-              className="rounded-lg border border-warn-border bg-warn-tint p-4 text-small text-warn-ink"
-            >
-              <strong className="block">Offline demonstration.</strong>
-              This build serves synthetic patients from local fixtures. There is no
-              backend, no tenant and no real clinical data anywhere in it.
-            </div>
-          )}
 
           <div>
             <button
               type="button"
               onClick={handleSignIn}
               disabled={isLoading}
-              className="inline-flex items-center rounded-md bg-accent px-4 py-2.5 text-small font-semibold text-accent-fg transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center rounded-md bg-accent px-5 py-2.5 text-body font-semibold text-accent-fg transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
             >
               {fabricAuthEnabled && msLogo}
               {buttonLabel}
@@ -120,16 +91,59 @@ export function AuthPage() {
                 {error}
               </p>
             )}
-            <p className="mt-2 text-micro text-muted">
+            <p className="mt-3 max-w-[56ch] text-micro text-muted">
               {fabricAuthEnabled
                 ? 'Sign-in is brokered by Microsoft Entra through Fabric. Which patients you can see is decided by row-level security on the data, not by this application.'
                 : 'No credentials are sent anywhere. This is a local demonstration identity.'}
             </p>
           </div>
         </div>
+
+        <div className="space-y-4">
+          <div
+            className="rise rounded-[var(--radius-card)] border border-line bg-elevated p-5"
+            style={{ '--i': 1 } as React.CSSProperties}
+          >
+            <h2 className="text-lead font-semibold text-ink">What this tool is</h2>
+            <p className="mt-1.5 text-small text-muted">{BRAND.disclaimer}</p>
+            <p className="mt-2 text-small text-muted">
+              Your recorded decision — including whether you agreed with the model or
+              overrode it, and why — is the oversight record. It is stored against the
+              model version you actually saw.
+            </p>
+          </div>
+
+          <dl
+            className="rise grid grid-cols-3 gap-3 rounded-[var(--radius-card)] border border-line bg-elevated p-5"
+            style={{ '--i': 2 } as React.CSSProperties}
+          >
+            {[
+              ['Model', 'Glassbox EBM, calibrated'],
+              ['Delivery', 'Fabric App · row-level security'],
+              ['Oversight', 'Every decision recorded'],
+            ].map(([k, v]) => (
+              <div key={k}>
+                <dt className="eyebrow">{k}</dt>
+                <dd className="mt-1 text-small font-medium text-ink">{v}</dd>
+              </div>
+            ))}
+          </dl>
+
+          {offline && (
+            <div
+              role="note"
+              className="rise rounded-[var(--radius-card)] border border-warn-border bg-warn-tint p-4 text-small text-warn-ink"
+              style={{ '--i': 3 } as React.CSSProperties}
+            >
+              <strong className="block">Offline demonstration.</strong>
+              This build serves synthetic patients from local fixtures. There is no
+              backend, no tenant and no real clinical data anywhere in it.
+            </div>
+          )}
+        </div>
       </div>
 
-      <footer className="mx-auto w-full max-w-3xl px-4 pb-8 text-micro text-muted">
+      <footer className="mx-auto w-full max-w-5xl px-5 pb-8 text-micro text-muted">
         {BRAND.org} is a fictional organisation created for this demonstration. The
         Oxford Knee Score, the EQ-5D-3L and the NHS PROMs dataset the underlying model
         was trained on are real and are named accurately.

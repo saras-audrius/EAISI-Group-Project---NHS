@@ -7,6 +7,7 @@ import type {
   ModelCardRow,
   ModelCurveRow,
   PatientRow,
+  ProviderStatRow,
   ThresholdOptionRow,
 } from './types';
 
@@ -337,6 +338,7 @@ export function fixtureExplanation(episodeId: string): ExplanationRow[] {
     .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution))
     .slice(0, 6)
     .map((c, i) => ({
+      episodeId,
       rank: i + 1,
       feature: c.term.feature,
       featureLabel: c.term.label,
@@ -527,15 +529,26 @@ const sweep = (() => {
 })();
 
 /**
- * Notebook 42's fallback ladder: aim for 80% precision, and if the data will not
- * support it, drop a rung and say so rather than quietly shipping a target
- * nobody can hit.
+ * Notebook 42's fallback ladder: aim for a precision target, and if the data
+ * will not support it, drop a rung and say so rather than quietly shipping a
+ * target nobody can hit.
+ *
+ * The synthetic model is deliberately weak (eight terms, AP ≈ 0.45 against a
+ * 0.32 baseline), so the ladder starts lower than the real notebook's 80%. A
+ * floor of 50 flags per 1,000 stops a cut-off that flags nobody from "winning"
+ * on a precision computed over a handful of patients.
  */
-const chosen =
-  [0.8, 0.7, 0.6, 0.5].map((target) => sweep.filter((r) => r.precision >= target).sort((a, b) => b.recall - a.recall)[0]).find(Boolean) ??
-  sweep[sweep.length - 1];
+const PRECISION_LADDER = [0.5, 0.45, 0.4];
+const MIN_FLAGS_PER_1000 = 50;
 
-const CHOSEN_TARGET = [0.8, 0.7, 0.6, 0.5].find((t) => chosen.precision >= t) ?? 0;
+const chosen =
+  PRECISION_LADDER.map((target) =>
+    sweep
+      .filter((r) => r.precision >= target && r.flaggedPer1000 >= MIN_FLAGS_PER_1000)
+      .sort((a, b) => b.recall - a.recall)[0]
+  ).find(Boolean) ?? sweep[Math.floor(sweep.length / 2)];
+
+const CHOSEN_TARGET = PRECISION_LADDER.find((t) => chosen.precision >= t) ?? 0;
 
 export const fixtureThresholdOptions: ThresholdOptionRow[] = sweep.map((r) => ({
   ...r,
@@ -629,3 +642,37 @@ export const fixtureUser = {
   email: 'demo.clinician@marrowfield.example',
   name: 'Dr Sam Okonjo (demo)',
 };
+
+// ---------------------------------------------------------------------------
+// Provider aggregates — the whole cohort, one row per provider
+// ---------------------------------------------------------------------------
+
+/**
+ * Mirrors what notebook 60 §2d writes to `ProviderStats`: computed over every
+ * generated patient, not just the clinician's visible list, so the comparison
+ * on the overview is against the service rather than against one inbox. Band
+ * counts under the suppression floor are written as zero, as upstream.
+ */
+export const fixtureProviderStats: ProviderStatRow[] = PROVIDERS.map((provider) => {
+  const rows = allPatients.filter((p) => p.providerCode === provider.code);
+  const risks = rows.map((p) => p.riskPoorOutcome).sort((a, b) => a - b);
+  const oks = rows.map((p) => p.oksT0Score).sort((a, b) => a - b);
+  const count = (band: string) => {
+    const n = rows.filter((p) => p.riskBand === band).length;
+    return n < SUPPRESSION_FLOOR ? 0 : n;
+  };
+  return {
+    providerCode: provider.code,
+    providerType: provider.type,
+    region: provider.region,
+    patients: rows.length,
+    meanRisk: risks.reduce((a, b) => a + b, 0) / Math.max(1, risks.length),
+    medianRisk: risks[Math.floor(risks.length / 2)],
+    flagged: rows.filter((p) => p.riskPoorOutcome >= chosen.threshold).length,
+    low: count('low'),
+    moderate: count('moderate'),
+    high: count('high'),
+    veryHigh: count('very_high'),
+    medianOks: oks[Math.floor(oks.length / 2)],
+  };
+});

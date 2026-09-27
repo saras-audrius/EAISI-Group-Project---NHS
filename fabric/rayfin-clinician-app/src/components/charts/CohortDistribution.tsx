@@ -17,7 +17,7 @@ interface CohortDistributionProps {
 }
 
 const W = 480;
-const PAD = { top: 14, right: 12, bottom: 34, left: 34 };
+const PAD = { top: 14, right: 12, bottom: 34, left: 44 };
 
 /**
  * Where this patient sits among everyone awaiting surgery.

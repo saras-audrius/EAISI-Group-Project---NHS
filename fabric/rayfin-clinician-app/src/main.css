@@ -1,57 +1,61 @@
 @import 'tailwindcss';
 
-/* Marrowfield runs light or dark from a class on <html>, not from a media query
-   alone: a clinic room is often brighter than the OS setting assumes, so the
-   clinician gets an explicit switch. `useTheme` writes the class. */
+/* Self-hosted type. The files ship inside the bundle, so a page served from
+   Fabric static hosting makes no third-party request to render its own text
+   and looks identical on a venue network, a hotspot, or no network at all. */
+@import '@fontsource-variable/inter/index.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+
+/* Light or dark from a class on <html>, not from a media query alone: a clinic
+   room is often brighter than the OS setting assumes. `useTheme` writes it. */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ---------------------------------------------------------------------------
    Marrowfield Orthopaedic Centre — identity tokens
+
    A fictional trust invented for this demonstration. No real health
    organisation is referenced, imitated, or approximated anywhere in here.
 
    Two families, kept apart on purpose:
 
-   * surface / border / text / accent — the chrome. One accent only.
+   * surface / border / text / accent — the chrome. One accent, teal.
    * risk-*                           — the four-band clinical ramp.
 
    They never share a hue. A colour that means "interactive" must not also be
-   able to mean "this patient is at risk".
+   able to mean "this patient is at risk". The ramp below is unchanged from the
+   audited build: every ink/tint pair ≥ 4.5:1, every mark ≥ 3:1, and monotone
+   in greyscale (73/59/44/10 light, 70/76/84/141 dark) so a projector keeps the
+   ordering that hue carried.
    --------------------------------------------------------------------------- */
 
 :root {
   color-scheme: light;
 
-  --mf-surface: #fbfaf8;
-  --mf-surface-sunken: #f2f0ec;
+  --mf-surface: #f5f6f8;
+  --mf-surface-sunken: #eceef1;
   --mf-elevated: #ffffff;
-  --mf-border: #e2dfd9;
-  --mf-border-strong: #c9c5bd;
-  --mf-text-primary: #191c1a;
-  --mf-text-secondary: #585e5a;
+  --mf-border: #e1e4e8;
+  --mf-border-strong: #c3c9d0;
+  --mf-text-primary: #1b1f24;
+  --mf-text-secondary: #5c6570;
   --mf-text-inverse: #ffffff;
 
-  --mf-accent: #0b5c55;
-  --mf-accent-hover: #084a44;
-  --mf-accent-text: #084a44;
+  --mf-accent: #0f6cbd;
+  --mf-accent-hover: #115ea3;
+  --mf-accent-text: #0f5da3;
   --mf-accent-fg: #ffffff;
-  --mf-accent-tint: #e6f1ef;
+  --mf-accent-tint: #e6f0fa;
+  --mf-accent-soft: #f2f7fc;
 
-  --mf-focus: #0b5c55;
+  /* Two secondaries, used sparingly for emphasis that is not risk. */
+  --mf-ochre: #8a5a08;
+  --mf-ochre-tint: #f6ebd8;
+  --mf-clay: #a33a2a;
+  --mf-clay-tint: #f8e4df;
 
-  /* The four-band ramp.
+  --mf-focus: #0f6cbd;
 
-     `ink`  is the readable text colour        — every pairing below is >= 4.5:1.
-     `mark` is the chart fill                  — every pairing is >= 3:1 (WCAG 1.4.11)
-                                                 and the four are monotone in
-                                                 greyscale (73 / 59 / 44 / 10),
-                                                 so a projector or a printer keeps
-                                                 the ordering that hue carried.
-     `tint` is the badge background.
-     `edge` outlines a fill so a pale mark still has an edge against the card.
-
-     Colour is never the only channel: RiskBadge also carries a four-block glyph,
-     the band name, and — in the charts — position on a shared scale. */
   --mf-risk-low-ink: #1e7a5c;
   --mf-risk-low-mark: #5e9e85;
   --mf-risk-low-tint: #e4f2ec;
@@ -72,33 +76,36 @@
   --mf-risk-very-high-tint: #f7e2e7;
   --mf-risk-very-high-edge: #560d26;
 
-  /* Non-band chart colours. `axis` and `grid` are deliberately weak — the data
-     should be the darkest thing in a chart. */
-  --mf-chart-axis: #8d918d;
-  --mf-chart-grid: #e6e3dd;
-  --mf-chart-neutral: #b6b1a8;
-  --mf-chart-you: #191c1a;
+  --mf-chart-axis: #8a9099;
+  --mf-chart-grid: #e4e7eb;
+  --mf-chart-neutral: #b6bcc4;
+  --mf-chart-you: #1b1f24;
   --mf-chart-increase: #b0442a;
   --mf-chart-decrease: #1e7a5c;
+  --mf-chart-accent: #0f6cbd;
 
-  --mf-warn-tint: #fdf3dd;
-  --mf-warn-border: #ddbe73;
+  --mf-warn-tint: #fdf4dc;
+  --mf-warn-border: #e2c46f;
   --mf-warn-ink: #6b4c07;
   --mf-danger-tint: #fae7e1;
   --mf-danger-border: #e0a996;
   --mf-danger-ink: #8f2f16;
+
+  /* Flat surfaces: a border carries the edge, not a shadow. */
+  --mf-shadow: none;
+  --mf-shadow-lg: 0 4px 16px rgba(27, 31, 36, 0.12);
 }
 
 .dark {
   color-scheme: dark;
 
-  --mf-surface: #121513;
-  --mf-surface-sunken: #0c0f0d;
-  --mf-elevated: #1a1e1c;
-  --mf-border: #2f3633;
-  --mf-border-strong: #46504b;
-  --mf-text-primary: #edf0ee;
-  --mf-text-secondary: #a6afaa;
+  --mf-surface: #0f1513;
+  --mf-surface-sunken: #0a0f0d;
+  --mf-elevated: #171f1c;
+  --mf-border: #2a3430;
+  --mf-border-strong: #43514b;
+  --mf-text-primary: #e9eeeb;
+  --mf-text-secondary: #9faaa5;
   --mf-text-inverse: #0a1310;
 
   --mf-accent: #5fd3bc;
@@ -106,11 +113,15 @@
   --mf-accent-text: #7fe0cb;
   --mf-accent-fg: #0a1310;
   --mf-accent-tint: #12312c;
+  --mf-accent-soft: #14231f;
+
+  --mf-ochre: #d5a44f;
+  --mf-ochre-tint: #2e2718;
+  --mf-clay: #dc8271;
+  --mf-clay-tint: #33201c;
 
   --mf-focus: #7fe0cb;
 
-  /* Dark-mode ramp greyscale: 70 / 76 / 84 / 141 — monotone the other way,
-     so "brighter = worse" reads correctly against a dark card. */
   --mf-risk-low-ink: #4fbf95;
   --mf-risk-low-mark: #4c9e82;
   --mf-risk-low-tint: #12291f;
@@ -132,11 +143,12 @@
   --mf-risk-very-high-edge: #ff9bb0;
 
   --mf-chart-axis: #7c847f;
-  --mf-chart-grid: #2b312e;
-  --mf-chart-neutral: #5b635e;
-  --mf-chart-you: #edf0ee;
+  --mf-chart-grid: #263029;
+  --mf-chart-neutral: #576059;
+  --mf-chart-you: #e9eeeb;
   --mf-chart-increase: #f0785a;
   --mf-chart-decrease: #4fbf95;
+  --mf-chart-accent: #5fd3bc;
 
   --mf-warn-tint: #2b2210;
   --mf-warn-border: #6a5620;
@@ -144,6 +156,13 @@
   --mf-danger-tint: #2f1610;
   --mf-danger-border: #6d3524;
   --mf-danger-ink: #f6a48a;
+
+  --mf-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 12px 30px -20px rgba(0, 0, 0, 0.8);
+  --mf-shadow-lg:
+    0 2px 4px rgba(0, 0, 0, 0.5),
+    0 28px 56px -24px rgba(0, 0, 0, 0.9);
 }
 
 /* `@theme inline` emits `--color-surface: var(--mf-surface)` rather than a
@@ -163,6 +182,12 @@
   --color-accent-text: var(--mf-accent-text);
   --color-accent-fg: var(--mf-accent-fg);
   --color-accent-tint: var(--mf-accent-tint);
+  --color-accent-soft: var(--mf-accent-soft);
+
+  --color-ochre: var(--mf-ochre);
+  --color-ochre-tint: var(--mf-ochre-tint);
+  --color-clay: var(--mf-clay);
+  --color-clay-tint: var(--mf-clay-tint);
 
   --color-risk-low: var(--mf-risk-low-ink);
   --color-risk-low-mark: var(--mf-risk-low-mark);
@@ -184,17 +209,19 @@
   --color-danger-border: var(--mf-danger-border);
   --color-danger-ink: var(--mf-danger-ink);
 
-  /* System stack. Nothing is fetched at runtime: a hosted clinical app should
-     not make a third-party request to render its own text. */
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Arial, 'Noto Sans', sans-serif;
-  --font-mono:
-    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono',
-    monospace;
+  --shadow-card: var(--mf-shadow);
+  --shadow-float: var(--mf-shadow-lg);
 
-  /* A five-step scale, tight at the bottom because this screen is a worklist.
-     Anything larger than `display` would be a marketing decision. */
+  /* One working face for everything a clinician reads; mono only for ids and code. */
+  --font-display:
+    'Inter Variable', Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    sans-serif;
+  --font-sans:
+    'Inter Variable', Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    sans-serif;
+  --font-mono:
+    'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
   --text-micro: 0.6875rem;
   --text-micro--line-height: 1rem;
   --text-small: 0.8125rem;
@@ -204,9 +231,19 @@
   --text-lead: 1.125rem;
   --text-lead--line-height: 1.625rem;
   --text-title: 1.5rem;
-  --text-title--line-height: 1.875rem;
-  --text-display: 2.75rem;
-  --text-display--line-height: 1;
+  --text-title--line-height: 2rem;
+  --text-display: 2.25rem;
+  --text-display--line-height: 1.1;
+  --text-hero: 3.25rem;
+  --text-hero--line-height: 1;
+
+  /* Tight corners throughout: this is a working tool, not a landing page. */
+  --radius-card: 6px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 6px;
+  --radius-2xl: 8px;
 }
 
 @layer base {
@@ -230,26 +267,35 @@
     background-color: var(--mf-surface);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'cv11', 'ss01';
   }
 
-  /* One focus treatment everywhere, including inside SVG, so keyboard users get
-     the same affordance on a chart bar as on a button. */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
   :focus-visible {
     outline: 2px solid var(--mf-focus);
     outline-offset: 2px;
     border-radius: 2px;
   }
 
-  /* Numbers in a clinical table have to line up column-wise to be scannable. */
   table,
   .tnum {
     font-variant-numeric: tabular-nums;
   }
+
+  ::selection {
+    background: var(--mf-accent-tint);
+  }
 }
 
 @layer utilities {
-  /* Visible only to screen readers. Every chart has one of these holding its
-     data as text or a table — see `ChartFrame`. */
   .sr-only-text {
     position: absolute;
     width: 1px;
@@ -261,6 +307,72 @@
     white-space: nowrap;
     border-width: 0;
   }
+
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+
+  /* The headline numbers: semibold, tabular, slightly tightened. */
+  .numeral {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums lining-nums;
+    letter-spacing: -0.02em;
+  }
+
+  /* Small field labels, the way a form or a data grid labels its columns. */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--mf-text-secondary);
+  }
+
+  /* One entrance, staggered by `--i`. Reduced-motion users get the final
+     frame immediately (see the media query below). */
+  .rise {
+    animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 60ms);
+  }
+
+  /* Kept as a hook for the page background; intentionally plain. */
+  .paper {
+    background-image: none;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.thinking-dot {
+  animation: pulse-dot 1.2s ease-in-out infinite;
+}
+.thinking-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.thinking-dot:nth-child(3) {
+  animation-delay: 0.4s;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -269,6 +381,7 @@
   ::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
   }
 }

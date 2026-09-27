@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['dist', 'node_modules', '.rush', 'rush-logs', 'rayfin/.temp'],
+    ignores: ['dist', 'node_modules', '.rush', 'rush-logs', 'rayfin/.temp', 'rayfin/functions'],
   },
   {
     files: ['**/*.{ts,tsx}'],

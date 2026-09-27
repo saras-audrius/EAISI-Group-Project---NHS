@@ -3,24 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="color-scheme" content="light" />
     <meta
       name="description"
       content="Marrowfield Orthopaedic Centre — pre-operative knee replacement outcome review. Clinical decision support over a synthetic cohort."
     />
     <title>Knee Outcome Review — Marrowfield Orthopaedic Centre</title>
 
-    <!-- Theme is resolved before first paint so a dark-mode user never sees a
-         white flash. Kept inline and tiny; it is the only script in <head>. -->
+    <!-- The app is light by default, regardless of the operating system: it is
+         projected and printed, and a clinic room is brighter than the OS
+         assumes. Dark applies only when a user chose it explicitly. -->
     <script>
       (function () {
         try {
-          var stored = localStorage.getItem('mf-theme');
-          var dark =
-            stored === 'dark' ||
-            (stored !== 'light' &&
-              window.matchMedia('(prefers-color-scheme: dark)').matches);
-          if (dark) document.documentElement.classList.add('dark');
+          if (localStorage.getItem('mf-theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
         } catch (e) {
           /* private mode: fall through to light */
         }

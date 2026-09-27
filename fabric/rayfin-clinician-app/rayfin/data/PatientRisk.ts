@@ -61,9 +61,31 @@ import {
  * The column stays `NVARCHAR(256)` because narrowing it would force a
  * destructive `db apply` for no gain; 36 of those characters are used.
  *
+ * ### Why there are two assignment columns
+ *
+ * `assignedClinicianId` is exact but unknowable in advance: the GUID does not
+ * exist until that person has signed in once, which makes setting up a demo a
+ * chicken-and-egg problem and makes `CLINICIAN_ASSIGNMENTS` unreadable.
+ *
+ * `assignedClinicianEmail` is the same assignment written the way a human can
+ * type it before anybody has signed in. `claims.email` is a first-class claim in
+ * Rayfin's policy DSL, and the Fabric broker carries the address in the token
+ * (top-level `email`, or `xms_attr.<appId>.rfn_email` for a managed-hosting
+ * token — see `extractEmailFromToken` in `rayfin-auth/dist/Auth.js`).
+ *
+ * The policy accepts **either**, deliberately. Whether Data API Builder is
+ * handed an `email` claim for a Fabric-brokered session is not something the
+ * client bundle can prove, so the id branch stays as the path already verified
+ * to work, and the email branch is the one that makes setup humane. Populate
+ * whichever you have; notebook 60 writes both.
+ *
+ * Emails are written lower-cased by notebook 60. Fabric SQL databases are
+ * created with a case-insensitive collation, so this is belt and braces.
+ *
  * The policy below therefore reads: a signed-in user may read a patient row when
- * they are the assigned clinician, *or* when their `role` claim is `governance`
- * — the audit/oversight role that legitimately sees the whole cohort.
+ * they are the assigned clinician — by app user id or by email address — *or*
+ * when their `role` claim is `governance`, the audit/oversight role that
+ * legitimately sees the whole cohort.
  *
  * Enforcement happens in Data API Builder, not in the frontend. A clinician who
  * rewrites the GraphQL query in devtools still gets only their own patients.
@@ -74,7 +96,10 @@ import {
 @entity()
 @role('authenticated', 'read', {
   policy: (claims, item) =>
-    claims.sub.eq(item.assignedClinicianId).or(claims.role.eq('governance')),
+    claims.sub
+      .eq(item.assignedClinicianId)
+      .or(claims.email.eq(item.assignedClinicianEmail))
+      .or(claims.role.eq('governance')),
 })
 export class PatientRisk {
   @uuid() id!: string;
@@ -87,6 +112,21 @@ export class PatientRisk {
 
   /** The row-level security key: Rayfin app user id of the responsible clinician. */
   @text({ min: 1, max: 256 }) assignedClinicianId!: string;
+
+  /**
+   * The same assignment by email address — the readable half of the key.
+   *
+   * Optional so that `rayfin up db apply` can add it to a populated table as a
+   * plain nullable column — a required column would need a default or a
+   * destructive rebuild, and `ReviewDecisions` holds recorded clinical
+   * decisions that must not be dropped to add a convenience key.
+   *
+   * Notebook 60 never writes blank: where no address is configured it writes the
+   * sentinel `unassigned@invalid`, because an empty string could collide with an
+   * absent claim and turn a mis-set row into a visible one. NULL matches nothing,
+   * so a row the sync has not touched stays invisible.
+   */
+  @text({ max: 256, optional: true }) assignedClinicianEmail?: string;
 
   // ---- provider and demographics -------------------------------------------
 

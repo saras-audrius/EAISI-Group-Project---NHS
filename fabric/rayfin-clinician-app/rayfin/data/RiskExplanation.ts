@@ -28,6 +28,7 @@ import { entity, role, text, int, decimal, uuid } from '@microsoft/rayfin-core';
   policy: (claims, item) =>
     claims.sub
       .eq(item.assignedClinicianId)
+      .or(claims.email.eq(item.assignedClinicianEmail))
       .or(claims.role.eq('governance')),
 })
 export class RiskExplanation {
@@ -41,6 +42,9 @@ export class RiskExplanation {
    * Holds the Rayfin app user id — see the note on `PatientRisk`.
    */
   @text({ min: 1, max: 256 }) assignedClinicianId!: string;
+
+  /** The same assignment by email. See the note on `PatientRisk`. Never blank. */
+  @text({ max: 256, optional: true }) assignedClinicianEmail?: string;
 
   /** 1 = strongest contributor for this patient. */
   @int({ min: 1, max: 50 }) rank!: number;

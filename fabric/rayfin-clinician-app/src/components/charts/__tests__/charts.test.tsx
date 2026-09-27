@@ -112,9 +112,44 @@ describe('ContributionChart', () => {
     render(<ContributionChart rows={explanationRows} />);
     expect(
       screen.getByRole('img', {
-        name: /Number of long-term conditions, value 4, increases risk by 0.31 log-odds/i,
+        name: /Number of long-term conditions, 4 of 12 conditions, increases risk by 0.31 log-odds/i,
       })
     ).toBeInTheDocument();
+  });
+
+  it('says what the patient answered rather than the raw code', () => {
+    render(
+      <ContributionChart
+        rows={[
+          {
+            episodeId: 'e1',
+            rank: 1,
+            feature: 'oks_t0_washing',
+            featureLabel: 'Pre-op OKS: washing',
+            featureValue: 0,
+            contribution: 0.52,
+            direction: 'increases_risk',
+          },
+          {
+            episodeId: 'e1',
+            rank: 2,
+            feature: 't0_previous_surgery',
+            featureLabel: 'Previous surgery on this knee',
+            featureValue: 1,
+            contribution: 0.43,
+            direction: 'increases_risk',
+          },
+        ]}
+      />
+    );
+    // 0 on an Oxford Knee Score item is the WORST answer, not an absence.
+    expect(screen.getAllByText(/impossible to do/i).length).toBeGreaterThan(0);
+    // The label already names the factor, so the value is just Yes — not a
+    // sentence that repeats the label back at the reader.
+    expect(screen.getAllByText(/^Yes$/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/have you previously had surgery on this knee\?/i)).toBeInTheDocument();
+    // The raw code stays available for anyone checking the model's input.
+    expect(screen.getAllByText(/recorded as 0/i).length).toBeGreaterThan(0);
   });
 
   it('translates log-odds into words rather than showing a bare number', () => {

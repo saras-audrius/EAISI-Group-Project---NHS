@@ -1,3 +1,7 @@
+import { FunctionAgentService } from './agent/FunctionAgentService';
+import { LocalAgentService } from './agent/LocalAgentService';
+import { ProxyAgentService } from './agent/ProxyAgentService';
+import { setAgentService } from './agent';
 import type { IAuthService } from './IAuthService';
 import { OfflineAuthService } from './OfflineAuthService';
 import { OfflineDataService } from './OfflineDataService';
@@ -22,9 +26,27 @@ function required(name: string): string {
 }
 
 /**
+ * Which "Ask" backend to install. Three, in order of preference for a live
+ * session:
+ *
+ * * `VITE_AGENT_PROXY_URL` set → the local MCP proxy to the Fabric Data Agent,
+ *   running under the presenter's own sign-in.
+ * * `VITE_AGENT_MODE=function` → the Rayfin function path (experimental).
+ * * otherwise → the built-in query engine, which needs nothing and says so.
+ */
+function chooseAgent(): void {
+  const proxy = import.meta.env.VITE_AGENT_PROXY_URL as string | undefined;
+  const mode = import.meta.env.VITE_AGENT_MODE as string | undefined;
+  if (proxy) setAgentService(new ProxyAgentService(proxy));
+  else if (mode === 'function' && import.meta.env.VITE_OFFLINE_DEMO !== 'true')
+    setAgentService(new FunctionAgentService());
+  else setAgentService(new LocalAgentService());
+}
+
+/**
  * Choose a backend and install it. Called once from `main.tsx`.
  *
- * There are exactly two modes and the choice is made here, from one variable:
+ * There are exactly two data modes and the choice is made here, from one variable:
  *
  * * `VITE_OFFLINE_DEMO=true` — fixtures and a local sign-in. Nothing leaves the
  *   machine, and the UI carries a synthetic-data banner throughout.
@@ -35,13 +57,11 @@ function required(name: string): string {
  * loudly, at boot: an app that can silently substitute invented patients for
  * real ones is an app that can show invented patients on stage without anybody
  * noticing, and in a clinical setting that is worse than a blank screen.
- *
- * Every value below is written by `rayfin env --framework vite` after a
- * successful `rayfin up`.
  */
 export function bootstrapApp(): IAuthService {
   if (import.meta.env.VITE_OFFLINE_DEMO === 'true') {
     setDataService(new OfflineDataService());
+    chooseAgent();
     return new OfflineAuthService();
   }
 
@@ -53,6 +73,7 @@ export function bootstrapApp(): IAuthService {
   });
 
   setDataService(new RayfinDataService());
+  chooseAgent();
 
   return new RayfinAuthService(client, {
     workspaceId: required('VITE_FABRIC_WORKSPACE_ID'),

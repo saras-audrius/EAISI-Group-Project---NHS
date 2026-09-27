@@ -52,6 +52,8 @@ export interface PatientRow {
 }
 
 export interface ExplanationRow {
+  /** Present when rows for several patients are read together (the worklist and overview). */
+  episodeId?: string;
   rank: number;
   feature: string;
   featureLabel: string;
@@ -136,6 +138,27 @@ export interface ModelCardRow {
 }
 
 /**
+ * One provider's slice of the whole pre-operative cohort — a model-scoped
+ * aggregate with no patient in it, so it carries no row policy. Written by
+ * notebook 60 §2d; counts under the suppression floor are written as zero.
+ */
+export interface ProviderStatRow {
+  providerCode: string;
+  providerType?: 'nhs_trust' | 'university_hospital' | 'independent_sector';
+  region?: string;
+  patients: number;
+  meanRisk: number;
+  medianRisk?: number;
+  /** Patients at or above the operating threshold on the model card. */
+  flagged: number;
+  low: number;
+  moderate: number;
+  high: number;
+  veryHigh: number;
+  medianOks?: number;
+}
+
+/**
  * Everything the app reads, behind one interface.
  *
  * Two implementations: `RayfinDataService` against the governed Fabric backend,
@@ -154,11 +177,16 @@ export interface ClinicalDataService {
   listPatients(): Promise<PatientRow[]>;
   getPatient(episodeId: string): Promise<PatientRow | null>;
   getExplanation(episodeId: string): Promise<ExplanationRow[]>;
+  /** Every explanation row the caller may see — RLS-filtered like the list. */
+  listExplanations(): Promise<ExplanationRow[]>;
   getDecisions(episodeId: string): Promise<DecisionRow[]>;
+  /** Every decision the caller may see, newest first. */
+  listDecisions(): Promise<DecisionRow[]>;
   recordDecision(input: DecisionInput): Promise<void>;
 
   getCohortStats(): Promise<CohortStatRow[]>;
   getModelCurves(): Promise<ModelCurveRow[]>;
   getThresholdOptions(): Promise<ThresholdOptionRow[]>;
   getModelCard(): Promise<ModelCardRow | null>;
+  getProviderStats(): Promise<ProviderStatRow[]>;
 }

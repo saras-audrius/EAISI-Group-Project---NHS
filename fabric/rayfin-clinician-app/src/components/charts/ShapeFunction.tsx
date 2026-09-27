@@ -1,3 +1,4 @@
+import { featureValueShort } from '@/clinical';
 import type { ModelCurveRow } from '@/services/patients';
 
 import { ChartFrame, EmptyChart } from './ChartFrame';
@@ -7,6 +8,8 @@ interface ShapeFunctionProps {
   rows: ModelCurveRow[];
   /** The patient's value on this feature, marked on the curve. */
   patientValue?: number;
+  /** Model feature name, so the marked value can be said in the instrument's words. */
+  feature?: string;
 }
 
 const W = 520;
@@ -27,7 +30,7 @@ const PAD = { top: 18, right: 14, bottom: 40, left: 46 };
  * held few patients at that value, which is exactly where a confident-looking
  * line would be most misleading.
  */
-export function ShapeFunction({ rows, patientValue }: ShapeFunctionProps) {
+export function ShapeFunction({ rows, patientValue, feature }: ShapeFunctionProps) {
   const points = [...rows].sort((a, b) => a.pointIndex - b.pointIndex);
 
   if (points.length === 0) {
@@ -72,7 +75,7 @@ export function ShapeFunction({ rows, patientValue }: ShapeFunctionProps) {
       title={`How ${label.toLowerCase()} moves risk`}
       caption={
         atPatient
-          ? `At this patient's value of ${format(patientValue ?? 0)}, this factor contributes ${atPatient.y > 0 ? '+' : ''}${atPatient.y.toFixed(2)} log-odds. Reading along the line shows what a different value would contribute instead.`
+          ? `At this patient's answer — ${feature ? featureValueShort(feature, patientValue) : format(patientValue ?? 0)} — this factor contributes ${atPatient.y > 0 ? '+' : ''}${atPatient.y.toFixed(2)} log-odds. Reading along the line shows what a different value would contribute instead.`
           : `Across the range of ${label.toLowerCase()}, this is what the model adds to the risk.`
       }
       denominator={`x-axis: ${xUnit}. y-axis: contribution to the log-odds of a poor outcome; zero is the average waiting-list patient. Shaded band is the model's uncertainty, widening where few patients had that value.`}

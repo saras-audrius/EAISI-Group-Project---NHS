@@ -9,6 +9,7 @@ export type {
   ModelCardRow,
   ModelCurveRow,
   PatientRow,
+  ProviderStatRow,
   ThresholdOptionRow,
 } from './types';
 
@@ -52,8 +53,14 @@ export const getPatient = (episodeId: string) => required().getPatient(episodeId
 /** The six ranked contributions behind one patient's score. */
 export const getExplanation = (episodeId: string) => required().getExplanation(episodeId);
 
+/** Every explanation row the caller may see, for the worklist and the overview. */
+export const listExplanations = () => required().listExplanations();
+
 /** Decisions already recorded for a patient, newest first. */
 export const getDecisions = (episodeId: string) => required().getDecisions(episodeId);
+
+/** Every decision the caller may see, newest first. */
+export const listDecisions = () => required().listDecisions();
 
 export const recordDecision = (input: DecisionInput) => required().recordDecision(input);
 
@@ -68,3 +75,6 @@ export const getThresholdOptions = () => required().getThresholdOptions();
 
 /** Headline model facts and the synthetic-data flag. */
 export const getModelCard = () => required().getModelCard();
+
+/** Per-provider aggregates over the whole cohort. Empty until notebook 60 §2d has run. */
+export const getProviderStats = () => required().getProviderStats();

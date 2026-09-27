@@ -5,18 +5,15 @@ import { AppShell } from '@/components/AppShell';
 import { AuthPage } from '@/components/AuthPage';
 import { Card, EmptyState } from '@/components/ui/Primitives';
 import { useAuth } from '@/hooks/AuthContext';
+import { AskPage } from '@/pages/AskPage';
 import { CohortPage } from '@/pages/CohortPage';
+import { ModelPage } from '@/pages/ModelPage';
+import { OverviewPage } from '@/pages/OverviewPage';
 import { PatientPage } from '@/pages/PatientPage';
 import { getModelCard } from '@/services/patients';
 
 /**
  * Routes, and the sign-in gate in front of them.
- *
- * Patient selection used to be `useState` in this component, which meant there
- * was no URL for a patient: no browser back, no deep link, no refresh survival,
- * and no way to send a colleague the record you are looking at. On a review
- * screen that is a workflow defect, not a nicety — a reload in the middle of
- * writing a rationale dropped the clinician back to the list.
  *
  * `/patient/:episodeId` re-queries the patient on load, so the row-level security
  * policy is evaluated on the deep link exactly as on the list.
@@ -36,8 +33,7 @@ function App() {
       })
       .catch(() => {
         // A model card that will not load is not a reason to hide the rest of the
-        // app; the banner simply stays off and the "can I trust this" panel shows
-        // its own error.
+        // app; the banner simply stays off and the model panel shows its own error.
       });
     return () => {
       cancelled = true;
@@ -57,8 +53,11 @@ function App() {
   return (
     <AppShell syntheticData={synthetic}>
       <Routes>
-        <Route path="/" element={<CohortPage />} />
+        <Route path="/" element={<OverviewPage />} />
+        <Route path="/worklist" element={<CohortPage />} />
         <Route path="/patient/:episodeId" element={<PatientPage />} />
+        <Route path="/model" element={<ModelPage />} />
+        <Route path="/ask" element={<AskPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AppShell>
@@ -73,7 +72,7 @@ function NotFound() {
         detail="The address may be mistyped, or the patient may have been removed from the pre-operative cohort."
       />
       <div className="px-6 pb-6 text-center">
-        <Link to="/" className="text-small font-medium text-accent-text hover:underline">
+        <Link to="/worklist" className="text-small font-medium text-accent-text hover:underline">
           ← Back to your pre-operative list
         </Link>
       </div>

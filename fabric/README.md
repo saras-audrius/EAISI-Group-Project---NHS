@@ -149,6 +149,19 @@ is rejected with `[InvalidInput]`), binds `NHS_PROMs_Lakehouse` as the default l
 | 50 | risk-band distribution is not degenerate; the Margaret query returns a score and six drivers |
 | 60 | every patient has a clinician assignment |
 
+**Notebook 60, two JDBC gotchas.**
+
+*TLS.* A `hostNameInCertificate=*.database.fabric.microsoft.com` pin in the connection
+string caused *"Failed to validate the server name"*: the gateway redirects to a worker
+node (`tr…westeurope1-a.worker.database.windows.net`) and the pin could never match it.
+Removing the pin fixes it — strict validation now passes. Section 3 keeps a fallback that
+trips only on that specific error and prints when it does, so a future service change
+degrades loudly rather than silently.
+
+*ORDER BY.* Spark's JDBC `query` option wraps the statement as a derived table, and T-SQL
+rejects `ORDER BY` inside one unless `TOP`/`OFFSET` is present. Select `ORDINAL_POSITION`
+and sort in Python instead of ordering in SQL.
+
 **Spark pool sizing:** these notebooks are small (10⁵ rows). A starter pool is plenty and
 starts in seconds; a large pool just adds cold-start time you will feel on stage. Enable
 the **high-concurrency** session so notebooks 40–60 share one Spark session instead of
@@ -229,7 +242,7 @@ job, and a Level 300 audience will respect it more.
 | 4 — EBM + SHAP ★1 | notebook 40 §7–8 (candidates, calibration); the existing `07_ebm_explainability` |
 | 5 — Real-time endpoint ★2 | notebook 40 §9 registration; deploy the endpoint from the ML model item |
 | 6 — Governed delivery ★3a | `rayfin-clinician-app/` |
-| 7 — Data Agent + IQ ★3b | `gold.patient_risk` + `gold.risk_explanation`; rehearsal SQL in notebook 50 §8 |
+| 7 — Data Agent + IQ ★3b | `gold.patient_risk` + `gold.risk_explanation`; rehearsal SQL in notebook 50 §8; the app's `/ask` page via `rayfin-clinician-app/tools/agent_proxy.py` |
 | 8 — Close | `MEDALLION.md` diagram + the lineage graph |
 
 ## Pipeline vs. presentation notebooks
@@ -255,6 +268,8 @@ disagree about which model is live.
 ## Still to build
 
 - Real-time endpoint deployment from the registered model (segment 5)
-- Fabric IQ semantic layer + Data Agent configuration (segment 7)
+- Fabric IQ semantic layer + Data Agent configuration (segment 7) — the app side is done
+  (`/ask`, proxy, optional Rayfin function); publish the agent and point the proxy at it
+- `npx rayfin up db apply` + re-run notebook 60 so `ProviderStats` exists for the overview
 - Sensitivity labels applied and verified end to end
 - Recorded fallback clips for ★1–★3

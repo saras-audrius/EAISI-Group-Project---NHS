@@ -1,0 +1,44 @@
+import { chromium } from 'playwright-core';
+const out = process.argv[2]; const base = 'http://localhost:5199';
+const exe = '/Users/sarasaudrius/Library/Caches/ms-playwright/chromium-1228/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing';
+const browser = await chromium.launch({ headless: true, executablePath: exe });
+const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, colorScheme: 'light' });
+const page = await ctx.newPage();
+page.on('pageerror', e => console.log('PAGEERROR', e.message));
+await page.goto(base + '/', { waitUntil: 'networkidle' });
+await page.evaluate(() => localStorage.setItem('mf-theme', 'light'));
+await page.reload({ waitUntil: 'networkidle' });
+await page.getByRole('button', { name: /Continue to the offline|Sign in/ }).first().click();
+await page.waitForTimeout(1500);
+// hide the dev panel button
+await page.addStyleTag({ content: '[aria-label*="dev" i], button:has-text("dev") { display:none !important } .rise{animation:none !important} header.sticky{position:static !important} [class*="fixed"]:has-text("dev"){display:none !important}' });
+const nav = async (href) => { await page.click(`nav[aria-label="Primary"] a[href="${href}"]`); await page.waitForTimeout(1200); };
+const sec = (title) => page.locator('section, article, div').filter({ has: page.locator('h2', { hasText: title }) }).filter({ hasNot: page.locator('section section') }).last();
+const shotSec = async (title, name) => {
+  const el = page.locator('section[class*="rounded-"]').filter({ has: page.locator('h2', { hasText: title }) }).first();
+  if (!(await el.count())) { console.log('MISSING', title); return; }
+  await el.scrollIntoViewIfNeeded(); await page.waitForTimeout(300);
+  await el.screenshot({ path: `${out}/${name}.png` }); console.log('shot', name);
+};
+await page.screenshot({ path: `${out}/overview_top.png`, clip: { x: 0, y: 0, width: 1440, height: 900 } });
+await shotSec('Move the cut-off', 'cutoff');
+await shotSec('Can the number be trusted', 'modelcard');
+await shotSec('Recent decisions', 'recent_decisions');
+await shotSec('What is driving the flags', 'drivers');
+await nav('/worklist');
+await page.screenshot({ path: `${out}/worklist_top.png`, clip: { x: 0, y: 0, width: 1440, height: 900 } });
+await shotSec('Your patients', 'worklist_card');
+await page.locator('a[href^="/patient/"]').first().click(); await page.waitForTimeout(1500);
+await page.screenshot({ path: `${out}/patient_top.png`, clip: { x: 0, y: 0, width: 1440, height: 900 } });
+await shotSec('How likely is a poor outcome', 'how_likely');
+await shotSec('Why this score', 'why_score');
+await shotSec('Record your review', 'record_review');
+await shotSec('Previous reviews', 'previous_reviews');
+await nav('/ask');
+await page.fill('#ask-input', 'Which of my pre-operative patients are flagged, and why?');
+await page.click('button:has-text("Ask")'); await page.waitForTimeout(2500);
+await page.screenshot({ path: `${out}/ask_answer.png`, fullPage: true });
+await page.fill('#ask-input', "Should I cancel a patient's operation?");
+await page.click('button:has-text("Ask")'); await page.waitForTimeout(2500);
+await page.screenshot({ path: `${out}/ask_refusal.png`, fullPage: true });
+await browser.close();

@@ -1,4 +1,4 @@
-import { contributionInWords } from '@/clinical';
+import { contributionInWords, describeFeatureValue, featureValueShort } from '@/clinical';
 import type { ExplanationRow } from '@/services/patients';
 
 import { ChartFrame, EmptyChart } from './ChartFrame';
@@ -69,13 +69,14 @@ export function ContributionChart({
       ariaLabel={`Diverging bar chart of ${sorted.length} contributing factors, in log-odds. ${sorted
         .map(
           (r) =>
-            `${r.featureLabel}, value ${formatFeatureValue(r.featureValue)}, ${r.contribution > 0 ? 'increases' : 'reduces'} risk by ${Math.abs(r.contribution).toFixed(2)} log-odds`
+            `${r.featureLabel}, ${featureValueShort(r.feature, r.featureValue)}, ${r.contribution > 0 ? 'increases' : 'reduces'} risk by ${Math.abs(r.contribution).toFixed(2)} log-odds`
         )
         .join('. ')}.`}
       table={{
-        headers: ['Factor', "Patient's value", 'Log-odds', 'In words'],
+        headers: ['Factor', 'What the patient answered', 'Recorded as', 'Log-odds', 'In words'],
         rows: sorted.map((r) => [
           r.featureLabel,
+          featureValueShort(r.feature, r.featureValue),
           formatFeatureValue(r.featureValue),
           `${r.contribution > 0 ? '+' : ''}${r.contribution.toFixed(3)}`,
           contributionInWords(r.contribution),
@@ -148,7 +149,7 @@ export function ContributionChart({
                 fontSize={9}
                 fill={CHART_COLOR.axis}
               >
-                {formatFeatureValue(r.featureValue)}
+                {truncate(featureValueShort(r.feature, r.featureValue), 34)}
               </text>
 
               <rect
@@ -199,13 +200,28 @@ export function ContributionChart({
       <ul className="mt-3 space-y-1">
         {sorted.map((r) => {
           const selected = selectedFeature === r.feature;
+          const meaning = describeFeatureValue(r.feature, r.featureValue);
           const body = (
             <>
               <span className="font-medium text-ink">{r.featureLabel}</span>
-              <span className="text-muted"> — {formatFeatureValue(r.featureValue)}, </span>
+              <span className="text-muted"> — </span>
+              <span className={`font-medium ${meaning?.isWorst ? 'text-risk-very-high' : 'text-ink'}`}>
+                {featureValueShort(r.feature, r.featureValue)}
+              </span>
+              <span className="text-muted">, </span>
               <span className={r.contribution > 0 ? 'text-risk-high' : 'text-risk-low'}>
                 {contributionInWords(r.contribution)}
               </span>
+              {/* The raw code and the question behind it, for a clinician
+                  checking the model's input against the patient. The number is
+                  what the model saw; the sentence is what it means. */}
+              {meaning && (
+                <span className="mt-0.5 block text-micro text-muted">
+                  {meaning.question ? `${meaning.question} · ` : ''}
+                  recorded as {formatFeatureValue(r.featureValue)}
+                  {meaning.scale ? ` — ${meaning.scale}` : ''}
+                </span>
+              )}
             </>
           );
           return (

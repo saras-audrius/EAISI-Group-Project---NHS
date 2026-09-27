@@ -15,10 +15,12 @@ function systemPrefersDark(): boolean {
 function readStored(): ThemePreference {
   try {
     const value = localStorage.getItem(STORAGE_KEY);
-    return value === 'light' || value === 'dark' ? value : 'system';
+    // Light unless a user explicitly chose otherwise. The app is projected and
+    // printed, so it does not follow the operating system by default.
+    return value === 'dark' || value === 'system' ? value : 'light';
   } catch {
     // Private browsing throws on access rather than returning null.
-    return 'system';
+    return 'light';
   }
 }
 
